@@ -72,17 +72,15 @@ const Dropdown = ({
 
       {isOpen && (
         <div
-          className={`absolute right-0 mt-2 w-full shadow-lg bg-[#1E293B] ${
+          className={`absolute right-0 mt-2 w-full shadow-sm bg-[#1E293B] ${
             size === 'sm' ? 'rounded-lg' : 'rounded-xl'
           }`}
         >
-          <div className="py-1" role="listbox">
+          <div className="py-1">
             {options.map((option) => (
               <button
                 key={option.value}
                 className={optionClasses}
-                role="option"
-                aria-selected={option.value === selectedOption?.value}
                 onClick={() => handleOptionClick(option)}
               >
                 {option.label}

@@ -27,9 +27,14 @@ export default function Home() {
         <Dropdown options={options} onChange={handleChange} size="md" />
       </div>
       <div>
-        <Dropdown options={options} onChange={handleChange} placeholder='반복 안함' size="sm" />
+        <Dropdown
+          options={options}
+          onChange={handleChange}
+          placeholder="반복 안함"
+          size="sm"
+        />
       </div>
-      <div className='w-32'>
+      <div className="w-32">
         <Dropdown
           options={profileOptions}
           onChange={handleProfileOptionChange}
@@ -41,7 +46,7 @@ export default function Home() {
   );
 }
 
-const ProfileButton: React.FC = () => (
+const ProfileButton = () => (
   <div className="flex items-center space-x-2 cursor-pointer bg-gray-700 p-2">
     <div className="w-8 h-8 flex items-center justify-center text-white">
       <svg
