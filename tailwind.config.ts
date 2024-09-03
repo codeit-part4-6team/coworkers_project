@@ -19,7 +19,7 @@ const config: Config = {
     colors: {
       color: {
         brand: {
-          primary: '#10b981',
+          primary: '#10B981',
           secondary: '#34D399',
           tertiary: '#A3E635',
         },
@@ -40,7 +40,7 @@ const config: Config = {
         inverse: '#ffffff',
       },
       interaction: {
-        inactive: '#94A4B8',
+        inactive: '#94A3B8',
         hover: '#059669',
         pressed: '#047857',
         focus: '#10B981',
@@ -54,7 +54,7 @@ const config: Config = {
         tertiary: '#E2E8F0',
         default: '#64748B',
         inverse: '#ffffff',
-        disabled: '#94A4B8',
+        disabled: '#94A3B8',
       },
       status: {
         danger: '#DC2626',
