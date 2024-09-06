@@ -2,7 +2,6 @@ import { FloatingButtonProp } from '@/type/floatingbuttonprop';
 import CheckIcon from '@/assets/check_icon.svg';
 import CancelIcon from '@/assets/cancel_icon.svg';
 import AddIcon from '@/assets/plus_icon.svg'
-import Image from 'next/image';
 
 export default function FloatingButton( {option, text, disabled, onClick} : FloatingButtonProp) {
   const buttonOption = {
