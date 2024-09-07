@@ -1,4 +1,4 @@
-import { FloatingButtonProp } from '@/type/floatingbuttonprop';
+import { FloatingButtonProp } from '@/types/floatingbuttonprop';
 import CheckIcon from '@/assets/check_icon.svg';
 import CancelIcon from '@/assets/cancel_icon.svg';
 import AddIcon from '@/assets/plus_icon.svg'
@@ -31,7 +31,6 @@ export default function FloatingButton( {option, text, disabled, onClick} : Floa
         return <CheckIcon width={16} height={16} />;
       case 'cancel' :
         return <CancelIcon width={16} height={16} />;
-        // return <Image src={CancelIcon} alt='취소아이콘' width={16} height={16} />;
     }
   }
 
