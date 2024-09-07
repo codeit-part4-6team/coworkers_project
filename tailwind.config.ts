@@ -1,5 +1,4 @@
 import type { Config } from 'tailwindcss';
-import plugin from 'tailwindcss/plugin';
 
 const config: Config = {
   content: [
@@ -46,7 +45,10 @@ const config: Config = {
         focus: '#10B981',
       },
       border: {
-        primary: 'rgba(248, 250, 252, 0.5)',
+        primary: {
+          '50': 'rgba(248, 250, 252, 0.5)',
+          '10': 'rgba(248, 250, 252, 0.1)',
+        },
       },
       text: {
         primary: '#F8FAFC',
