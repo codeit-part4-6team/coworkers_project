@@ -1,7 +1,8 @@
 import ArrowLeft from '@/assets/btn_arrow_left.svg';
 import ArrowRight from '@/assets/btn_arrow_right.svg';
 import Calendar from '@/assets/btn_calendar.svg';
-import Image from 'next/image';
+import WorkToDoContainer from '@/components/list/WorkToDoContainer';
+import FloatingButton from '@/components/button/floatingbutton';
 
 export default function List() {
   return (
@@ -26,10 +27,17 @@ export default function List() {
           + 새로운 목록 추가하기
         </div>
       </div>
+      <WorkToDoContainer />
       <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-center text-md font-medium text-text-default">
         <p>아직 할 일 목록이 없습니다.</p>
         <p>새로운 목록을 추가해주세요.</p>
       </div>
+      <FloatingButton
+        option="add"
+        text="할 일 추가"
+        disabled={false}
+        className="fixed bottom-6 rihgt-6"
+      />
     </section>
   );
 }
