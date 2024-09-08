@@ -1,5 +1,5 @@
-import Button from "@/components/button/button"
-import FloatingButton from "@/components/button/floatingbutton"
+import Button from "@/components/button/Button"
+import FloatingButton from "@/components/button/FloatingButton"
 
 export default function test() {
 
