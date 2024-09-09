@@ -24,7 +24,7 @@ export default function Input({labeltext, option, inputsize, errortext, placehol
         inputsize === 'large' && 'text-lg',
         inputsize === 'small' && 'text-md'
     )
-
+    //주석
     return (
         <div className={clsx(
             inputsize === 'large' && `w-[460px] h-[79px]`,
