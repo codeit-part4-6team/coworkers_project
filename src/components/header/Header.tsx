@@ -5,9 +5,11 @@ import Menu from '@/assets/menu.svg';
 import { useQuery } from '@tanstack/react-query';
 import basicApi from '@/lib/basicAxios';
 import { useState, useEffect } from 'react';
-import SideMenu from './SideMenu';
 import Dropdown, { DropdownOption } from '@/components/dropdown/Dropdown';
 import { Group } from '@/type/usergroup';
+import Modal from '@/components/common/Modal';
+import useModalStore from '@/store/modalStore';
+import Cancel from '@/assets/x_icon.svg';
 
 const getAuthToken = () => {
   const token = localStorage.getItem('accessToken');
@@ -46,13 +48,9 @@ const fetchUserData = async () => {
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isSideMenu, setIsSideMenu] = useState<boolean>(false);
   const [selectedTeam, setSelectedTeam] = useState<DropdownOption | null>(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    setIsLoggedIn(!!token);
-  }, []);
+  const { openModal, closeModal } = useModalStore();
 
   const { data: userData } = useQuery({
     queryKey: ['userData'],
@@ -70,8 +68,13 @@ const Header = () => {
 
   const isLogin = !!userData || isLoggedIn;
 
+  useEffect(() => {
+    const token = localStorage.getItem('accessToken');
+    setIsLoggedIn(!!token);
+  }, []);
+
   const handleMenuClick = () => {
-    setIsSideMenu((prev) => !prev);
+    openModal('sideMenu');
   };
 
   const handleTeamChange = (selectedOption: DropdownOption) => {
@@ -123,15 +126,33 @@ const Header = () => {
           </p>
         </div>
       )}
-      {isSideMenu && (
-        <>
-          <div
-            className="fixed inset-0 bg-blend-darken bg-black bg-opacity-50"
-            onClick={() => setIsSideMenu(false)}
-          ></div>
-          <SideMenu onClose={() => setIsSideMenu(false)} groups={userGroups} />
-        </>
-      )}
+
+      <Modal id="sideMenu" className="fixed inset-0">
+        <div className="fixed top-0 left-0 w-1/2 h-full bg-background-secondary p-[16px] z-50">
+          <div className="flex justify-end">
+            <Cancel onClick={() => closeModal('sideMenu')} />
+          </div>
+          <ul className="flex flex-col gap-[24px] mt-[35px]">
+            {userGroups.map((group) => (
+              <li
+                key={group.id}
+                className="text-text-primary text-md font-medium"
+              >
+                {group.name}
+              </li>
+            ))}
+            <Link href="/boards">
+              <li className="text-text-primary text-md font-medium">
+                자유게시판
+              </li>
+            </Link>
+          </ul>
+        </div>
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50"
+          onClick={() => closeModal('sideMenu')}
+        ></div>
+      </Modal>
     </div>
   );
 };
