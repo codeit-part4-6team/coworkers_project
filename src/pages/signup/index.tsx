@@ -11,12 +11,12 @@ export default function Signup() {
     const testerrer=['에러0번테스트', '에러1번테스트']
 
     return (
-        <div className="w-1/4">
-            <Button option="solid" size="xsmall" text="테스트" disabled={false}/>
-            <FloatingButton option='cancel' text='할 일 추가' disabled={true} />
+        <div className="w-1/4 bg-color-point-cyan">
+            <Button option="outlined" size="xsmall" text="테스트" disabled={false} />
+            <FloatingButton option='cancel' text='할 일 추가' disabled={false} />
             {/* <FloatingButton option='add' text='할 일 추가' disabled={false} onClick={testEvent}/> */}
             {/* <FloatingButton option='success' text='할 일 추가' disabled={false} /> */}
-            <Input labeltext="테스트" option='text' errortext={testerrer} placeholder='미리보기' ></Input>
+            <Input labeltext="테스트" option='text' inputsize="large" errortext={testerrer} placeholder='미리보기' ></Input>
         </div>
     )
 }
