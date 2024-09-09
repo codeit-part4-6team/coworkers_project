@@ -1,4 +1,4 @@
-import Dropdown, { DropdownOption } from '@/components/dropdown/Dropdown';
+import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 
 export default function Home() {
   const options = [
