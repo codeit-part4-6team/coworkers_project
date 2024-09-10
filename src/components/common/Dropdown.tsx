@@ -38,12 +38,14 @@ const Dropdown = ({
   const displayText = selectedOption?.label || placeholder || options[0]?.label;
 
   const buttonClasses = clsx(
-    'inline-flex justify-between items-center font-regular text-text-primary focus:outline-none',
-    isOpen && 'bg-background-tertiary',
-    !isOpen && 'bg-background-secondary',
-    size === 'sm' && 'w-[94px] h-10 p-2 rounded-lg text-xs',
-    size === 'md' && 'w-[120px] h-11 p-[10px_14px] rounded-xl text-md',
-    size === 'full' && 'w-full h-11 p-[10px_14px] rounded-xl text-md',
+    'inline-flex justify-between items-center font-regular focus:outline-none',
+    isOpen && (size === 'sm' ? 'bg-[#18212F]' : 'bg-background-tertiary'),
+    !isOpen && (size === 'sm' ? 'bg-[#18212F]' : 'bg-background-secondary'),
+    size === 'sm' && 'w-[94px] h-10 p-2 rounded-lg text-text-default text-xs',
+    size === 'md' &&
+      'w-[120px] h-11 p-[10px_14px] text-text-primary rounded-xl text-md',
+    size === 'full' &&
+      'w-full h-11 p-[10px_14px] text-text-primary rounded-xl text-md',
   );
 
   const optionClasses = clsx(
@@ -78,6 +80,7 @@ const Dropdown = ({
           className={clsx(
             'absolute right-0 mt-2 rounded-lg shadow-sm bg-background-secondary overflow-hidden',
             customButton ? 'w-[120px]' : 'w-full',
+            'border border-border-primary-50',
           )}
         >
           <div className="py-1">
