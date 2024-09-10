@@ -47,9 +47,9 @@ const Dropdown = ({
   );
 
   const optionClasses = clsx(
-    'block w-full px-4 py-2 text-sm text-text-primary hover:bg-background-tertiary focus:outline-none',
+    'block w-full text-sm text-text-primary hover:bg-gray-100 focus:outline-none',
+    customButton ? 'px-4 py-3 text-center' : 'px-4 py-2 text-left',
     size === 'sm' ? 'text-xs' : 'text-md',
-    customButton ? 'text-center' : 'text-left',
   );
 
   return (
@@ -61,9 +61,7 @@ const Dropdown = ({
       )}
     >
       {customButton ? (
-        <div onClick={() => setIsOpen(!isOpen)} className="text-center">
-          {customButton}
-        </div>
+        <div onClick={() => setIsOpen(!isOpen)}>{customButton}</div>
       ) : (
         <button
           type="button"
@@ -78,8 +76,8 @@ const Dropdown = ({
       {isOpen && (
         <div
           className={clsx(
-            'absolute right-0 mt-2 w-full shadow-sm bg-background-secondary overflow-hidden',
-            size === 'sm' ? 'rounded-lg' : 'rounded-xl',
+            'absolute right-0 mt-2 rounded-lg shadow-sm bg-background-secondary overflow-hidden',
+            customButton ? 'w-[120px]' : 'w-full',
           )}
         >
           <div className="py-1">
