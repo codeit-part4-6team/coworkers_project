@@ -5,7 +5,7 @@ import Menu from '@/assets/menu.svg';
 import { useQuery } from '@tanstack/react-query';
 import basicApi from '@/lib/basicAxios';
 import { useState, useEffect } from 'react';
-import Dropdown, { DropdownOption } from '@/components/dropdown/Dropdown';
+import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import { Group } from '@/type/usergroup';
 import Modal from '@/components/common/Modal';
 import useModalStore from '@/store/modalStore';
