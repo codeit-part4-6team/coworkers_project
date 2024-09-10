@@ -5,8 +5,8 @@ import Menu from '@/assets/menu.svg';
 import { useQuery } from '@tanstack/react-query';
 import basicApi from '@/lib/basicAxios';
 import { useState, useEffect } from 'react';
-import Dropdown, { DropdownOption } from '@/components/dropdown/Dropdown';
-import { Group } from '@/type/usergroup';
+import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
+import { Group } from '@/types/usergroup';
 import Modal from '@/components/common/Modal';
 import useModalStore from '@/store/modalStore';
 import Cancel from '@/assets/x_icon.svg';
@@ -90,13 +90,20 @@ const Header = () => {
     ? selectedTeam.label
     : teamOptions[0]?.label;
 
+  const userOptions: DropdownOption[] = [
+    { label: '마이 히스토리', value: 'myHistory' },
+    { label: '계정 설정', value: 'accountSettings' },
+    { label: '팀 참여', value: 'joinTeam' },
+    { label: '로그아웃', value: 'logout' },
+  ];
+
   return (
-    <div className="bg-background-secondary flex justify-between items-center px-[24px] lg:px-[350px] border-border-primary-10">
+    <div className="bg-background-secondary h-[60px] flex justify-between items-center px-[24px] lg:px-[350px] border-b border-border-primary-10">
       <div className="my-[14px] flex items-center gap-[40px]">
         <div className="flex items-center gap-[16px]">
           {isLogin && <Menu className="md:hidden" onClick={handleMenuClick} />}
           <Link href="/">
-            <Logo />
+            <Logo className="lg:w-[158px] lg:h-[32px]" />
           </Link>
         </div>
         {isLogin && (
@@ -111,7 +118,7 @@ const Header = () => {
               />
             )}
             <Link href="/boards">
-              <li className="hidden md:block text-lg text-text-primary font-medium">
+              <li className="hidden md:block text-lg  text-text-primary font-medium">
                 자유게시판
               </li>
             </Link>
@@ -119,11 +126,25 @@ const Header = () => {
         )}
       </div>
       {isLogin && (
-        <div className="flex items-center gap-[8px]">
-          <User className="md:w-[16px] md:h-[16px]" />
-          <p className="hidden lg:block text-text-primary text-md font-medium">
-            {userData?.nickname}
-          </p>
+        <div className="w-[135px]">
+          <Dropdown
+            options={userOptions}
+            onChange={(option) => {
+              if (option.value === 'logout') {
+                localStorage.removeItem('accessToken');
+                setIsLoggedIn(false);
+              }
+            }}
+            customButton={
+              <div className="flex justify-end gap-[8px] items-center cursor-pointer">
+                <User className="md:w-[16px] md:h-[16px]" />
+                <p className="hidden lg:block text-text-primary text-md font-medium">
+                  {userData?.nickname}
+                </p>
+              </div>
+            }
+            size="full"
+          />
         </div>
       )}
 
