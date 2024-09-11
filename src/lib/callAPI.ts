@@ -10,7 +10,7 @@ interface APIProps {
   headers?: AxiosHeaders;
 }
 
-function ErrorCheck(method: string, apiName: string) {
+function errorCheck(method: string, apiName: string) {
   const errorMessage: { [key: string]: string } = {
     get: `${apiName}의 데이터를 받아오는데 실패하였습니다.`,
     put: `${apiName}의 데이터 수정에 실패하였습니다.`,
@@ -25,7 +25,7 @@ const apiClient = axios.create({
   baseURL: API_BASE_URL,
 });
 
-async function CallAPI({
+async function callAPI({
   method,
   url,
   body = null,
@@ -48,8 +48,8 @@ async function CallAPI({
     });
     return response.data;
   } catch (error) {
-    console.log(ErrorCheck(method, apiName));
+    console.log(errorCheck(method, apiName));
   }
 }
 
-export default CallAPI;
+export default callAPI;
