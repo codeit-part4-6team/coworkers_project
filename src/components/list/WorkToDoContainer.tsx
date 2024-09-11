@@ -1,6 +1,6 @@
 import CheckboxIcon from '@/assets/checkbox.svg';
 import CommentIcon from '@/assets/comment.svg';
-import KebabIcon from '@/assets/kebab_small.svg';
+import KebabIcon from '@/assets/kebab.svg';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import CalendarNRepeat from './CalendarNRepeat';
 
