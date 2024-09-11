@@ -10,6 +10,7 @@ import { Group } from '@/types/usergroup';
 import Modal from '@/components/common/Modal';
 import useModalStore from '@/store/modalStore';
 import Cancel from '@/assets/x_icon.svg';
+import TeamDropdown from './TeamDropdown';
 
 const getAuthToken = () => {
   const token = localStorage.getItem('accessToken');
@@ -48,7 +49,7 @@ const fetchUserData = async () => {
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [selectedTeam, setSelectedTeam] = useState<DropdownOption | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<Group | null>(null);
 
   const { openModal, closeModal } = useModalStore();
 
@@ -77,18 +78,13 @@ const Header = () => {
     openModal('sideMenu');
   };
 
-  const handleTeamChange = (selectedOption: DropdownOption) => {
-    setSelectedTeam(selectedOption);
+  const handleTeamChange = (team: Group) => {
+    setSelectedTeam(team); // 선택된 팀을 설정
   };
 
-  const teamOptions: DropdownOption[] = userGroups.map((group: Group) => ({
-    label: group.name,
-    value: group.id.toString(),
+  const teamOptions = userGroups.map((group: Group) => ({
+    ...group,
   }));
-
-  const placeholderText = selectedTeam
-    ? selectedTeam.label
-    : teamOptions[0]?.label;
 
   const userOptions: DropdownOption[] = [
     { label: '마이 히스토리', value: 'myHistory' },
@@ -109,13 +105,12 @@ const Header = () => {
         {isLogin && (
           <ul className="flex items-center gap-[40px]">
             {teamOptions.length > 0 && (
-              <Dropdown
-                options={teamOptions}
-                onChange={handleTeamChange}
-                placeholder={placeholderText}
-                size="md"
-                className="hidden md:block"
-              />
+              <div className="hidden md:block">
+                <TeamDropdown
+                  options={teamOptions}
+                  onChange={handleTeamChange}
+                />
+              </div>
             )}
             <Link href="/boards">
               <li className="hidden md:block text-lg  text-text-primary font-medium">

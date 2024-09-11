@@ -2,4 +2,5 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
     option : "solid" | "outlined" | "outlinedSecondary" | "danger";
     size : "large" | "xsmall";
     text : string;
+    blank? : boolean;
 }
