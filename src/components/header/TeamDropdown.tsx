@@ -26,8 +26,8 @@ const TeamDropdown = ({ options, onChange }: TeamDropdownProps) => {
   };
 
   const kebabButton = (
-    <div className="p-2 rounded-full">
-      <Kebab className="w-5 h-5 text-icon-primary" />
+    <div>
+      <Kebab className="w-4 h-4 text-icon-primary" />
     </div>
   );
 
@@ -50,9 +50,9 @@ const TeamDropdown = ({ options, onChange }: TeamDropdownProps) => {
       </button>
 
       {isOpen && (
-        <div className="absolute flex flex-col items-center top-[45px] right-[20px] lg:right-[80px] gap-[8px] w-[218px] bg-background-secondary rounded-[12px] p-[16px] z-50">
+        <div className="absolute flex flex-col items-center top-[45px] right-5 lg:right-20 gap-2 w-[218px] bg-background-secondary rounded-[12px] p-4 z-50">
           {options.map((team) => (
-            <div className="flex items-center py-[7px] gap-9 border border-none rounded-[8px] hover:bg-background-tertiary">
+            <div className="flex items-center px-2 py-[7px] gap-9 border border-none rounded-[8px] hover:bg-background-tertiary">
               <div
                 key={team.id}
                 className="flex items-center cursor-pointer"
@@ -61,7 +61,7 @@ const TeamDropdown = ({ options, onChange }: TeamDropdownProps) => {
                 <img
                   src={team.image}
                   alt={team.name}
-                  className="w-[32px] h-[32px] border border-none rounded-[6px] mr-[12px]"
+                  className="w-8 h-8 border border-none rounded-[6px] mr-3"
                 />
                 <span className="text-text-primary text-lg font-medium">
                   {team.name}
@@ -78,7 +78,7 @@ const TeamDropdown = ({ options, onChange }: TeamDropdownProps) => {
             </div>
           ))}
           <Link href="/addteam">
-            <button className="flex items-center gap-[4px] mt-[8px] border rounded-[12px] py-[15px] px-[44px] border-background-inverse">
+            <button className="flex items-center gap-1 mt-2 border rounded-[12px] py-[15px] px-11 border-background-inverse">
               <Plus />
               <span className="text-lg text-text-primary font-medium">
                 팀 추가하기
