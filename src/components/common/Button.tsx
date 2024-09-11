@@ -1,6 +1,9 @@
 import { ButtonProps } from '@/types/ButtonProp';
 import clsx from 'clsx';
 
+<<<<<<< HEAD
+export default function Button({ option, size, text, ...rest }: ButtonProps) {
+=======
 export default function Button({
   option,
   size,
@@ -9,6 +12,7 @@ export default function Button({
   ...rest
 }: ButtonProps) {
 
+>>>>>>> 4c4c40d91b0081542d7cbd445d0ae33899e3a7c1
   const buttonDefaultStyle = `rounded-[12px]`;
 
   const optionClassName = clsx(
@@ -31,7 +35,15 @@ export default function Button({
 
   return (
     <button
+<<<<<<< HEAD
+      className={clsx(
+        buttonDefaultStyle,
+        sizeClassName[size],
+        optionClassName[option],
+      )}
+=======
       className={clsx(buttonDefaultStyle, sizeClassName[size], optionClassName)}
+>>>>>>> 4c4c40d91b0081542d7cbd445d0ae33899e3a7c1
       {...rest}
     >
       {text}
