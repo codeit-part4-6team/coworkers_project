@@ -50,6 +50,7 @@ const fetchUserData = async () => {
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [selectedTeam, setSelectedTeam] = useState<Group | null>(null);
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const { openModal, closeModal } = useModalStore();
 
@@ -80,6 +81,10 @@ const Header = () => {
 
   const handleTeamChange = (team: Group) => {
     setSelectedTeam(team);
+  };
+
+  const handleItemClick = (item: string) => {
+    setSelectedItem(item);
   };
 
   const teamOptions = userGroups.map((group: Group) => ({
@@ -113,7 +118,7 @@ const Header = () => {
               </div>
             )}
             <Link href="/boards">
-              <li className="hidden md:block text-lg  text-text-primary font-medium">
+              <li className="hidden md:block text-lg text-text-primary font-medium">
                 자유게시판
               </li>
             </Link>
@@ -121,7 +126,7 @@ const Header = () => {
         )}
       </div>
       {isLogin && (
-        <div className="w-[135px]">
+        <div className="w-[135px] flex justify-end">
           <Dropdown
             options={userOptions}
             onChange={(option) => {
@@ -152,13 +157,25 @@ const Header = () => {
             {userGroups.map((group) => (
               <li
                 key={group.id}
-                className="text-text-primary text-md font-medium"
+                onClick={() => handleItemClick(String(group.id))}
+                className={`text-md font-medium cursor-pointer ${
+                  selectedItem === String(group.id)
+                    ? 'text-color-brand-primary'
+                    : 'text-text-primary'
+                }`}
               >
                 {group.name}
               </li>
             ))}
             <Link href="/boards">
-              <li className="text-text-primary text-md font-medium">
+              <li
+                onClick={() => handleItemClick('boards')}
+                className={`text-md font-medium cursor-pointer ${
+                  selectedItem === 'boards'
+                    ? 'text-color-brand-primary'
+                    : 'text-text-primary'
+                }`}
+              >
                 자유게시판
               </li>
             </Link>

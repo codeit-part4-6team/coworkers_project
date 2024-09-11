@@ -52,7 +52,7 @@ const TeamDropdown = ({ options, onChange }: TeamDropdownProps) => {
       {isOpen && (
         <div className="absolute flex flex-col items-center top-[45px] right-[20px] lg:right-[80px] gap-[8px] w-[218px] bg-background-secondary rounded-[12px] p-[16px] z-50">
           {options.map((team) => (
-            <div className="flex items-center gap-[36px] border border-none rounded-[8px] hover:bg-background-tertiary">
+            <div className="flex items-center py-[7px] gap-9 border border-none rounded-[8px] hover:bg-background-tertiary">
               <div
                 key={team.id}
                 className="flex items-center cursor-pointer"
@@ -67,7 +67,7 @@ const TeamDropdown = ({ options, onChange }: TeamDropdownProps) => {
                   {team.name}
                 </span>
               </div>
-              <div>
+              <div className="flex">
                 <Dropdown
                   options={kebabOptions}
                   onChange={handleChange}
