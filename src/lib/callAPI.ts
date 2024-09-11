@@ -1,12 +1,13 @@
-import axios from 'axios';
+import axios, { AxiosHeaders } from 'axios';
 
-const API_KEY = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface APIProps {
   method: 'get' | 'put' | 'post' | 'patch' | 'delete';
-  query: string;
+  url: string;
   body?: any;
   apiName: string;
+  headers?: AxiosHeaders;
 }
 
 function ErrorCheck(method: string, apiName: string) {
@@ -20,14 +21,30 @@ function ErrorCheck(method: string, apiName: string) {
   return errorMessage[method] || `알 수 없는 에러가 발생하였습니다.;`;
 }
 
-async function CallAPI({ method, query, body = null, apiName }: APIProps) {
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+});
 
-  let order = query; // baseURL이 설정되어 있으므로 API_KEY를 제외합니다.
+async function CallAPI({
+  method,
+  url,
+  body = null,
+  apiName,
+  headers,
+}: APIProps) {
+  const accessToken = localStorage.getItem('accessToken');
+
+  const defaultHeaders = new AxiosHeaders({
+    Authorization: accessToken ? `Bearer ${accessToken}` : '',
+    'Content-Type': 'application/json',
+  });
+
   try {
-    const response = await axios({
+    const response = await apiClient({
       method,
-      url: order,
+      url,
       data: body !== null ? body : undefined,
+      headers: { ...defaultHeaders, ...headers },
     });
     return response.data;
   } catch (error) {
