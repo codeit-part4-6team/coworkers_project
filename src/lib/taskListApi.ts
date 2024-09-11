@@ -1,20 +1,20 @@
-import callAPI from './callAPI';
+import { basicAuthAxios } from './basicAxios';
 
 // 할 일 리스트 생성
 export async function addTaskList(groupId: number, name: string) {
-  const method = 'post';
-  const url = `groups/${groupId}/task-lists'`;
-  const apiName = 'addTaskList';
-  const body = name;
-  await callAPI({ method, url, body, apiName });
+  const response = await basicAuthAxios.post(
+    `groups/${groupId}/task-lists`,
+    name,
+  );
+  return response;
 }
 
 // 할 일 특정 리스트 불러오기
 export async function getTaskList(groupId: number, taskListId: number) {
-  const method = 'get';
-  const url = `groups/${groupId}/task-lists/${taskListId}'`;
-  const apiName = 'getTaskList';
-  await callAPI({ method, url, apiName });
+  const response = await basicAuthAxios.get(
+    `groups/${groupId}/task-lists/${taskListId}`,
+  );
+  return response;
 }
 
 // 할 일 특정 리스트 수정
@@ -23,20 +23,21 @@ export async function editTaskList(
   taskListId: number,
   name: string,
 ) {
-  const method = 'patch';
-  const url = `groups/${groupId}/task-lists/${taskListId}'`;
-  const apiName = 'editTaskList';
-  const body = name;
-  await callAPI({ method, url, body, apiName });
+  const response = await basicAuthAxios.patch(
+    `groups/${groupId}/task-lists/${taskListId}`,
+    name,
+  );
+
+  return response;
 }
 
 // 할 일 특정 리스트 삭제
 export async function deleteTaskList(groupId: number, taskListId: number) {
-  const method = 'delete';
-  const url = `groups/${groupId}/task-lists/${taskListId}'`;
-  const apiName = 'deleteTaskList';
+  const response = await basicAuthAxios.delete(
+    `groups/${groupId}/task-lists/${taskListId}`,
+  );
 
-  await callAPI({ method, url, apiName });
+  return response;
 }
 
 // 할 일 리스트 순서 변경
@@ -45,9 +46,10 @@ export async function orderTaskList(
   taskListId: number,
   displayIndex: number,
 ) {
-  const method = 'patch';
-  const url = `groups/${groupId}/task-lists/${taskListId}/order'`;
-  const apiName = 'orderTaskList';
-  const body = displayIndex;
-  await callAPI({ method, url, body, apiName });
+  const response = await basicAuthAxios.patch(
+    `groups/${groupId}/task-lists/${taskListId}/order`,
+    displayIndex,
+  );
+
+  return response;
 }
