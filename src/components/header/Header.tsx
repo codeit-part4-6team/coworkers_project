@@ -99,16 +99,16 @@ const Header = () => {
   ];
 
   return (
-    <div className="bg-background-secondary h-[60px] flex justify-between items-center px-[24px] lg:px-[350px] border-b border-border-primary-10">
-      <div className="my-[14px] flex items-center gap-[40px]">
-        <div className="flex items-center gap-[16px]">
+    <div className="bg-background-secondary h-[60px] flex justify-between items-center px-6 lg:px-[350px] border-b border-border-primary-10">
+      <div className="my-[14px] flex items-center gap-10">
+        <div className="flex items-center gap-4">
           {isLogin && <Menu className="md:hidden" onClick={handleMenuClick} />}
           <Link href="/">
-            <Logo className="lg:w-[158px] lg:h-[32px]" />
+            <Logo className="lg:w-[158px] lg:h-8" />
           </Link>
         </div>
         {isLogin && (
-          <ul className="flex items-center gap-[40px]">
+          <ul className="flex items-center gap-10">
             {teamOptions.length > 0 && (
               <div className="hidden md:block">
                 <TeamDropdown
@@ -136,8 +136,8 @@ const Header = () => {
               }
             }}
             customButton={
-              <div className="flex justify-end gap-[8px] items-center cursor-pointer">
-                <User className="md:w-[16px] md:h-[16px]" />
+              <div className="flex justify-end gap-2 items-center cursor-pointer">
+                <User className="md:w-4 md:h-4" />
                 <p className="hidden lg:block text-text-primary text-md font-medium">
                   {userData?.nickname}
                 </p>
@@ -149,11 +149,11 @@ const Header = () => {
       )}
 
       <Modal id="sideMenu" className="fixed inset-0">
-        <div className="fixed top-0 left-0 w-1/2 h-full bg-background-secondary p-[16px] z-50">
+        <div className="fixed top-0 left-0 w-1/2 h-full bg-background-secondary p-4 z-50">
           <div className="flex justify-end">
             <Cancel onClick={() => closeModal('sideMenu')} />
           </div>
-          <ul className="flex flex-col gap-[24px] mt-[35px]">
+          <ul className="flex flex-col gap-6 mt-[35px]">
             {userGroups.map((group) => (
               <li
                 key={group.id}
