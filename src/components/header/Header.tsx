@@ -3,7 +3,7 @@ import Logo from '@/assets/logo.svg';
 import User from '@/assets/user.svg';
 import Menu from '@/assets/menu.svg';
 import { useQuery } from '@tanstack/react-query';
-import basicApi from '@/lib/basicAxios';
+import { basicAxios } from '@/lib/basicAxios';
 import { useState, useEffect } from 'react';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import { Group } from '@/types/usergroup';
@@ -24,7 +24,7 @@ const fetchData = async (endpoint: string) => {
   try {
     const token = getAuthToken();
 
-    const response = await basicApi.get(endpoint, {
+    const response = await basicAxios.get(endpoint, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -79,7 +79,7 @@ const Header = () => {
   };
 
   const handleTeamChange = (team: Group) => {
-    setSelectedTeam(team); // 선택된 팀을 설정
+    setSelectedTeam(team);
   };
 
   const teamOptions = userGroups.map((group: Group) => ({
@@ -138,7 +138,7 @@ const Header = () => {
                 </p>
               </div>
             }
-            size="full"
+            size="sm"
           />
         </div>
       )}
