@@ -39,11 +39,13 @@ export default function Home() {
         <Dropdown options={options} onChange={handleChange} size="md" />
       </div>
       <div>
+        <Dropdown options={options} onChange={handleChange} size="sm" />
+      </div>
+      <div>
         <Dropdown
           options={options}
           onChange={handleChange}
           placeholder="반복 안함"
-          size="sm"
         />
       </div>
       <div className="w-32">
@@ -51,7 +53,7 @@ export default function Home() {
           options={profileOptions}
           onChange={handleProfileOptionChange}
           customButton={<ProfileButton />}
-          size="full"
+          size="md"
         />
       </div>
       <div className="w-32">
