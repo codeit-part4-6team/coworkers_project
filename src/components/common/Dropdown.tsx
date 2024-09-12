@@ -39,7 +39,8 @@ const Dropdown = ({
 
   const buttonClasses = clsx(
     'inline-flex justify-between items-center font-regular focus:outline-none',
-    isOpen ? 'bg-background-tertiary' : 'bg-background-secondary',
+    !placeholder &&
+      (isOpen ? 'bg-background-tertiary' : 'bg-background-secondary'),
     {
       'w-[94px] h-10 p-2 rounded-lg text-text-primary text-xs': size === 'sm',
       'w-[120px] h-11 p-[10px_14px] rounded-xl text-text-primary text-md':
