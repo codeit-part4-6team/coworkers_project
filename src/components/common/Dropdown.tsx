@@ -82,7 +82,7 @@ const Dropdown = ({
         <div
           className={clsx(
             'absolute right-0 mt-2 rounded-lg shadow-sm bg-background-secondary overflow-hidden',
-            'border border-border-primary-50',
+            'border border-border-primary-10',
             {
               'w-[135px]': customButton && size === 'md',
               'w-[120px]': customButton && size === 'sm',
