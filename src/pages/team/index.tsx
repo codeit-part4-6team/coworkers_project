@@ -12,16 +12,15 @@ const CoworkersMobileUI: React.FC = () => {
   ];
 
   const todos = [
-    { title: '법인 설립', progress: 3, total: 5, color: 'bg-color-point-purple' },
+    { title: '법인 설립', progress: 3, total: 5 },
     {
       title: '변경 등기',
       progress: 5,
       total: 5,
       completed: true,
-      color: 'bg-color-point-purple',
     },
-    { title: '정기 주총', progress: 3, total: 5, color: 'bg-color-point-purple' },
-    { title: '법인 설립', progress: 3, total: 5, color: 'bg-color-point-purple' },
+    { title: '정기 주총', progress: 3, total: 5 },
+    { title: '법인 설립', progress: 3, total: 5 },
   ];
 
   return (
@@ -35,6 +34,5 @@ const CoworkersMobileUI: React.FC = () => {
     </div>
   );
 };
-
 
 export default CoworkersMobileUI;

@@ -7,24 +7,37 @@ interface TodoItem {
   progress: number;
   total: number;
   completed?: boolean;
-  color: string;
 }
 
-interface TaskItemProps extends TodoItem {}
+interface TaskItemProps extends TodoItem {
+  index: number;
+}
+
+const pointColors = [
+  'purple',
+  'blue',
+  'cyan',
+  'pink',
+  'rose',
+  'orange',
+  'yellow',
+];
 
 const TaskItem = ({
   title,
   progress,
   total,
   completed = false,
-  color,
+  index,
 }: TaskItemProps) => {
   const StatusIcon = completed ? Done : Ongoing;
+  const colorIndex = index % pointColors.length;
+  const borderColor = `bg-color-point-${pointColors[colorIndex]}`;
 
   return (
-    <div className="bg-background-secondary rounded-xl flex items-center overflow-hidden">
-      <div className="w-2 h-full" style={{ backgroundColor: color }} />
-      <div className="flex-1 flex justify-between items-center px-4 py-3">
+    <div className="relative bg-background-secondary rounded-xl flex items-center overflow-hidden">
+      <div className={`absolute left-0 top-0 bottom-0 w-2 ${borderColor}`} />
+      <div className="flex-1 flex justify-between items-center px-4 py-3 ml-2">
         <span className="font-medium text-white">{title}</span>
         <div className="flex items-center bg-background-primary rounded-xl py-1 px-2">
           <StatusIcon className="size-4 mr-1" />
@@ -52,7 +65,7 @@ const TodoListCard = ({ todos }: TodoListCardProps) => {
         </button>
       </div>
       {todos.map((todo, index) => (
-        <TaskItem key={index} {...todo} />
+        <TaskItem key={index} {...todo} index={index} />
       ))}
     </div>
   );
