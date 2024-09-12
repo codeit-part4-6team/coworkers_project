@@ -1,11 +1,12 @@
 import { basicAuthAxios } from './basicAxios';
 
 // 할 일 리스트 생성
-export async function addTaskList(groupId: number, name: string) {
+export async function createTaskList(groupId: number, name: string) {
   const response = await basicAuthAxios.post(
     `groups/${groupId}/task-lists`,
     name,
   );
+
   return response;
 }
 
@@ -14,6 +15,7 @@ export async function getTaskList(groupId: number, taskListId: number) {
   const response = await basicAuthAxios.get(
     `groups/${groupId}/task-lists/${taskListId}`,
   );
+
   return response;
 }
 
