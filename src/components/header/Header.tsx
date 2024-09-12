@@ -173,7 +173,9 @@ const Header = () => {
                   : 'text-text-primary'
               }`}
             >
-              <Link href="/boards">자유게시판</Link>
+              <Link href="/boards" className="focus-visible:outline-none">
+                자유게시판
+              </Link>
             </li>
             <li
               onClick={() => handleItemClick('addteam')}
