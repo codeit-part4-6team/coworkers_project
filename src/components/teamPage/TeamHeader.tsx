@@ -34,7 +34,7 @@ const TeamHeader = ({ teamName }: TeamHeaderProps) => {
             onChange={handleTeamOptionChange}
             customButton={<Gear />}
             size="md"
-          />{' '}
+          />
         </div>
       </div>
     </div>
