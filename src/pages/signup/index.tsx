@@ -7,8 +7,11 @@ export default function Signup() {
     console.log('이벤트실행 테스트');
   };
 
-  const testerrer = ['에러0번테스트', '에러1번테스트'];
-  //^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$ 이메일 유효성 검사 패턴
+  const testerror = ['입력안함', '패턴틀린', '이상한거', '나오면안됨'];
+  const testerror2 = ['입력안함', '8자이하', '패턴틀림'];
+  const testerror3 = ['입력안함', '20자이상'];
+  const testerror4 = ['입력안함', '패스워드값 다름'];
+
   return (
     <div className="w-1/4 bg-color-point-cyan">
       <Button option="outlined" size="xsmall" text="테스트" disabled={false} />
@@ -17,12 +20,13 @@ export default function Signup() {
       {/* <FloatingButton option='success' text='할 일 추가' disabled={false} /> */}
       <Input
         labeltext="테스트"
-        pattern=''
-        option="password"
-        inputsize="large"
-        errortext={testerrer}
+        option="text"
+        // pattern='email'
+        inputSize="large"
+        // errorText={testerror}
         placeholder="미리보기"
-      ></Input>
+        // passwordCheck='123456'
+      />
     </div>
   );
 }
