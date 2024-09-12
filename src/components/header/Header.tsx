@@ -117,11 +117,9 @@ const Header = () => {
                 />
               </div>
             )}
-            <Link href="/boards">
-              <li className="hidden md:block text-lg text-text-primary font-medium">
-                자유게시판
-              </li>
-            </Link>
+            <li className="hidden md:block text-lg text-text-primary font-medium">
+              <Link href="/boards">자유게시판</Link>
+            </li>
           </ul>
         )}
       </div>
@@ -169,7 +167,7 @@ const Header = () => {
             ))}
             <li
               onClick={() => handleItemClick('boards')}
-              className={`text-md font-medium cursor-pointer ${
+              className={`text-md font-medium cursor-pointer focus:outline-none ${
                 selectedItem === 'boards'
                   ? 'text-color-brand-primary'
                   : 'text-text-primary'

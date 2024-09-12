@@ -52,9 +52,11 @@ const TeamDropdown = ({ options, onChange }: TeamDropdownProps) => {
       {isOpen && (
         <div className="absolute flex flex-col items-center top-[45px] right-5 lg:right-20 gap-2 w-[218px] bg-background-secondary rounded-[12px] p-4 z-50">
           {options.map((team) => (
-            <div className="flex items-center px-2 py-[7px] gap-9 border border-none rounded-[8px] hover:bg-background-tertiary">
+            <div
+              key={team.id}
+              className="flex items-center px-2 py-[7px] gap-9 border border-none rounded-[8px] hover:bg-background-tertiary"
+            >
               <div
-                key={team.id}
                 className="flex items-center cursor-pointer"
                 onClick={() => handleTeamSelect(team)}
               >
