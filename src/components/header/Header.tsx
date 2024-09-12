@@ -167,18 +167,26 @@ const Header = () => {
                 {group.name}
               </li>
             ))}
-            <Link href="/boards">
-              <li
-                onClick={() => handleItemClick('boards')}
-                className={`text-md font-medium cursor-pointer ${
-                  selectedItem === 'boards'
-                    ? 'text-color-brand-primary'
-                    : 'text-text-primary'
-                }`}
-              >
-                자유게시판
-              </li>
-            </Link>
+            <li
+              onClick={() => handleItemClick('boards')}
+              className={`text-md font-medium cursor-pointer ${
+                selectedItem === 'boards'
+                  ? 'text-color-brand-primary'
+                  : 'text-text-primary'
+              }`}
+            >
+              <Link href="/boards">자유게시판</Link>
+            </li>
+            <li
+              onClick={() => handleItemClick('addteam')}
+              className={`text-md font-medium cursor-pointer ${
+                selectedItem === 'addteam'
+                  ? 'text-color-brand-primary'
+                  : 'text-text-primary'
+              }`}
+            >
+              <Link href="/addteam">팀 추가하기</Link>
+            </li>
           </ul>
         </div>
         <div
