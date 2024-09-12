@@ -12,7 +12,7 @@ interface DropdownProps {
   onChange: (selectedOption: DropdownOption) => void;
   placeholder?: string;
   customButton?: ReactNode;
-  size?: 'sm' | 'md' | 'full';
+  size?: 'sm' | 'md';
   className?: string;
 }
 
@@ -21,7 +21,7 @@ const Dropdown = ({
   onChange,
   placeholder,
   customButton,
-  size = 'md',
+  size,
   className,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,28 +38,30 @@ const Dropdown = ({
   const displayText = selectedOption?.label || placeholder || options[0]?.label;
 
   const buttonClasses = clsx(
-    'inline-flex justify-between items-center font-regular text-text-primary focus:outline-none',
-    isOpen && 'bg-background-tertiary',
-    !isOpen && 'bg-background-secondary',
-    size === 'sm' && 'w-[94px] h-10 p-2 rounded-lg text-xs',
-    size === 'md' && 'w-[120px] h-11 p-[10px_14px] rounded-xl text-md',
-    size === 'full' && 'w-full h-11 p-[10px_14px] rounded-xl text-md',
+    'inline-flex justify-between items-center font-regular focus:outline-none',
+    isOpen ? 'bg-background-tertiary' : 'bg-background-secondary',
+    {
+      'w-[94px] h-10 p-2 rounded-lg text-text-primary text-xs': size === 'sm',
+      'w-[120px] h-11 p-[10px_14px] rounded-xl text-text-primary text-md':
+        size === 'md',
+      'w-[109px] h-11 p-[8px_10px] rounded-xl text-text-default text-md bg-[#18212F]':
+        !size && placeholder,
+    },
   );
 
   const optionClasses = clsx(
-    'block w-full px-4 py-2 text-sm text-text-primary hover:bg-background-tertiary focus:outline-none',
-    size === 'sm' ? 'text-xs' : 'text-md',
-    customButton ? 'text-center' : 'text-left',
+    'block w-full px-4 py-2 text-text-primary hover:bg-background-tertiary focus:outline-none',
+    {
+      'text-xs': !customButton && size === 'sm',
+      'text-md': !customButton && size !== 'sm',
+      'text-center text-lg': customButton && size === 'md',
+      'text-center text-md': customButton && size === 'sm',
+      'text-left': !customButton,
+    },
   );
 
   return (
-    <div
-      className={clsx(
-        'relative inline-block text-left',
-        size === 'full' && 'w-full',
-        className,
-      )}
-    >
+    <div className={clsx('relative inline-block text-left', className)}>
       {customButton ? (
         <div onClick={() => setIsOpen(!isOpen)} className="text-center">
           {customButton}
@@ -78,8 +80,13 @@ const Dropdown = ({
       {isOpen && (
         <div
           className={clsx(
-            'absolute right-0 mt-2 w-full shadow-sm bg-background-secondary overflow-hidden',
-            size === 'sm' ? 'rounded-lg' : 'rounded-xl',
+            'absolute right-0 mt-2 rounded-lg shadow-sm bg-background-secondary overflow-hidden',
+            'border border-border-primary-50',
+            {
+              'w-[135px]': customButton && size === 'md',
+              'w-[120px]': customButton && size === 'sm',
+              'w-full': !customButton,
+            },
           )}
         >
           <div className="py-1">

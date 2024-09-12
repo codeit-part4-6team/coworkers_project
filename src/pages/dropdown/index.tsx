@@ -1,4 +1,5 @@
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
+import Kebab from '@/assets/kebab.svg';
 
 export default function Home() {
   const options = [
@@ -17,9 +18,20 @@ export default function Home() {
     { label: '로그아웃', value: 'logout' },
   ];
 
+  const kebabOptions = [
+    { label: '수정하기', value: 'edit' },
+    { label: '삭제하기', value: 'delete' },
+  ];
+
   const handleProfileOptionChange = (option: DropdownOption) => {
     console.log('Selected option:', option);
   };
+
+  const kebabButton = (
+    <div className="p-2 rounded-full">
+      <Kebab className="w-5 h-5 text-icon-primary" />
+    </div>
+  );
 
   return (
     <div className="flex gap-3 items-start">
@@ -27,11 +39,13 @@ export default function Home() {
         <Dropdown options={options} onChange={handleChange} size="md" />
       </div>
       <div>
+        <Dropdown options={options} onChange={handleChange} size="sm" />
+      </div>
+      <div>
         <Dropdown
           options={options}
           onChange={handleChange}
           placeholder="반복 안함"
-          size="sm"
         />
       </div>
       <div className="w-32">
@@ -39,7 +53,15 @@ export default function Home() {
           options={profileOptions}
           onChange={handleProfileOptionChange}
           customButton={<ProfileButton />}
-          size="full"
+          size="md"
+        />
+      </div>
+      <div className="w-32">
+        <Dropdown
+          options={kebabOptions}
+          onChange={handleChange}
+          customButton={kebabButton}
+          size="sm"
         />
       </div>
     </div>
