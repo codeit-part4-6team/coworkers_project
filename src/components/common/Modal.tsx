@@ -1,12 +1,20 @@
 import { useEffect, useRef, ReactNode } from 'react';
 import useModalStore from '@/store/modalStore';
+import clsx from 'clsx';
 
 interface Props extends React.DialogHTMLAttributes<HTMLDialogElement> {
   children: ReactNode;
   id: string;
+  positionBottom?: boolean;
 }
 
-export default function Modal({ children, id, ...rest }: Props) {
+export default function Modal({
+  children,
+  id,
+  positionBottom,
+  className,
+  ...rest
+}: Props) {
   const { modals, openModal, closeModal } = useModalStore();
   const isOpen = modals[id] || false;
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -44,7 +52,15 @@ export default function Modal({ children, id, ...rest }: Props) {
   }, [id, openModal, closeModal]);
 
   return (
-    <dialog {...rest} ref={dialogRef}>
+    <dialog
+      {...rest}
+      ref={dialogRef}
+      className={clsx(
+        positionBottom
+          ? `mb-0 md:mb-auto w-full max-w-full rounded-t-3xl ${className}`
+          : `${className}`,
+      )}
+    >
       {children}
     </dialog>
   );
@@ -72,3 +88,6 @@ export default function Modal({ children, id, ...rest }: Props) {
 //     </div>
 //   );
 // }
+
+// 모바일에서 모달이 화면 아래 붙게 하려면 positionBottom을 true로 추가
+// <Modal positionBottom={true}>내용</Modal>;
