@@ -76,7 +76,12 @@ const TodoListCard = ({ todos }: TodoListCardProps) => {
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-medium">할 일 목록 ({todos.length}개)</h2>
+        <h2 className="text-lg font-medium">
+          할 일 목록
+          <span className="text-text-default font-regular ml-2">
+            ({todos.length}개)
+          </span>
+        </h2>
         <button className="text-color-brand-primary text-sm font-medium">
           + 새로운 목록 추가하기
         </button>

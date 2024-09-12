@@ -62,7 +62,7 @@ const ReportCard = ({ totalTasks, completedTasks }: ReportCardProps) => {
 
   return (
     <>
-      <h2 className="text-lg font-semibold mt-6 mb-4">리포트</h2>
+      <h2 className="text-lg font-medium mt-6 mb-4">리포트</h2>
       <div className="bg-background-secondary rounded-lg p-6">
         <div className="flex items-center space-x-6">
           <DonutChart
