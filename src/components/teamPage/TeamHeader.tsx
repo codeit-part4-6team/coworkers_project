@@ -10,8 +10,10 @@ const TeamHeader = ({ teamName }: TeamHeaderProps) => {
     <div
       className="px-6 py-5 bg-background-secondary rounded-xl shadow-md border border-border-primary-10 mb-6 mt-2"
       style={{
-        backgroundImage: `url(${thumbnail})`,
-        backgroundPosition: 'center',
+        backgroundImage: `url(${thumbnail.src})`,
+        backgroundPosition: 'center right 80px',
+        backgroundSize: 'auto 100%',
+        backgroundRepeat: 'no-repeat',
       }}
     >
       <div className="relative z-10">
