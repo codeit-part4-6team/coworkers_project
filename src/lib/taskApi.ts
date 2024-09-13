@@ -8,14 +8,16 @@ export const createTask = (
   data: TaskCreateRequestBody,
 ) => {
   return basicAuthAxios.post(
-    `groups/${groupId}/task-lists/${taskListId}/tasks`,
+    `/groups/${groupId}/task-lists/${taskListId}/tasks`,
     data,
   );
 };
 
 // 특정 할 일 리스트의 할 일들 불러오기
 export const getTasks = (groupId: number, taskListId: number) => {
-  return basicAuthAxios.get(`groups/${groupId}/task-lists/${taskListId}/tasks`);
+  return basicAuthAxios.get(
+    `/groups/${groupId}/task-lists/${taskListId}/tasks`,
+  );
 };
 
 // 특정 할 일 불러오기
@@ -25,7 +27,7 @@ export const getTaskDetail = (
   taskId: number,
 ) => {
   return basicAuthAxios.get(
-    `groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
+    `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
   );
 };
 
@@ -37,7 +39,7 @@ export const editTaskDetail = (
   data: TaskEditRequestBody,
 ) => {
   return basicAuthAxios.patch(
-    `groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
+    `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
     data,
   );
 };
@@ -49,7 +51,7 @@ export const deleteTaskDetail = (
   taskId: number,
 ) => {
   return basicAuthAxios.delete(
-    `groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
+    `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
   );
 };
 
@@ -61,7 +63,7 @@ export const orderTaskDetail = (
   displayIndex: number,
 ) => {
   return basicAuthAxios.patch(
-    `groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}/order`,
+    `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}/order`,
     displayIndex,
   );
 };
@@ -73,7 +75,7 @@ export const createRecurringTask = (
   data: TaskCreateRequestBody,
 ) => {
   return basicAuthAxios.post(
-    `groups/${groupId}/task-lists/${taskListId}/recurring`,
+    `/groups/${groupId}/task-lists/${taskListId}/recurring`,
     data,
   );
 };
@@ -86,6 +88,6 @@ export const deleteRecurringTask = (
   recurringId: number,
 ) => {
   return basicAuthAxios.delete(
-    `groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}/recurring/${recurringId}`,
+    `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}/recurring/${recurringId}`,
   );
 };
