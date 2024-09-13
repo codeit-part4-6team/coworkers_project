@@ -128,14 +128,14 @@ export default function Input({
   return (
     <div
       className={clsx(
-        inputSize === 'large' && `w-[460px] h-[79px]`,
-        inputSize === 'small' && `w-[343px] h-[44px]`,
+        inputSize === 'large' && `w-full h-[79px]`,
+        inputSize === 'small' && `w-full h-[44px]`,
       )}
     >
       <p className={`mb-4 text-text-primary text-lg font-medium`}>
         {labeltext}
       </p>
-      <div className={`relative w-fit`}>
+      <div className={`relative`}>
         <input
           ref={rest.ref}
           type={inputType}
@@ -146,6 +146,7 @@ export default function Input({
             optionClassName,
             sizeClassName,
             isInvalid && inputErrorClassName,
+            `w-full`
           )}
           onChange={handleChange}
           onBlur={pattern ? handleBlur : undefined}
