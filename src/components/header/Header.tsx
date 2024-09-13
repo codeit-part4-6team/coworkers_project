@@ -3,13 +3,14 @@ import Logo from '@/assets/logo.svg';
 import User from '@/assets/user.svg';
 import Menu from '@/assets/menu.svg';
 import { useQuery } from '@tanstack/react-query';
-import basicApi from '@/lib/basicAxios';
+import { basicAxios } from '@/lib/basicAxios';
 import { useState, useEffect } from 'react';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
-import { Group } from '@/type/usergroup';
+import { Group } from '@/types/usergroup';
 import Modal from '@/components/common/Modal';
 import useModalStore from '@/store/modalStore';
 import Cancel from '@/assets/x_icon.svg';
+import TeamDropdown from './TeamDropdown';
 
 const getAuthToken = () => {
   const token = localStorage.getItem('accessToken');
@@ -23,7 +24,7 @@ const fetchData = async (endpoint: string) => {
   try {
     const token = getAuthToken();
 
-    const response = await basicApi.get(endpoint, {
+    const response = await basicAxios.get(endpoint, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -48,7 +49,8 @@ const fetchUserData = async () => {
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [selectedTeam, setSelectedTeam] = useState<DropdownOption | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<Group | null>(null);
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const { openModal, closeModal } = useModalStore();
 
@@ -77,75 +79,117 @@ const Header = () => {
     openModal('sideMenu');
   };
 
-  const handleTeamChange = (selectedOption: DropdownOption) => {
-    setSelectedTeam(selectedOption);
+  const handleTeamChange = (team: Group) => {
+    setSelectedTeam(team);
   };
 
-  const teamOptions: DropdownOption[] = userGroups.map((group: Group) => ({
-    label: group.name,
-    value: group.id.toString(),
+  const handleItemClick = (item: string) => {
+    setSelectedItem(item);
+  };
+
+  const teamOptions = userGroups.map((group: Group) => ({
+    ...group,
   }));
 
-  const placeholderText = selectedTeam
-    ? selectedTeam.label
-    : teamOptions[0]?.label;
+  const userOptions: DropdownOption[] = [
+    { label: '마이 히스토리', value: 'myHistory' },
+    { label: '계정 설정', value: 'accountSettings' },
+    { label: '팀 참여', value: 'joinTeam' },
+    { label: '로그아웃', value: 'logout' },
+  ];
 
   return (
-    <div className="bg-background-secondary flex justify-between items-center px-[24px] lg:px-[350px] border-border-primary-10">
-      <div className="my-[14px] flex items-center gap-[40px]">
-        <div className="flex items-center gap-[16px]">
+    <div className="bg-background-secondary h-[60px] flex justify-between items-center px-6 lg:px-[350px] border-b border-border-primary-10">
+      <div className="my-[14px] flex items-center gap-10">
+        <div className="flex items-center gap-4">
           {isLogin && <Menu className="md:hidden" onClick={handleMenuClick} />}
           <Link href="/">
-            <Logo />
+            <Logo className="lg:w-[158px] lg:h-8" />
           </Link>
         </div>
         {isLogin && (
-          <ul className="flex items-center gap-[40px]">
+          <ul className="flex items-center gap-10">
             {teamOptions.length > 0 && (
-              <Dropdown
-                options={teamOptions}
-                onChange={handleTeamChange}
-                placeholder={placeholderText}
-                size="md"
-                className="hidden md:block"
-              />
+              <div className="hidden md:block">
+                <TeamDropdown
+                  options={teamOptions}
+                  onChange={handleTeamChange}
+                />
+              </div>
             )}
-            <Link href="/boards">
-              <li className="hidden md:block text-lg text-text-primary font-medium">
-                자유게시판
-              </li>
-            </Link>
+            <li className="hidden md:block text-lg text-text-primary font-medium">
+              <Link href="/boards">자유게시판</Link>
+            </li>
           </ul>
         )}
       </div>
       {isLogin && (
-        <div className="flex items-center gap-[8px]">
-          <User className="md:w-[16px] md:h-[16px]" />
-          <p className="hidden lg:block text-text-primary text-md font-medium">
-            {userData?.nickname}
-          </p>
+        <div className="w-[135px] flex justify-end">
+          <Dropdown
+            options={userOptions}
+            onChange={(option) => {
+              if (option.value === 'logout') {
+                localStorage.removeItem('accessToken');
+                setIsLoggedIn(false);
+              }
+            }}
+            customButton={
+              <div className="flex justify-end gap-2 items-center cursor-pointer">
+                <User className="md:w-4 md:h-4" />
+                <p className="hidden lg:block text-text-primary text-md font-medium">
+                  {userData?.nickname}
+                </p>
+              </div>
+            }
+            size="sm"
+          />
         </div>
       )}
 
       <Modal id="sideMenu" className="fixed inset-0">
-        <div className="fixed top-0 left-0 w-1/2 h-full bg-background-secondary p-[16px] z-50">
+        <div className="fixed top-0 left-0 w-1/2 h-full bg-background-secondary p-4 z-50">
           <div className="flex justify-end">
             <Cancel onClick={() => closeModal('sideMenu')} />
           </div>
-          <ul className="flex flex-col gap-[24px] mt-[35px]">
+          <ul className="flex flex-col gap-6 mt-[35px]">
             {userGroups.map((group) => (
               <li
                 key={group.id}
-                className="text-text-primary text-md font-medium"
+                onClick={() => handleItemClick(String(group.id))}
+                className={`text-md font-medium cursor-pointer ${
+                  selectedItem === String(group.id)
+                    ? 'text-color-brand-primary'
+                    : 'text-text-primary'
+                }`}
               >
-                {group.name}
+                <Link
+                  href={`/group/${group.id}`}
+                  className="focus-visible:outline-none focus:outline-none"
+                >
+                  {group.name}
+                </Link>
               </li>
             ))}
-            <Link href="/boards">
-              <li className="text-text-primary text-md font-medium">
-                자유게시판
-              </li>
-            </Link>
+            <li
+              onClick={() => handleItemClick('boards')}
+              className={`text-md font-medium cursor-pointer focus-visible:outline-none ${
+                selectedItem === 'boards'
+                  ? 'text-color-brand-primary'
+                  : 'text-text-primary'
+              }`}
+            >
+              <Link href="/boards">자유게시판</Link>
+            </li>
+            <li
+              onClick={() => handleItemClick('addteam')}
+              className={`text-md font-medium cursor-pointer ${
+                selectedItem === 'addteam'
+                  ? 'text-color-brand-primary'
+                  : 'text-text-primary'
+              }`}
+            >
+              <Link href="/addteam">팀 추가하기</Link>
+            </li>
           </ul>
         </div>
         <div
