@@ -19,8 +19,8 @@ const CoworkersMobileUI: React.FC = () => {
       total: 5,
       completed: true,
     },
-    { title: '정기 주총', progress: 3, total: 5 },
-    { title: '법인 설립', progress: 3, total: 5 },
+    { title: '정기 주총', progress: 2, total: 5 },
+    { title: '법인 설립', progress: 1, total: 5 },
   ];
 
   return (

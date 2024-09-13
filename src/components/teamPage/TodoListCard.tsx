@@ -1,4 +1,3 @@
-import Ongoing from '@/assets/state_ongoing.svg';
 import Done from '@/assets/state_done.svg';
 import Kebab from '@/assets/kebab.svg';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
@@ -24,6 +23,45 @@ const pointColors = [
   'yellow',
 ];
 
+const ProgressChart = ({
+  progress,
+  size = 12,
+  strokeWidth = 2,
+}: {
+  progress: number;
+  size?: number;
+  strokeWidth?: number;
+}) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (progress / 100) * circumference;
+
+  return (
+    <svg width={size} height={size} className="transform -rotate-90">
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        strokeWidth={strokeWidth}
+        fill="white"
+        className="text-background-tertiary"
+        stroke="currentColor"
+      />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        strokeWidth={strokeWidth}
+        fill="transparent"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        strokeLinecap="round"
+        className="stroke-color-brand-primary"
+      />
+    </svg>
+  );
+};
+
 const TaskItem = ({
   title,
   progress,
@@ -31,7 +69,6 @@ const TaskItem = ({
   completed = false,
   index,
 }: TaskItemProps) => {
-  const StatusIcon = completed ? Done : Ongoing;
   const colorIndex = index % pointColors.length;
   const borderColor = `bg-color-point-${pointColors[colorIndex]}`;
 
@@ -44,6 +81,8 @@ const TaskItem = ({
     console.log('Selected option:', selectedOption);
   };
 
+  const progressPercentage = Math.round((progress / total) * 100);
+
   return (
     <div className="relative bg-background-secondary rounded-xl flex items-center overflow-hidden">
       <div className={`absolute left-0 top-0 bottom-0 w-3 ${borderColor}`} />
@@ -51,8 +90,14 @@ const TaskItem = ({
         <span className="font-medium text-white">{title}</span>
         <div className="flex items-center">
           <div className="flex items-center bg-background-primary rounded-xl py-1 px-2 mr-1">
-            <StatusIcon className="size-4 mr-1" />
-            <span className="text-sm text-color-brand-primary">
+            {completed ? (
+              <Done className="size-4" />
+            ) : (
+              <div className="size-4 flex items-center">
+                <ProgressChart progress={progressPercentage} />
+              </div>
+            )}
+            <span className="text-sm w-5 text-color-brand-primary ml-2">
               {progress}/{total}
             </span>
           </div>
