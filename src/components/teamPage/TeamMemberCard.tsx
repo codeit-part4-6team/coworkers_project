@@ -13,7 +13,6 @@ interface MemberItemProps {
 
 const MemberItem = ({ name, email }: MemberItemProps) => {
   const kebabOptions = [
-    { label: '수정하기', value: 'edit' },
     { label: '삭제하기', value: 'delete' },
   ];
 
