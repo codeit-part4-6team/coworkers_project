@@ -4,24 +4,30 @@ import VisbilityIcon from '@/assets/password_visbility_on.svg';
 import UnVisbilityIcon from '@/assets/password_visbility_off.svg';
 import { useState } from 'react';
 
+const validPatterns = {
+  email: /^[\w\.-]+@([\w-]+\.)+[a-zA-Z]{2,}$/,
+};
+
 export default function Input({
   labeltext,
   option,
-  inputsize,
-  errortext,
+  inputSize,
+  errorText,
   placeholder,
-  pattern = undefined,
+  pattern,
+  passwordCheck,
   ...rest
-}: InputProp) {
-  const [inputType, setInputType] = useState<string>(option); 
-  const [isVisible, setIsVisible] = useState<boolean>(false); 
+}: InputProp & { ref?: React.Ref<HTMLInputElement> }) {
+  const [inputType, setInputType] = useState<string>(option);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
   const [isEmpty, setIsEmpty] = useState<boolean>(true);
+  const [isTouched, setIsTouched] = useState<boolean>(false);
   const [value, setValue] = useState<string>('');
 
   const defaultClassName = `rounded-[12px] p-4 placeholder-text-default 
                             bg-background-secondary text-text-primary font-regular
-                            border-solid border-[1px] outlien outline-none`;
+                            border-solid border-[1px] outline-none`;
 
   const optionClassName = ` border-border-primary-10
                 hover:border-interaction-hover
@@ -29,55 +35,121 @@ export default function Input({
                 disabled:border-interacion-inactive disabled:cursor-not-allowed`;
 
   const sizeClassName = clsx(
-    inputsize === 'large' && 'text-lg',
-    inputsize === 'small' && 'text-md',
+    inputSize === 'large' && 'text-lg',
+    inputSize === 'small' && 'text-md',
   );
 
+  const inputErrorClassName = `border-status-danger`;
+
   const visibilityCheckEvent = () => {
-    setIsVisible(!isVisible); // 가시성 상태를 토글
-    setInputType(isVisible ? 'password' : 'text'); // 상태에 따라 input type을 변경
+    setIsVisible(!isVisible);
+    setInputType(isVisible ? 'password' : 'text');
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    setValue(newValue); 
-    setIsEmpty(newValue.trim() === ''); // 빈 입력 체크
+    setValue(event.target.value);
+    setIsEmpty(event.target.value.trim() === '');
+    setIsTouched(true);
+  };
+
+  const validatePassword = (password: string) => {
+    const isTooShort = password.length < 8;
+    const hasMixedCharacters = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*])/.test(
+      password,
+    );
+
+    return {
+      isTooShort,
+      ishasMixedCharacters: !hasMixedCharacters,
+    };
   };
 
   const handleBlur = () => {
-    if (inputPattern) {
-      if (isEmpty) {
-        setIsInvalid(false); // 빈 입력일 경우 유효성 검사를 하지 않음
-      } else {
-        setIsInvalid(!inputPattern.test(value));
+    if (isTouched) {
+      if (option === 'password') {
+        if (pattern === 'password') {
+          const { isTooShort, ishasMixedCharacters } = validatePassword(value);
+
+          // 우선순위에 따라 에러를 체크
+          if (isEmpty || isTooShort || ishasMixedCharacters) {
+            setIsInvalid(true);
+          } else {
+            setIsInvalid(false);
+          }
+        } else if (pattern === 'passwordCheck') {
+          const samePasswrod = !(value === passwordCheck);
+          setIsInvalid(samePasswrod);
+        }
+      } else if (option === 'text') {
+        if (pattern === 'email') {
+          const regex = validPatterns[pattern];
+          const isPatternInvalid = regex ? !regex.test(value) : false;
+          setIsInvalid(isPatternInvalid);
+        } else if (pattern === 'nickName') {
+          const isTooLong = value.length > 20;
+          setIsInvalid(isTooLong);
+        }
       }
-    } else {
-      setIsInvalid(false); // 패턴이 없을 경우 유효성 검사 필요 없음
     }
   };
 
   const iconClassName = `absolute right-4 top-1/2 transform -translate-y-1/2`;
-  const inputPattern = pattern ? new RegExp(pattern) : undefined;
 
-  //주석
+  const inputErrorMessage = () => {
+    {
+      if (errorText != undefined) {
+        if (isTouched && isEmpty) {
+          return <p>{errorText[0]}</p>;
+        }
+
+        if (isTouched && isInvalid) {
+          if (option === 'password' && pattern === 'passwordCheck') {
+            return <p>{errorText[1]}</p>;
+          } 
+          else if (pattern === 'password') {
+            const { isTooShort, ishasMixedCharacters } =
+              validatePassword(value);
+
+            if (isTooShort) return <p>{errorText[1]}</p>;
+            if (ishasMixedCharacters) return <p>{errorText[2]}</p>;
+          } 
+          else if (option === 'text' && pattern === 'email') {
+            return <p>{errorText[1]}</p>;
+          } 
+          else if (option === 'text' && pattern === 'nickName') {
+            return <p>{errorText[1]}</p>;
+          }
+        }
+        return null;
+      }
+    }
+  };
+
   return (
     <div
       className={clsx(
-        inputsize === 'large' && `w-[460px] h-[79px]`,
-        inputsize === 'small' && `w-[343px] h-[44px]`,
+        inputSize === 'large' && `w-full h-[79px]`,
+        inputSize === 'small' && `w-full h-[44px]`,
       )}
     >
-      <p className={`mb-4 text-text-primary text-lg font-mediumh`}>
+      <p className={`mb-4 text-text-primary text-lg font-medium`}>
         {labeltext}
       </p>
-      <div className={`relative w-fit`}>
+      <div className={`relative`}>
         <input
+          ref={rest.ref}
           type={inputType}
           placeholder={placeholder}
-          pattern={inputPattern ? pattern : undefined}
-          className={clsx(defaultClassName, optionClassName, sizeClassName, isEmpty && 'border-status-danger', isInvalid && 'border-status-danger')}
+          pattern={pattern}
+          className={clsx(
+            defaultClassName,
+            optionClassName,
+            sizeClassName,
+            isInvalid && inputErrorClassName,
+            `w-full`
+          )}
           onChange={handleChange}
-          onBlur={handleBlur}
+          onBlur={pattern ? handleBlur : undefined}
         />
         {option === 'password' &&
           (isVisible ? (
@@ -92,16 +164,7 @@ export default function Input({
             />
           ))}
       </div>
-      {isEmpty && (
-        <p className="text-red-500 mt-2">
-          {errortext[0]} 
-        </p>
-      )}
-      {isInvalid && !isEmpty && (
-        <p className="text-red-500 mt-2">
-          {errortext[1]} 
-        </p>
-      )}
+      <div className="text-status-danger">{inputErrorMessage()}</div>
     </div>
   );
 }
