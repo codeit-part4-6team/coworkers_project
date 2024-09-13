@@ -162,20 +162,23 @@ const Header = () => {
                     : 'text-text-primary'
                 }`}
               >
-                {group.name}
+                <Link
+                  href={`/group/${group.id}`}
+                  className="focus-visible:outline-none focus:outline-none"
+                >
+                  {group.name}
+                </Link>
               </li>
             ))}
             <li
               onClick={() => handleItemClick('boards')}
-              className={`text-md font-medium cursor-pointer focus:outline-none ${
+              className={`text-md font-medium cursor-pointer focus-visible:outline-none ${
                 selectedItem === 'boards'
                   ? 'text-color-brand-primary'
                   : 'text-text-primary'
               }`}
             >
-              <Link href="/boards" className="focus-visible:outline-none">
-                자유게시판
-              </Link>
+              <Link href="/boards">자유게시판</Link>
             </li>
             <li
               onClick={() => handleItemClick('addteam')}

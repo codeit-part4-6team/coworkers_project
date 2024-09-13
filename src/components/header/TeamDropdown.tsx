@@ -5,6 +5,7 @@ import Kebab from '@/assets/kebab.svg';
 import Plus from '@/assets/plus_icon.svg';
 import Link from 'next/link';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
+import { useRouter } from 'next/router';
 
 interface TeamDropdownProps {
   options: Group[];
@@ -15,6 +16,7 @@ const TeamDropdown = ({ options, onChange }: TeamDropdownProps) => {
   const initialTeam = options.length > 0 ? options[0] : null;
   const [selectedTeam, setSelectedTeam] = useState<Group | null>(initialTeam);
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const kebabOptions: DropdownOption[] = [
     { label: '수정하기', value: 'edit' },
@@ -35,6 +37,7 @@ const TeamDropdown = ({ options, onChange }: TeamDropdownProps) => {
     setSelectedTeam(team);
     onChange(team);
     setIsOpen(false);
+    router.push(`/group/${team.id}`);
   };
 
   return (
@@ -56,19 +59,24 @@ const TeamDropdown = ({ options, onChange }: TeamDropdownProps) => {
               key={team.id}
               className="flex items-center px-2 py-[7px] gap-9 border border-none rounded-[8px] hover:bg-background-tertiary"
             >
-              <div
-                className="flex items-center cursor-pointer"
+              <button
                 onClick={() => handleTeamSelect(team)}
+                className="flex items-center cursor-pointer"
               >
-                <img
-                  src={team.image}
-                  alt={team.name}
-                  className="w-8 h-8 border border-none rounded-[6px] mr-3"
-                />
-                <span className="text-text-primary text-lg font-medium">
-                  {team.name}
-                </span>
-              </div>
+                <div
+                  className="flex items-center cursor-pointer"
+                  onClick={() => handleTeamSelect(team)}
+                >
+                  <img
+                    src={team.image}
+                    alt={team.name}
+                    className="w-8 h-8 border border-none rounded-[6px] mr-3"
+                  />
+                  <span className="text-text-primary text-lg font-medium">
+                    {team.name}
+                  </span>
+                </div>
+              </button>
               <div className="flex">
                 <Dropdown
                   options={kebabOptions}
