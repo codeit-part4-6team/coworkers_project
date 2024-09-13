@@ -18,7 +18,7 @@ export default function WorkToDoDetail() {
   };
 
   return (
-    <div className="fixed top-[60px] right-0 z-10 p-4 md:p-6 lg:p-10 w-[100%] md:w-[434px] lg:w-[780px] h-svh md:border-l-[1px] md:border-solid md:border-border-primary-10 bg-background-secondary">
+    <div className="fixed top-[60px] right-0 z-10 p-4 md:p-6 lg:p-10 w-full md:w-[434px] lg:w-[780px] h-svh md:border-l md:border-solid md:border-border-primary-10 bg-background-secondary antialiased">
       <button type="button" className="mb-4">
         <XIcon />
       </button>
