@@ -12,21 +12,26 @@ export default function Signup() {
   const testerror3 = ['입력안함', '20자이상'];
   const testerror4 = ['입력안함', '패스워드값 다름'];
 
+  //테스트용
+  // <div className="w-1/4 bg-color-point-cyan">
+  //     <Button option="outlined" size="xsmall" text="테스트" disabled={false} />
+  //     <FloatingButton option="cancel" text="할 일 추가" disabled={false} />
+  //     {/* <FloatingButton option='add' text='할 일 추가' disabled={false} onClick={testEvent}/> */}
+  //     {/* <FloatingButton option='success' text='할 일 추가' disabled={false} /> */}
+  //     <Input
+  //       labeltext="테스트"
+  //       option="text"
+  //       // pattern='email'
+  //       inputSize="large"
+  //       // errorText={testerror}
+  //       placeholder="미리보기"
+  //       // passwordCheck='123456'
+  //     />
+  //   </div>
+
   return (
-    <div className="w-1/4 bg-color-point-cyan">
-      <Button option="outlined" size="xsmall" text="테스트" disabled={false} />
-      <FloatingButton option="cancel" text="할 일 추가" disabled={false} />
-      {/* <FloatingButton option='add' text='할 일 추가' disabled={false} onClick={testEvent}/> */}
-      {/* <FloatingButton option='success' text='할 일 추가' disabled={false} /> */}
-      <Input
-        labeltext="테스트"
-        option="text"
-        // pattern='email'
-        inputSize="large"
-        // errorText={testerror}
-        placeholder="미리보기"
-        // passwordCheck='123456'
-      />
+    <div>
+      
     </div>
   );
 }
