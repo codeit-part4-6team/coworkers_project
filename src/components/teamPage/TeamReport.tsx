@@ -62,7 +62,7 @@ const ReportCard = ({ totalTasks, completedTasks }: ReportCardProps) => {
 
   return (
     <>
-      <h2 className="text-lg font-medium mt-6 mb-4">리포트</h2>
+      <div className="text-lg font-medium mt-6 mb-4">리포트</div>
       <div className="bg-background-secondary rounded-lg p-6">
         <div className="flex items-center space-x-6">
           <DonutChart
@@ -70,24 +70,26 @@ const ReportCard = ({ totalTasks, completedTasks }: ReportCardProps) => {
             progress={completionPercentage}
             strokeWidth={24}
           />
-          <div className="flex-1 space-y-4">
-            <div className="bg-background-tertiary rounded-lg p-4 flex justify-between items-center">
-              <div>
-                <p className="text-xs text-text-secondary pb-1">오늘의 할 일</p>
-                <p className="text-2xl font-bold text-color-brand-tertiary">
-                  {totalTasks}개
-                </p>
+          <div className="flex-1 w-full">
+            <div className="flex flex-col space-y-4 items-end">
+              <div className="bg-background-tertiary rounded-lg p-4 flex justify-between items-center w-full max-w-[400px]">
+                <div>
+                  <p className="text-xs text-text-secondary pb-1">오늘의 할 일</p>
+                  <p className="text-2xl font-bold text-color-brand-tertiary">
+                    {totalTasks}개
+                  </p>
+                </div>
+                <Todo className="size-10 flex-shrink-0" />
               </div>
-              <Todo className="size-10" />
-            </div>
-            <div className="bg-background-tertiary rounded-lg p-4 flex justify-between items-center">
-              <div>
-                <p className="text-xs text-text-secondary pb-1">한 일</p>
-                <p className="text-2xl font-bold text-color-brand-tertiary">
-                  {completedTasks}개
-                </p>
+              <div className="bg-background-tertiary rounded-lg p-4 flex justify-between items-center w-full max-w-[400px]">
+                <div>
+                  <p className="text-xs text-text-secondary pb-1">한 일</p>
+                  <p className="text-2xl font-bold text-color-brand-tertiary">
+                    {completedTasks}개
+                  </p>
+                </div>
+                <Done className="size-10 flex-shrink-0" />
               </div>
-              <Done className="size-10" />
             </div>
           </div>
         </div>

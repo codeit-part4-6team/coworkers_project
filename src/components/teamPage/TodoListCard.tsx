@@ -71,6 +71,8 @@ const TaskItem = ({
 }: TaskItemProps) => {
   const colorIndex = index % pointColors.length;
   const borderColor = `bg-color-point-${pointColors[colorIndex]}`;
+  console.log(`Task "${title}" - Border Color: ${borderColor}`);
+
 
   const kebabOptions = [
     { label: '수정하기', value: 'edit' },
