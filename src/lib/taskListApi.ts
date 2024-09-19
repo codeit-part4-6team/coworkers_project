@@ -1,57 +1,40 @@
 import { basicAuthAxios } from './basicAxios';
 
 // 할 일 리스트 생성
-export async function createTaskList(groupId: number, name: string) {
-  const response = await basicAuthAxios.post(
-    `groups/${groupId}/task-lists`,
-    name,
-  );
+export const createTaskList = (groupId: number, name: string) => {
+  return basicAuthAxios.post(`/groups/${groupId}/task-lists`, name);
+};
 
-  return response;
-}
+// 특정 할 일 리스트 불러오기
+export const getTaskListDetail = (groupId: number, taskListId: number) => {
+  return basicAuthAxios.get(`/groups/${groupId}/task-lists/${taskListId}`);
+};
 
-// 할 일 특정 리스트 불러오기
-export async function getTaskList(groupId: number, taskListId: number) {
-  const response = await basicAuthAxios.get(
-    `groups/${groupId}/task-lists/${taskListId}`,
-  );
-
-  return response;
-}
-
-// 할 일 특정 리스트 수정
-export async function editTaskList(
+// 특정 할 일 리스트 수정
+export const editTaskListDetail = (
   groupId: number,
   taskListId: number,
   name: string,
-) {
-  const response = await basicAuthAxios.patch(
-    `groups/${groupId}/task-lists/${taskListId}`,
+) => {
+  return basicAuthAxios.patch(
+    `/groups/${groupId}/task-lists/${taskListId}`,
     name,
   );
+};
 
-  return response;
-}
+// 특정 할 일 리스트 삭제
+export const deleteTaskListDetail = (groupId: number, taskListId: number) => {
+  return basicAuthAxios.delete(`/groups/${groupId}/task-lists/${taskListId}`);
+};
 
-// 할 일 특정 리스트 삭제
-export async function deleteTaskList(groupId: number, taskListId: number) {
-  const response = await basicAuthAxios.delete(
-    `groups/${groupId}/task-lists/${taskListId}`,
-  );
-
-  return response;
-}
-
-// 할 일 리스트 순서 변경
-export async function orderTaskList(
+// 특정 할 일 리스트 순서 변경
+export const orderTaskListDetail = (
   groupId: number,
   taskListId: number,
   displayIndex: number,
-) {
-  const response = await basicAuthAxios.patch(
-    `groups/${groupId}/task-lists/${taskListId}/order`,
+) => {
+  return basicAuthAxios.patch(
+    `/groups/${groupId}/task-lists/${taskListId}/order`,
     displayIndex,
   );
-
-  return response;
-}
+};

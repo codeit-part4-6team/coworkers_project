@@ -12,7 +12,7 @@ export default function CommentWriting() {
     }
   };
   return (
-    <div className="flex justify-between items-start mb-6 py-[13px] border-y-[1px] border-border-primary-10">
+    <div className="flex justify-between items-start mb-6 py-[13px] border-y border-border-primary-10">
       <label htmlFor="comment" className="hidden">
         comment
       </label>

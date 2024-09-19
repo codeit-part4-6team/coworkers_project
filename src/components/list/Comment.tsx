@@ -13,7 +13,7 @@ export default function Comment() {
     console.log('dasd');
   };
   return (
-    <div className="flex flex-col gap-4 pb-4 border-b-[1px] border-border-primary-10">
+    <div className="flex flex-col gap-4 pb-4 border-b border-border-primary-10">
       <div className="flex justify-between items-start">
         <p className="text-md font-regular">
           법인 설립 서비스 관련 링크 첨부 드려요 https://www.codeit.kr
@@ -42,7 +42,7 @@ export default function Comment() {
       <div className="flex justify-end items-center gap-2">
         <button
           type="button"
-          className="w-12 h-8 text-md font-semibold text-text-default hover:text-[rgba(100, 116, 139, 0.5)] active:text-text-secondary"
+          className="w-12 h-8 text-md font-semibold text-text-default hover:text-opacity-70 active:text-opacity-40"
         >
           취소
         </button>
