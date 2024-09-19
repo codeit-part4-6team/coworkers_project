@@ -1,5 +1,6 @@
 import { basicAuthAxios } from './basicAxios';
 import { TaskCreateRequestBody, TaskEditRequestBody } from '@/types/listTypes';
+import { useQuery } from '@tanstack/react-query';
 
 // 할 일 생성
 export const createTask = (
@@ -13,11 +14,22 @@ export const createTask = (
   );
 };
 
-// 특정 할 일 리스트의 할 일들 불러오기
-export const getTasks = (groupId: number, taskListId: number) => {
+// 특정 일자, 특정 할 일 리스트의 할 일들 불러오기
+const getTasks = (groupId: number, taskListId: number, date: string) => {
   return basicAuthAxios.get(
-    `/groups/${groupId}/task-lists/${taskListId}/tasks`,
+    `/groups/${groupId}/task-lists/${taskListId}/tasks?date=${date}`,
   );
+};
+
+export const useTasksQuery = (
+  groupId: number,
+  taskListId: number,
+  date: string,
+) => {
+  return useQuery({
+    queryKey: ['groups', groupId, 'taskLists', taskListId, 'tasks'],
+    queryFn: () => getTasks(groupId, taskListId, date),
+  });
 };
 
 // 특정 할 일 불러오기
