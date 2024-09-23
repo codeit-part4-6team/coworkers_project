@@ -21,14 +21,26 @@ const Card = () => {
 
   return (
     <div className="border rounded-[12px] bg-background-secondary border-background-tertiary pt-6 px-4 pb-4">
-      <div>
-        <p className="text-text-secondary text-md font-medium">
-          자유게시판에 질문을 올릴 수 있어요
-        </p>
-        <p className="text-text-secondary text-md font-medium">
-          질문을 올려볼까요?
-        </p>
-        <p className="text-xs font-medium text-text-default mt-3">2024.07.25</p>
+      <div className="flex justify-between md:flex-row">
+        <div>
+          <p className="text-text-secondary text-md font-medium">
+            자유게시판에 질문을 올릴 수 있어요
+          </p>
+          <p className="text-text-secondary text-md font-medium">
+            질문을 올려볼까요?
+          </p>
+          <p className="text-xs font-medium text-text-default mt-3">
+            2024.07.25
+          </p>
+        </div>
+        <div className="hidden md:block">
+          <Dropdown
+            options={kebabOptions}
+            onChange={handleChange}
+            customButton={kebabButton}
+            size="sm"
+          />
+        </div>
       </div>
       <div className="flex items-center justify-between mt-4">
         <div className="flex items-center gap-3">
@@ -40,12 +52,14 @@ const Card = () => {
             <Heart />
             <p className="text-text-default text-xs font-regular">9999+</p>
           </div>
-          <Dropdown
-            options={kebabOptions}
-            onChange={handleChange}
-            customButton={kebabButton}
-            size="sm"
-          />
+          <div className="md:hidden">
+            <Dropdown
+              options={kebabOptions}
+              onChange={handleChange}
+              customButton={kebabButton}
+              size="sm"
+            />
+          </div>
         </div>
       </div>
     </div>
