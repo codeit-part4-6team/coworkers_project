@@ -1,9 +1,19 @@
 import Todo from '@/assets/img_todo.svg';
 import Done from '@/assets/img_done.svg';
 
+interface Task {
+  id: number;
+  name: string;
+}
+
+interface TaskList {
+  id: number;
+  name: string;
+  tasks: Task[];
+}
+
 interface ReportCardProps {
-  totalTasks: number;
-  completedTasks: number;
+  taskLists: TaskList[];
 }
 
 interface DonutChartProps {
@@ -57,8 +67,15 @@ const DonutChart = ({ size, progress, strokeWidth }: DonutChartProps) => {
   );
 };
 
-const ReportCard = ({ totalTasks, completedTasks }: ReportCardProps) => {
-  const completionPercentage = Math.round((completedTasks / totalTasks) * 100);
+const ReportCard = ({ taskLists }: ReportCardProps) => {
+    {/*수정필요*/}
+  const totalTasks = taskLists.reduce(
+    (acc, taskList) => acc + taskList.tasks.length,
+    0,
+  );
+  const completedTasks = totalTasks - 1;
+  const completionPercentage =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
     <>
@@ -74,7 +91,9 @@ const ReportCard = ({ totalTasks, completedTasks }: ReportCardProps) => {
             <div className="flex flex-col space-y-4 items-end">
               <div className="bg-background-tertiary rounded-lg p-4 flex justify-between items-center w-full max-w-[400px]">
                 <div>
-                  <p className="text-xs text-text-secondary pb-1">오늘의 할 일</p>
+                  <p className="text-xs text-text-secondary pb-1">
+                    오늘의 할 일
+                  </p>
                   <p className="text-2xl font-bold text-color-brand-tertiary">
                     {totalTasks}개
                   </p>

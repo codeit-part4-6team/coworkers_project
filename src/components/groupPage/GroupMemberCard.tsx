@@ -2,19 +2,25 @@ import Member from '@/assets/member.svg';
 import Kebab from '@/assets/kebab.svg';
 import Dropdown, { DropdownOption } from '../common/Dropdown';
 
-interface TeamMemberCardProps {
-  members: { name: string; email: string }[];
+interface GroupMember {
+  userId: number;
+  groupId: number;
+  userName: string;
+  userEmail: string;
+  userImage: string | null;
+  role: string;
+}
+
+interface GroupMemberCardProps {
+  members: GroupMember[];
 }
 
 interface MemberItemProps {
-  name: string;
-  email: string;
+  member: GroupMember;
 }
 
-const MemberItem = ({ name, email }: MemberItemProps) => {
-  const kebabOptions = [
-    { label: '삭제하기', value: 'delete' },
-  ];
+const MemberItem = ({ member }: MemberItemProps) => {
+  const kebabOptions = [{ label: '삭제하기', value: 'delete' }];
 
   const handleChange = (selectedOption: DropdownOption) => {
     console.log('Selected option:', selectedOption);
@@ -25,9 +31,11 @@ const MemberItem = ({ name, email }: MemberItemProps) => {
       <div>
         <div className="flex items-center mb-1">
           <Member className="mr-2" />
-          <p className="font-medium text-md">{name}</p>
+          <p className="font-medium text-md">{member.userName}</p>
         </div>
-        <p className="text-xs text-text-secondary truncate">{email}</p>
+        <p className="text-xs text-text-secondary truncate">
+          {member.userEmail}
+        </p>
       </div>
       <div className="self-stretch flex items-center">
         <Dropdown
@@ -41,7 +49,7 @@ const MemberItem = ({ name, email }: MemberItemProps) => {
   );
 };
 
-const TeamMemberCard = ({ members }: TeamMemberCardProps) => {
+const GroupMemberCard = ({ members }: GroupMemberCardProps) => {
   return (
     <div>
       <div className="flex justify-between items-center mt-6 mb-4">
@@ -56,12 +64,12 @@ const TeamMemberCard = ({ members }: TeamMemberCardProps) => {
         </button>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        {members.map((member, index) => (
-          <MemberItem key={index} name={member.name} email={member.email} />
+        {members.map((member) => (
+          <MemberItem key={member.userId} member={member} />
         ))}
       </div>
     </div>
   );
 };
 
-export default TeamMemberCard;
+export default GroupMemberCard;

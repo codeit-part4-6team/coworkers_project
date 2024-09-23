@@ -2,17 +2,17 @@ import Gear from '@/assets/gear.svg';
 import thumbnail from '@/assets/thumbnail_team.png';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 
-interface TeamHeaderProps {
-  teamName: string;
+interface GroupHeaderProps {
+  groupName: string;
 }
 
-const TeamHeader = ({ teamName }: TeamHeaderProps) => {
+const GroupHeader = ({ groupName }: GroupHeaderProps) => {
   const teamOptions: DropdownOption[] = [
     { label: '수정하기', value: 'edit' },
     { label: '삭제하기', value: 'delete' },
   ];
 
-  const handleTeamOptionChange = (option : DropdownOption) => {
+  const handleTeamOptionChange = (option: DropdownOption) => {
     console.log('Selected option:', option);
   };
 
@@ -28,7 +28,7 @@ const TeamHeader = ({ teamName }: TeamHeaderProps) => {
     >
       <div className="relative z-10">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold text-white">{teamName}</h1>
+          <h1 className="text-xl font-bold text-white">{groupName}</h1>
           <Dropdown
             options={teamOptions}
             onChange={handleTeamOptionChange}
@@ -41,4 +41,4 @@ const TeamHeader = ({ teamName }: TeamHeaderProps) => {
   );
 };
 
-export default TeamHeader;
+export default GroupHeader;

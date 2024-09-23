@@ -2,14 +2,19 @@ import Done from '@/assets/state_done.svg';
 import Kebab from '@/assets/kebab.svg';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 
-interface TodoItem {
-  title: string;
-  progress: number;
-  total: number;
-  completed?: boolean;
+interface Task {
+  id: number;
+  name: string;
 }
 
-interface TaskItemProps extends TodoItem {
+interface TaskList {
+  id: number;
+  name: string;
+  tasks: Task[];
+}
+
+interface TaskItemProps {
+  taskList: TaskList;
   index: number;
 }
 
@@ -62,16 +67,9 @@ const ProgressChart = ({
   );
 };
 
-const TaskItem = ({
-  title,
-  progress,
-  total,
-  completed = false,
-  index,
-}: TaskItemProps) => {
+const TaskItem = ({ taskList, index }: TaskItemProps) => {
   const colorIndex = index % pointColors.length;
   const borderColor = `${pointColors[colorIndex]}`;
-  console.log(`Task "${title}" - Border Color: ${borderColor}`);
 
   const kebabOptions = [
     { label: '수정하기', value: 'edit' },
@@ -81,17 +79,20 @@ const TaskItem = ({
   const handleChange = (selectedOption: DropdownOption) => {
     console.log('Selected option:', selectedOption);
   };
-
-  const progressPercentage = Math.round((progress / total) * 100);
+  {/*수정필요*/}
+  const totalTasks = taskList.tasks.length;
+  const completedTasks = taskList.tasks.length - 1;
+  const progressPercentage =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
     <div className="relative bg-background-secondary rounded-xl flex items-center overflow-hidden">
       <div className={`absolute left-0 top-0 bottom-0 w-3 ${borderColor}`} />
       <div className="flex-1 flex justify-between items-center pl-4 pr-2 py-3 ml-2">
-        <span className="font-medium text-white">{title}</span>
+        <span className="font-medium text-md text-white">{taskList.name}</span>
         <div className="flex items-center">
           <div className="flex items-center bg-background-primary rounded-xl py-1 px-2 mr-1">
-            {completed ? (
+            {progressPercentage === 100 ? (
               <Done className="size-4" />
             ) : (
               <div className="size-4 flex items-center">
@@ -99,7 +100,7 @@ const TaskItem = ({
               </div>
             )}
             <span className="text-sm w-5 text-color-brand-primary ml-2">
-              {progress}/{total}
+              {completedTasks}/{totalTasks}
             </span>
           </div>
           <Dropdown
@@ -115,25 +116,25 @@ const TaskItem = ({
 };
 
 interface TodoListCardProps {
-  todos: TodoItem[];
+  taskLists: TaskList[];
 }
 
-const TodoListCard = ({ todos }: TodoListCardProps) => {
+const TodoListCard = ({ taskLists }: TodoListCardProps) => {
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-medium">
           할 일 목록
           <span className="text-text-default font-regular ml-2">
-            ({todos.length}개)
+            ({taskLists.length}개)
           </span>
         </h2>
         <button className="text-color-brand-primary text-sm font-medium">
           + 새로운 목록 추가하기
         </button>
       </div>
-      {todos.map((todo, index) => (
-        <TaskItem key={index} {...todo} index={index} />
+      {taskLists.map((taskList, index) => (
+        <TaskItem key={taskList.id} taskList={taskList} index={index} />
       ))}
     </div>
   );
