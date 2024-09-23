@@ -37,7 +37,7 @@ export const useTasksQuery = (
   date: string,
 ) => {
   return useQuery({
-    queryKey: ['groups', groupId, 'taskLists', taskListId, 'tasks'],
+    queryKey: ['groups', groupId, 'taskLists', taskListId, 'tasks', date],
     queryFn: () => getTasks(groupId, taskListId, date),
   });
 };
@@ -153,25 +153,14 @@ export const useCreateRecurringTaskMutation = (
 };
 
 // 반복 할 일 삭제
-const deleteRecurringTask = (
-  groupId: number,
-  taskListId: number,
-  taskId: number,
-  recurringId: number,
-) => {
+const deleteRecurringTask = ({ recurringId }: any) => {
   return basicAuthAxios.delete(
-    `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}/recurring/${recurringId}`,
+    `/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}/recurring/${recurringId}`,
   );
 };
 
-export const useDeleteRecurringTaskMutation = (
-  groupId: number,
-  taskListId: number,
-  taskId: number,
-  recurringId: number,
-) => {
+export const useDeleteRecurringTaskMutation = () => {
   return useMutation({
-    mutationFn: () =>
-      deleteRecurringTask(groupId, taskListId, taskId, recurringId),
+    mutationFn: deleteRecurringTask,
   });
 };

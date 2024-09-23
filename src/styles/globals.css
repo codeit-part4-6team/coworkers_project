@@ -37,6 +37,10 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .custom-right {
+    right: calc((100dvw - 1200px) / 2);
+  }
 }
 
 dialog::backdrop {

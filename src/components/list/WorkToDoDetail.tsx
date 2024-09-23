@@ -1,7 +1,7 @@
 import XIcon from '@/assets/x_icon.svg';
 import KebabIcon from '@/assets/kebab_large.svg';
 import ProfileMemberIcon from '@/assets/profile_member_large.svg';
-import CalendarNRepeat from './CalendarNRepeat';
+import DateNRepeat from './DateNRepeat';
 import CommentWriting from './CommentWriting';
 import Comment from './Comment';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
@@ -18,7 +18,7 @@ export default function WorkToDoDetail() {
   };
 
   return (
-    <div className="fixed top-[60px] right-0 z-10 p-4 md:p-6 lg:p-10 w-full md:w-[434px] lg:w-[780px] h-svh md:border-l md:border-solid md:border-border-primary-10 bg-background-secondary antialiased">
+    <div className="absolute top-[60px] bottom-0 right-0 z-10 p-4 md:p-6 lg:p-10 w-full md:w-[434px] lg:w-[780px] h-full md:border-l md:border-solid md:border-border-primary-10 bg-background-secondary antialiased">
       <button type="button" className="mb-4">
         <XIcon />
       </button>
@@ -43,7 +43,7 @@ export default function WorkToDoDetail() {
         </span>
       </div>
       <div className="mb-6">
-        <CalendarNRepeat />
+        <DateNRepeat />
       </div>
       <p className="mb-[100px] md:mb-[182px] text-md font-regular">
         필수 정보 10분 입력하면 3일 안에 법인 설립이 완료되는 법인 설립 서비스의
