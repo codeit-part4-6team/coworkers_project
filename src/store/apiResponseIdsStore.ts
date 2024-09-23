@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-interface Store {
+interface State {
   groupId: number;
   setGroupId: (id: number) => void;
   taskListId: number;
@@ -11,7 +11,7 @@ interface Store {
   setRecurringId: (id: number) => void;
 }
 
-export const useApiResponseIdsStore = create<Store>((set) => ({
+export const useApiResponseIdsStore = create<State>((set) => ({
   groupId: 0,
   setGroupId: (id) => set({ groupId: id }),
   taskListId: 0,
