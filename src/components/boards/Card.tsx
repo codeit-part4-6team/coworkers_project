@@ -39,6 +39,7 @@ const Card = () => {
             onChange={handleChange}
             customButton={kebabButton}
             size="sm"
+            direction="down"
           />
         </div>
       </div>
@@ -58,6 +59,7 @@ const Card = () => {
               onChange={handleChange}
               customButton={kebabButton}
               size="sm"
+              direction="up"
             />
           </div>
         </div>

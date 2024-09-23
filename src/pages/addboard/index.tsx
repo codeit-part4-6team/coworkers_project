@@ -1,5 +1,6 @@
 import Input from '@/components/input/Input';
 import Button from '@/components/common/Button';
+import Plus from '@/assets/plus_large.svg';
 
 const AddBoard = () => {
   return (
@@ -40,6 +41,12 @@ const AddBoard = () => {
       <p className="text-text-primary font-medium text-md mt-4 md:text-lg">
         이미지
       </p>
+      <div className="mt-4 border w-40 h-40 md:w-60 md:h-60 rounded-[12px] border-border-primary-10 bg-background-secondary flex flex-col justify-center items-center gap-3">
+        <Plus className="text-text-default w-6 h-6 md:w-12 md:h-12" />
+        <p className="text-md font-regular text-text-default md:text-lg">
+          이미지 등록
+        </p>
+      </div>
       <div className="mt-10 md:hidden">
         <Button option="solid" size="large" text="등록" disabled={false} />
       </div>
