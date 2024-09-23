@@ -21,7 +21,8 @@ export default function CreateWorkToDoModal() {
   return (
     <Modal
       id="createToDo"
-      className="w-full md:w-[384px] md:rounded-xl px-6 pt-6 pb-8 bg-background-secondary"
+      className="px-6 pt-6 pb-8 md:w-[384px] md:rounded-xl bg-background-secondary antialiased"
+      positionBottom={true}
     >
       <div className="flex justify-end mb-4">
         <button type="button" onClick={() => closeModal('createToDo')}>
@@ -46,7 +47,7 @@ export default function CreateWorkToDoModal() {
             type="text"
             id="title"
             placeholder="할 일 제목을 입력해주세요"
-            className="px-4 w-full h-12 border-[1px] border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none"
+            className="px-4 w-full h-12 border border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none"
           />
         </div>
         <div className="flex flex-col gap-4">
@@ -60,7 +61,7 @@ export default function CreateWorkToDoModal() {
             type="text"
             id="date"
             placeholder={today()}
-            className="px-4 w-full h-12 border-[1px] border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none"
+            className="px-4 w-full h-12 border border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none"
           />
         </div>
         <div className="flex flex-col gap-4">
@@ -75,7 +76,6 @@ export default function CreateWorkToDoModal() {
               options={options}
               onChange={handleChange}
               placeholder="반복 안함"
-              size="sm"
             />
           </div>
         </div>
@@ -89,7 +89,7 @@ export default function CreateWorkToDoModal() {
           <textarea
             id="memo"
             placeholder="메모를 입력해주세요"
-            className="mb-2 px-4 py-3 w-full h-[75px] border-[1px] border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none resize-none"
+            className="mb-2 px-4 py-3 w-full h-[75px] border border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none resize-none"
           />
         </div>
         <Button
