@@ -20,6 +20,7 @@ export default function List() {
   const { openModal } = useModalStore();
   const { taskListId, setTaskListId } = useApiResponseIdsStore();
 
+  const [isWorkToDoDetailVisible, setIsWorkToDoDetailVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState<SelectedDate>(new Date());
 
   const formattedDate = formatThirdDate(selectedDate);
@@ -59,7 +60,11 @@ export default function List() {
       <CreateWorkToDoModal />
       <AddCategory />
       <DeleteWorkToDoModal />
-      {/* <WorkToDoDetail /> */}
+      {isWorkToDoDetailVisible && (
+        <WorkToDoDetail
+          setIsWorkToDoDetailVisible={setIsWorkToDoDetailVisible}
+        />
+      )}
       <section className="h-screen overflow-auto antialiased">
         <div className="lg:mx-auto pt-6 lg:pt-10 pb-6 px-4 md:px-6 2lg:px-0 w-full 2lg:w-[1200px]">
           <button type="button" onClick={handleLoginClick}>
@@ -97,7 +102,10 @@ export default function List() {
           {tasksQuery.data?.data.length > 0 ? (
             <div className="flex flex-col gap-4">
               {tasksQuery.data?.data.map((data: any) => (
-                <WorkToDoContainer data={{ ...data }} />
+                <WorkToDoContainer
+                  data={{ ...data }}
+                  setIsWorkToDoDetailVisible={setIsWorkToDoDetailVisible}
+                />
               ))}
             </div>
           ) : (

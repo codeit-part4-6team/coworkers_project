@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 import CheckboxIcon from '@/assets/checkbox.svg';
 import CommentIcon from '@/assets/comment.svg';
 import KebabIcon from '@/assets/kebab.svg';
@@ -6,20 +7,27 @@ import DateNRepeat from './DateNRepeat';
 import useModalStore from '@/store/modalStore';
 import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
 
-// interface Props {}
+// interface Props {
+//   setIsWorkToDoDetailVisible: Dispatch<SetStateAction<boolean>>;
+// }
 
 const WorkToDoOptions: DropdownOption[] = [
   { label: '수정하기', value: 'edit' },
   { label: '삭제하기', value: 'delete' },
 ];
 
-export default function WorkToDoContainer({ data }: any) {
+export default function WorkToDoContainer({
+  data,
+  setIsWorkToDoDetailVisible,
+}: any) {
   const { commentCount, date, frequency, id, name, recurringId, writer } = data;
 
   const { openModal } = useModalStore();
   const { setRecurringId } = useApiResponseIdsStore();
 
-  console.log('container', data);
+  const handleWorkToDoClick = () => {
+    setIsWorkToDoDetailVisible((prev: boolean) => !prev);
+  };
 
   const handleWorkToDoOptionChange = (option: DropdownOption) => {
     const { value } = option;
@@ -34,6 +42,7 @@ export default function WorkToDoContainer({ data }: any) {
       <div
         key={id}
         className="flex flex-col gap-2.5 w-full py-3 px-3.5 rounded-lg bg-background-secondary"
+        onClick={handleWorkToDoClick}
       >
         <div className="flex justify-between items-center">
           <div className="flex gap-3">

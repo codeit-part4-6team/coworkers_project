@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 import XIcon from '@/assets/x_icon.svg';
 import KebabIcon from '@/assets/kebab_large.svg';
 import ProfileMemberIcon from '@/assets/profile_member_large.svg';
@@ -12,14 +13,22 @@ const WorkToDoOptions: DropdownOption[] = [
   { label: '삭제하기', value: 'delete' },
 ];
 
-export default function WorkToDoDetail() {
+interface Props {
+  setIsWorkToDoDetailVisible: Dispatch<SetStateAction<boolean>>;
+}
+
+export default function WorkToDoDetail({ setIsWorkToDoDetailVisible }: Props) {
   const handleWorkToDoOptionChange = (option: DropdownOption) => {
     console.log('dasd');
   };
 
   return (
-    <div className="absolute top-[60px] bottom-0 right-0 z-10 p-4 md:p-6 lg:p-10 w-full md:w-[434px] lg:w-[780px] h-full md:border-l md:border-solid md:border-border-primary-10 bg-background-secondary antialiased">
-      <button type="button" className="mb-4">
+    <div className="absolute top-[60px] bottom-0 right-0 z-10 p-4 md:p-6 lg:p-10 w-full md:w-[434px] lg:w-[780px] h-full md:border-l md:border-solid md:border-border-primary-10 bg-background-secondary antialiased animate-slide-in">
+      <button
+        type="button"
+        className="mb-4"
+        onClick={() => setIsWorkToDoDetailVisible(false)}
+      >
         <XIcon />
       </button>
       <div className="flex justify-between items-start mb-3 md:mb-4">
