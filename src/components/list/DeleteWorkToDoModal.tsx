@@ -1,10 +1,34 @@
+import { useQueryClient } from '@tanstack/react-query';
 import Modal from '@/components/common/Modal';
 import Button from '@/components/common/Button';
 import AlertIcon from '@/assets/alert.svg';
 import useModalStore from '@/store/modalStore';
+import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
+import { useDeleteRecurringTaskMutation } from '@/lib/taskApi';
 
 export default function DeleteWorkToDoModal() {
   const { closeModal } = useModalStore();
+  const { recurringId } = useApiResponseIdsStore();
+
+  const queryClient = useQueryClient();
+  const deleteRecurringTaskMutation = useDeleteRecurringTaskMutation();
+
+  const handleDeleteClick = () => {
+    deleteRecurringTaskMutation.mutate(
+      {
+        recurringId,
+      },
+      {
+        onSuccess: () => {
+          closeModal('deleteToDo');
+          queryClient.invalidateQueries({ queryKey: ['groups'] });
+        },
+        onError: () => {
+          alert('삭제에 실패했습니다.');
+        },
+      },
+    );
+  };
   return (
     <Modal
       id="deleteToDo"
@@ -35,6 +59,7 @@ export default function DeleteWorkToDoModal() {
             size="large"
             text="삭제하기"
             disabled={false}
+            onClick={handleDeleteClick}
           />
         </div>
       </div>

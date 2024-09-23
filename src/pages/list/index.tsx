@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import clsx from 'clsx';
 import CalendarDate from '@/components/list/CalendarDate';
 import WorkToDoContainer from '@/components/list/WorkToDoContainer';
@@ -8,6 +8,7 @@ import CreateWorkToDoModal from '@/components/list/CreateWorkToDoModal';
 import DeleteWorkToDoModal from '@/components/list/DeleteWorkToDoModal';
 import AddCategory from '@/components/list/AddCategoryModal';
 import useModalStore from '@/store/modalStore';
+import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
 import { useTaskListsQuery } from '@/lib/taskListApi';
 import { useTasksQuery } from '@/lib/taskApi';
 import { SelectedDate } from '@/types/listTypes';
@@ -17,14 +18,14 @@ import { basicAuthAxios } from '@/lib/basicAxios';
 
 export default function List() {
   const { openModal } = useModalStore();
+  const { taskListId, setTaskListId } = useApiResponseIdsStore();
 
-  const [taskListDetailId, setTaskListDetailId] = useState(0);
   const [selectedDate, setSelectedDate] = useState<SelectedDate>(new Date());
 
   const formattedDate = formatThirdDate(selectedDate);
 
   const taskListsQuery = useTaskListsQuery(869);
-  const tasksQuery = useTasksQuery(869, taskListDetailId, formattedDate);
+  const tasksQuery = useTasksQuery(869, taskListId, formattedDate);
 
   // 임시 로그인 기능
   const login = async () => {
@@ -47,7 +48,7 @@ export default function List() {
   };
 
   const handleListNameClick = (id: number) => {
-    setTaskListDetailId(id);
+    setTaskListId(id);
   };
 
   console.log('taskListsQuery 콘솔', taskListsQuery.data?.data);
@@ -84,7 +85,7 @@ export default function List() {
                 key={taskLists.id}
                 className={clsx(
                   'h-6 text-lg font-medium text-text-default',
-                  taskLists.id === taskListDetailId &&
+                  taskLists.id === taskListId &&
                     'border-b border-text-tertiary text-text-tertiary',
                 )}
                 onClick={() => handleListNameClick(taskLists.id)}

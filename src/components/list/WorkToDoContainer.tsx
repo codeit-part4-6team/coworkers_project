@@ -4,8 +4,7 @@ import KebabIcon from '@/assets/kebab.svg';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import DateNRepeat from './DateNRepeat';
 import useModalStore from '@/store/modalStore';
-import { useQueryClient } from '@tanstack/react-query';
-import { useDeleteRecurringTaskMutation } from '@/lib/taskApi';
+import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
 
 // interface Props {}
 
@@ -18,26 +17,15 @@ export default function WorkToDoContainer({ data }: any) {
   const { commentCount, date, frequency, id, name, recurringId, writer } = data;
 
   const { openModal } = useModalStore();
+  const { setRecurringId } = useApiResponseIdsStore();
 
   console.log('container', data);
-
-  const queryClient = useQueryClient();
-  const deleteRecurringTaskMutation = useDeleteRecurringTaskMutation();
 
   const handleWorkToDoOptionChange = (option: DropdownOption) => {
     const { value } = option;
     if (value === 'delete') {
       openModal('deleteToDo');
-      // deleteRecurringTaskMutation.mutate(
-      //   {
-      //     recurringId,
-      //   },
-      //   {
-      //     onSuccess: () => {
-      //       queryClient.invalidateQueries({ queryKey: ['groups', groupId] });
-      //     },
-      //   },
-      // );
+      setRecurringId(recurringId);
     }
   };
 

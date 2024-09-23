@@ -11,7 +11,7 @@ interface State {
   setRecurringId: (id: number) => void;
 }
 
-export const useApiResponseIdsStore = create<State>((set) => ({
+const useApiResponseIdsStore = create<State>((set) => ({
   groupId: 0,
   setGroupId: (id) => set({ groupId: id }),
   taskListId: 0,
@@ -21,3 +21,5 @@ export const useApiResponseIdsStore = create<State>((set) => ({
   recurringId: 0,
   setRecurringId: (id) => set({ recurringId: id }),
 }));
+
+export default useApiResponseIdsStore;
