@@ -14,13 +14,13 @@ interface TaskItemProps extends TodoItem {
 }
 
 const pointColors = [
-  'purple',
-  'blue',
-  'cyan',
-  'pink',
-  'rose',
-  'orange',
-  'yellow',
+  'bg-color-point-purple',
+  'bg-color-point-blue',
+  'bg-color-point-cyan',
+  'bg-color-point-pink',
+  'bg-color-point-rose',
+  'bg-color-point-orange',
+  'bg-color-point-yellow',
 ];
 
 const ProgressChart = ({
@@ -70,9 +70,8 @@ const TaskItem = ({
   index,
 }: TaskItemProps) => {
   const colorIndex = index % pointColors.length;
-  const borderColor = `bg-color-point-${pointColors[colorIndex]}`;
+  const borderColor = `${pointColors[colorIndex]}`;
   console.log(`Task "${title}" - Border Color: ${borderColor}`);
-
 
   const kebabOptions = [
     { label: '수정하기', value: 'edit' },
