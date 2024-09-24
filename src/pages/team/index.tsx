@@ -1,35 +1,96 @@
-import TeamHeader from '@/components/teamPage/TeamHeader';
-import TodoListCard from '@/components/teamPage/TodoListCard';
-import TeamMemberCard from '@/components/teamPage/TeamMemberCard';
-import ReportCard from '@/components/teamPage/TeamReport';
+import React from 'react';
+import GroupHeader from "@/components/groupPage/GroupHeader";
+import GroupMemberCard from "@/components/groupPage/GroupMemberCard";
+import ReportCard from "@/components/groupPage/GroupReport";
+import TodoListCard from "@/components/groupPage/TodoListCard";
+
+interface GroupMember {
+  userId: number;
+  groupId: number;
+  userName: string;
+  userEmail: string;
+  userImage: string | null;
+  role: string;
+}
+
+interface Todo {
+  id: number;
+  name: string;
+  progress?: number;
+  tasks: any[];
+}
 
 const CoworkersMobileUI: React.FC = () => {
-  const teamMembers = [
-    { name: '우지은', email: 'jieun@codeit.com' },
-    { name: '강미희', email: 'jieunjieun@codeit.com' },
-    { name: '이동규', email: 'jieunjieun@codeit.com' },
-    { name: '김다혜', email: 'jieunjieun@codeit.com' },
+  const teamMembers: GroupMember[] = [
+    {
+      userId: 1,
+      groupId: 101,
+      userName: "멤버1",
+      userEmail: "chulsoo.kim@example.com",
+      userImage: "https://example.com/images/chulsoo.jpg",
+      role: "관리자"
+    },
+    {
+      userId: 2,
+      groupId: 101,
+      userName: "이영희",
+      userEmail: "younghee.lee@example.com",
+      userImage: null,
+      role: "멤버"
+    },
+    {
+      userId: 3,
+      groupId: 101,
+      userName: "박지민",
+      userEmail: "jimin.park@example.com",
+      userImage: "https://example.com/images/jimin.jpg",
+      role: "멤버"
+    },
+    {
+      userId: 4,
+      groupId: 101,
+      userName: "정수연",
+      userEmail: "suyeon.jung@example.com",
+      userImage: "https://example.com/images/suyeon.jpg",
+      role: "멤버"
+    },
+    {
+      userId: 5,
+      groupId: 101,
+      userName: "홍길동",
+      userEmail: "gildong.hong@example.com",
+      userImage: null,
+      role: "멤버"
+    },
+    {
+      userId: 6,
+      groupId: 101,
+      userName: "강민서",
+      userEmail: "minseo.kang@example.com",
+      userImage: "https://example.com/images/minseo.jpg",
+      role: "멤버"
+    }
   ];
 
-  const todos = [
-    { title: '법인 설립', progress: 3, total: 5 },
+  const todos: Todo[] = [
+    { id: 1, name: '법인 설립', tasks: [] },
     {
-      title: '변경 등기',
+      id: 2,
+      name: '변경 등기',
       progress: 5,
-      total: 5,
-      completed: true,
+      tasks: []
     },
-    { title: '정기 주총', progress: 2, total: 5 },
-    { title: '법인 설립', progress: 1, total: 5 },
+    { id: 3, name: '정기 주총', tasks: [] },
+    { id: 4, name: '법인 설립', tasks: [] },
   ];
 
   return (
     <div className="bg-background-primary text-text-primary min-h-screen p-4">
       <main>
-        <TeamHeader teamName={'경영관리팀'} />
-        <TodoListCard todos={todos} />
-        <ReportCard totalTasks={20} completedTasks={5} />
-        <TeamMemberCard members={teamMembers} />
+        <GroupHeader groupName={'경영관리팀'} />
+        <TodoListCard taskLists={todos} />
+        <ReportCard taskLists={todos} />
+        <GroupMemberCard members={teamMembers} />
       </main>
     </div>
   );
