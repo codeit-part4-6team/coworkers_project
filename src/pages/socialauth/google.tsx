@@ -6,8 +6,6 @@ export default function GoogleAuth() {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState('');
 
-  console.log("여기 옴");
-
   const handleGoogleLogin = async (authCode: string) => {
     try {
       console.log("여기까지옴");
@@ -20,12 +18,13 @@ export default function GoogleAuth() {
         body: JSON.stringify({ code: authCode }),
       });
 
-      if (!response.ok) {
+      console.log(response);
+
+      if (!response) {
         throw new Error('Failed to fetch tokens');
       }
 
       const { accessToken, refreshToken, user } = await response.json();
-      console.log(accessToken, user);
       if (accessToken) {
         const providerResponse = await signInProvider(
           'GOOGLE',

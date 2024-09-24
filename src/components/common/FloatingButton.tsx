@@ -9,16 +9,16 @@ export default function FloatingButton( {option, text, ...rest} : FloatingButton
   const defaultClassName = `rounded-[40px] flex items-center justify-center gap-[1px]`;
 
   const optionClassName = {
-    add: `bg-color-brand-primary text-inverse w-[125px] h-[48px] shadow-2xl 
+    add: `bg-color-brand-primary text-inverse w-full h-full shadow-2xl 
           hover:bg-interaction-hover 
           active:bg-interaction-pressed 
           disabled:bg-interaction-inactive disabled:cursor-not-allowed`,
-    success: `bg-color-brand-primary text-inverse w-[111px] h-[40px] shadow-2xl
+    success: `bg-color-brand-primary text-inverse w-full h-full shadow-2xl
               hover:bg-interaction-hover 
               active:bg-interaction-pressed
               disabled:bg-interaction-inactive disabled:cursor-not-allowed`,
     cancel: `bg-background-inverse outline outline-1 outline-color-brand-primary text-color-brand-primary
-              w-[138px] h-[40px] shadow-2xl
+              w-full h-full shadow-2xl
               hover:outline-interaction-hover hover:text-interaction-hover
               active:outline-interaction-pressed active:text-interaction-pressed
               disabled:bg-text-inverse disabled:outline-interaction-inactive disabled:text-interaction-inactive disabled:cursor-not-allowed`

@@ -9,7 +9,6 @@ const client = new OAuth2Client(
 
 export default async function GoogleToken(req: NextApiRequest, res: NextApiResponse) {
   const { code } = req.body;
-
   try {
     const { tokens } = await client.getToken(code);
     client.setCredentials(tokens);
