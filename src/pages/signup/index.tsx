@@ -31,13 +31,13 @@ export default function Signup() {
 
   return (
     <div>
-          <Input
-        labeltext='인풋 라벨'
-        option='text' // text or password 입력된 글자의 암호화 처리
-        inputSize='large' //large or small width사이즈에 맞춰서 변경해서 넣어줘야합니다.
-        placeholder='미리보기용 텍스트'
+      <Input
+        labeltext="인풋 라벨"
+        option="text" // text or password 입력된 글자의 암호화 처리
+        inputSize="large" //large or small width사이즈에 맞춰서 변경해서 넣어줘야합니다.
+        placeholder="미리보기용 텍스트"
         // ref={사용하려면 넣으시오}
-    />
+      />
     </div>
   );
 }

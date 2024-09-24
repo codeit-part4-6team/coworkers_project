@@ -11,3 +11,6 @@ export interface TaskEditRequestBody {
   description: string;
   done: boolean;
 }
+
+type DatePiece = Date | null;
+export type SelectedDate = DatePiece | [DatePiece, DatePiece];
