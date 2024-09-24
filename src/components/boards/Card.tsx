@@ -12,7 +12,13 @@ interface CardProps {
   likeCount: number;
 }
 
-const Card = ({ id }: CardProps) => {
+const Card = ({
+  id,
+  title,
+  writerNickname,
+  createdAt,
+  likeCount,
+}: CardProps) => {
   const router = useRouter();
 
   const kebabOptions: DropdownOption[] = [
@@ -34,6 +40,14 @@ const Card = ({ id }: CardProps) => {
     router.push(`/boards/${id}`);
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 1월이 0이므로 +1
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}.${month}.${day}`;
+  };
+
   return (
     <div
       onClick={handleCardClick}
@@ -41,14 +55,9 @@ const Card = ({ id }: CardProps) => {
     >
       <div className="flex justify-between md:flex-row">
         <div>
-          <p className="text-text-secondary text-md font-medium">
-            자유게시판에 질문을 올릴 수 있어요
-          </p>
-          <p className="text-text-secondary text-md font-medium">
-            질문을 올려볼까요?
-          </p>
+          <p className="text-text-secondary text-md font-medium">{title}</p>
           <p className="text-xs font-medium text-text-default mt-3">
-            2024.07.25
+            {formatDate(createdAt)}
           </p>
         </div>
         <div className="hidden md:block">
@@ -64,12 +73,16 @@ const Card = ({ id }: CardProps) => {
       <div className="flex items-center justify-between mt-4">
         <div className="flex items-center gap-3">
           <Profile />
-          <p className="text-xs font-medium text-text-primary">우지은</p>
+          <p className="text-xs font-medium text-text-primary">
+            {writerNickname}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <Heart />
-            <p className="text-text-default text-xs font-regular">9999+</p>
+            <p className="text-text-default text-xs font-regular">
+              {likeCount}
+            </p>
           </div>
           <div className="md:hidden">
             <Dropdown

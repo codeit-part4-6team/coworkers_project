@@ -5,9 +5,38 @@ import FloatingButton from '@/components/common/FloatingButton';
 import BestCard from '@/components/boards/BestCard';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { getArticle } from '@/lib/articleApi';
+
+interface Article {
+  id: number;
+  title: string;
+  writer: {
+    nickname: string;
+    id: number;
+  };
+  createdAt: string;
+  likeCount: number;
+}
 
 const Boards = () => {
   const router = useRouter();
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await getArticle();
+        const { list } = response.data;
+
+        setArticles(list); // API에서 받아온 게시글 목록 저장
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      }
+    };
+
+    fetchArticles();
+  }, []);
 
   const handleButtonClick = () => {
     router.push('/addboard');
@@ -56,9 +85,16 @@ const Boards = () => {
         </div>
       </div>
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
-        <Card />
-        <Card />
-        <Card />
+        {articles.map((article) => (
+          <Card
+            key={article.id}
+            id={article.id}
+            title={article.title}
+            writerNickname={article.writer.nickname}
+            createdAt={article.createdAt}
+            likeCount={article.likeCount}
+          />
+        ))}
       </div>
       <div className="fixed bottom-[230px] w-[104px] h-12 right-4 md:bottom-[125px] lg:bottom-[45px] lg:right-[360px]">
         <FloatingButton

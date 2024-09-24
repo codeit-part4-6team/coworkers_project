@@ -9,7 +9,12 @@ export const createArticle = (articleData: {
   return basicAuthAxios.post(`/articles`, articleData);
 };
 
+//게시글 목록 조회
+export const getArticle = () => {
+  return basicAuthAxios.get(`/articles`);
+};
+
 //게시글 상세 조회
-export const getArticle = (articleid: number) => {
+export const getDetailArticle = (articleid: number) => {
   return basicAuthAxios.get(`/articles/${articleid}`);
 };
