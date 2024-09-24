@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { signInProvider } from '@/lib/auth';
+import axios from 'axios';
 
 export default function GoogleAuth() {
   const router = useRouter();
@@ -10,21 +11,15 @@ export default function GoogleAuth() {
     try {
       console.log("여기까지옴");
       // 구글 인증 코드로 서버 API 호출
-      const response = await fetch('/api/googleToken', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ code: authCode }),
-      });
+      const response = await axios.get(`/api/googleToken?code=${authCode}`);
+      const accessToken = response.data.access_token;
 
-      console.log(response);
+      console.log(accessToken);
 
       if (!response) {
         throw new Error('Failed to fetch tokens');
       }
 
-      const { accessToken, refreshToken, user } = await response.json();
       if (accessToken) {
         const providerResponse = await signInProvider(
           'GOOGLE',

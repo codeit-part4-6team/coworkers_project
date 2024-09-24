@@ -1,32 +1,36 @@
-import { OAuth2Client } from 'google-auth-library';
+// pages/api/googleToken.ts
+import axios from 'axios';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-const client = new OAuth2Client(
-  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI
-);
+export default async function googleToken(req: NextApiRequest, res: NextApiResponse) {
+  const code = req.query.code as string;
 
-export default async function GoogleToken(req: NextApiRequest, res: NextApiResponse) {
-  const { code } = req.body;
+  if (!code) {
+    return res.status(400).json({ error: 'No code provided' });
+  }
+
+  const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+  const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+  const GOOGLE_REDIRECT_URI = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI;
+
   try {
-    const { tokens } = await client.getToken(code);
-    client.setCredentials(tokens);
 
-    const ticket = await client.verifyIdToken({
-      idToken: tokens.id_token!,
-      audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-    });
+    const testID = {
+      code,
+      client_id: GOOGLE_CLIENT_ID,
+      client_secret: GOOGLE_CLIENT_SECRET,
+      redirect_uri: GOOGLE_REDIRECT_URI,
+      grant_type: 'authorization_code',
+    }
+    
+    console.log(testID);
+    const response = await axios.post('https://oauth2.googleapis.com/token', testID);
 
-    const userPayload = ticket.getPayload();
+    const { access_token, refresh_token, id_token } = response.data;
 
-    return res.status(200).json({
-      accessToken: tokens.access_token,
-      refreshToken: tokens.refresh_token,
-      user: userPayload,
-    });
+    // 토큰 처리 및 사용자 정보 저장 로직 추가 가능
+    res.status(200).json({ access_token, refresh_token, id_token });
   } catch (error) {
-    console.error('Error getting Google tokens:', error);
-    return res.status(500).json({ error: 'Failed to retrieve tokens' });
+    res.status(500).json({ error });
   }
 }
