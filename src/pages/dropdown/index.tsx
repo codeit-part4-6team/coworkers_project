@@ -4,8 +4,14 @@ import Kebab from '@/assets/kebab.svg';
 export default function Home() {
   const options = [
     { label: '옵션 1', value: 'option1' },
-    { label: '옵션 2', value: 'option2' },
+    { label: '좋아요 많은순', value: 'option2' },
     { label: '옵션 3', value: 'option3' },
+  ];
+  const options2 = [
+    { label: '한 번', value: 'option1' },
+    { label: '매일', value: 'option2' },
+    { label: '주 반복', value: 'option3' },
+    { label: '월 반복', value: 'option4' },
   ];
 
   const handleChange = (selectedOption: DropdownOption) => {
@@ -39,11 +45,16 @@ export default function Home() {
         <Dropdown options={options} onChange={handleChange} size="md" />
       </div>
       <div>
-        <Dropdown options={options} onChange={handleChange} size="sm" />
+        <Dropdown
+          options={options}
+          onChange={handleChange}
+          size="sm"
+          direction="up"
+        />
       </div>
       <div>
         <Dropdown
-          options={options}
+          options={options2}
           onChange={handleChange}
           placeholder="반복 안함"
         />

@@ -1,4 +1,4 @@
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import Toggle from '@/assets/toggle.svg';
 
@@ -14,6 +14,7 @@ interface DropdownProps {
   customButton?: ReactNode;
   size?: 'sm' | 'md';
   className?: string;
+  direction?: 'down' | 'up';
 }
 
 const Dropdown = ({
@@ -23,11 +24,30 @@ const Dropdown = ({
   customButton,
   size,
   className,
+  direction = 'down',
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<DropdownOption | null>(
     null,
   );
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleOptionClick = (option: DropdownOption) => {
     setSelectedOption(option);
@@ -51,13 +71,27 @@ const Dropdown = ({
   );
 
   const optionClasses = clsx(
-    'block w-full px-4 py-2 text-text-primary hover:bg-background-tertiary focus:outline-none',
+    'block w-full text-text-primary hover:bg-background-tertiary focus:outline-none',
     {
       'text-xs': !customButton && size === 'sm',
       'text-md': !customButton && size !== 'sm',
       'text-center text-lg': customButton && size === 'md',
       'text-center text-md': customButton && size === 'sm',
       'text-left': !customButton,
+      'p-2': size === 'sm',
+      'px-4 py-2': size !== 'sm',
+    },
+  );
+
+  const dropdownClasses = clsx(
+    'absolute right-0 rounded-lg shadow-sm bg-background-secondary overflow-hidden',
+    'border border-border-primary-10 z-10',
+    {
+      'w-[135px]': customButton && size === 'md',
+      'w-[120px]': customButton && size === 'sm',
+      'w-full': !customButton,
+      'mt-2': direction === 'down',
+      'mb-2 bottom-full': direction === 'up',
     },
   );
 
@@ -79,17 +113,7 @@ const Dropdown = ({
       )}
 
       {isOpen && (
-        <div
-          className={clsx(
-            'absolute right-0 mt-2 rounded-lg shadow-sm bg-background-secondary overflow-hidden',
-            'border border-border-primary-50',
-            {
-              'w-[135px]': customButton && size === 'md',
-              'w-[120px]': customButton && size === 'sm',
-              'w-full': !customButton,
-            },
-          )}
-        >
+        <div className={dropdownClasses}>
           <div className="py-1">
             {options.map((option) => (
               <button

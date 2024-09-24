@@ -1,8 +1,9 @@
 import { basicAuthAxios } from './basicAxios';
 import { TaskCreateRequestBody, TaskEditRequestBody } from '@/types/listTypes';
+import { useQuery, useMutation, QueryClient } from '@tanstack/react-query';
 
 // 할 일 생성
-export const createTask = (
+const createTask = (
   groupId: number,
   taskListId: number,
   data: TaskCreateRequestBody,
@@ -13,26 +14,54 @@ export const createTask = (
   );
 };
 
-// 특정 할 일 리스트의 할 일들 불러오기
-export const getTasks = (groupId: number, taskListId: number) => {
+export const useCreateTaskMutation = (
+  groupId: number,
+  taskListId: number,
+  data: TaskCreateRequestBody,
+) => {
+  return useMutation({
+    mutationFn: () => createTask(groupId, taskListId, data),
+  });
+};
+
+// 특정 일자, 특정 할 일 리스트의 할 일들 불러오기
+const getTasks = (groupId: number, taskListId: number, date: string) => {
   return basicAuthAxios.get(
-    `/groups/${groupId}/task-lists/${taskListId}/tasks`,
+    `/groups/${groupId}/task-lists/${taskListId}/tasks?date=${date}`,
   );
 };
 
-// 특정 할 일 불러오기
-export const getTaskDetail = (
+export const useTasksQuery = (
   groupId: number,
   taskListId: number,
-  taskId: number,
+  date: string,
 ) => {
+  return useQuery({
+    queryKey: ['groups', groupId, 'taskLists', taskListId, 'tasks', date],
+    queryFn: () => getTasks(groupId, taskListId, date),
+  });
+};
+
+// 특정 할 일 불러오기
+const getTaskDetail = (groupId: number, taskListId: number, taskId: number) => {
   return basicAuthAxios.get(
     `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
   );
 };
 
+export const useTaskDetailQuery = (
+  groupId: number,
+  taskListId: number,
+  taskId: number,
+) => {
+  return useQuery({
+    queryKey: ['groups', groupId, 'taskLists', taskListId, 'tasks', taskId],
+    queryFn: () => getTaskDetail(groupId, taskListId, taskId),
+  });
+};
+
 // 특정 할 일 수정
-export const editTaskDetail = (
+const editTaskDetail = (
   groupId: number,
   taskListId: number,
   taskId: number,
@@ -44,8 +73,19 @@ export const editTaskDetail = (
   );
 };
 
+export const useEditTaskDetailMutation = (
+  groupId: number,
+  taskListId: number,
+  taskId: number,
+  data: TaskEditRequestBody,
+) => {
+  return useMutation({
+    mutationFn: () => editTaskDetail(groupId, taskListId, taskId, data),
+  });
+};
+
 // 특정 할 일 삭제
-export const deleteTaskDetail = (
+const deleteTaskDetail = (
   groupId: number,
   taskListId: number,
   taskId: number,
@@ -55,8 +95,18 @@ export const deleteTaskDetail = (
   );
 };
 
+export const useDeleteTaskDetailMutation = (
+  groupId: number,
+  taskListId: number,
+  taskId: number,
+) => {
+  return useMutation({
+    mutationFn: () => deleteTaskDetail(groupId, taskListId, taskId),
+  });
+};
+
 // 특정 할 일 순서 변경
-export const orderTaskDetail = (
+const orderTaskDetail = (
   groupId: number,
   taskListId: number,
   taskId: number,
@@ -68,8 +118,20 @@ export const orderTaskDetail = (
   );
 };
 
+export const useOrderTaskDetailMutation = (
+  groupId: number,
+  taskListId: number,
+  taskId: number,
+  displayIndex: number,
+) => {
+  return useMutation({
+    mutationFn: () =>
+      orderTaskDetail(groupId, taskListId, taskId, displayIndex),
+  });
+};
+
 // 반복 할 일 생성
-export const createRecurringTask = (
+const createRecurringTask = (
   groupId: number,
   taskListId: number,
   data: TaskCreateRequestBody,
@@ -80,14 +142,25 @@ export const createRecurringTask = (
   );
 };
 
-// 반복 할 일 삭제
-export const deleteRecurringTask = (
+export const useCreateRecurringTaskMutation = (
   groupId: number,
   taskListId: number,
-  taskId: number,
-  recurringId: number,
+  data: TaskCreateRequestBody,
 ) => {
+  return useMutation({
+    mutationFn: () => createRecurringTask(groupId, taskListId, data),
+  });
+};
+
+// 반복 할 일 삭제
+const deleteRecurringTask = ({ recurringId }: any) => {
   return basicAuthAxios.delete(
-    `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}/recurring/${recurringId}`,
+    `/groups/{groupId}/task-lists/{taskListId}/tasks/{taskId}/recurring/${recurringId}`,
   );
+};
+
+export const useDeleteRecurringTaskMutation = () => {
+  return useMutation({
+    mutationFn: deleteRecurringTask,
+  });
 };
