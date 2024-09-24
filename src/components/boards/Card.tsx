@@ -2,8 +2,19 @@ import Kebab from '@/assets/kebab.svg';
 import Dropdown, { DropdownOption } from '../common/Dropdown';
 import Profile from '@/assets/profile_member_large.svg';
 import Heart from '@/assets/heart.svg';
+import { useRouter } from 'next/router';
 
-const Card = () => {
+interface CardProps {
+  id: number;
+  title: string;
+  writerNickname: string;
+  createdAt: string;
+  likeCount: number;
+}
+
+const Card = ({ id }: CardProps) => {
+  const router = useRouter();
+
   const kebabOptions: DropdownOption[] = [
     { label: '수정하기', value: 'edit' },
     { label: '삭제하기', value: 'delete' },
@@ -19,8 +30,15 @@ const Card = () => {
     console.log('Selected option:', selectedOption);
   };
 
+  const handleCardClick = () => {
+    router.push(`/boards/${id}`);
+  };
+
   return (
-    <div className="border rounded-[12px] bg-background-secondary border-background-tertiary pt-6 px-4 pb-4">
+    <div
+      onClick={handleCardClick}
+      className="border rounded-[12px] bg-background-secondary border-background-tertiary pt-6 px-4 pb-4"
+    >
       <div className="flex justify-between md:flex-row">
         <div>
           <p className="text-text-secondary text-md font-medium">

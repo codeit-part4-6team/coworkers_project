@@ -60,7 +60,7 @@ const Boards = () => {
         <Card />
         <Card />
       </div>
-      <div className="fixed bottom-[230px] right-4 md:bottom-[125px] lg:bottom-[45px] lg:right-[360px]">
+      <div className="fixed bottom-[230px] w-[104px] h-12 right-4 md:bottom-[125px] lg:bottom-[45px] lg:right-[360px]">
         <FloatingButton
           option="add"
           text="글쓰기"
