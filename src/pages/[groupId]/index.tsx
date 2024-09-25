@@ -9,7 +9,24 @@ import { getGroup } from '@/lib/groupApi';
 interface Task {
   id: number;
   name: string;
-  // Add other task properties as needed
+  description: string;
+  date: string;
+  doneAt: string | null;
+  updatedAt: string;
+  user: any | null;
+  recurringId: number;
+  deletedAt: string | null;
+  displayIndex: number;
+  writer: {
+    id: number;
+    nickname: string;
+    image: string | null;
+  };
+  doneBy: {
+    user: any | null;
+  };
+  commentCount: number;
+  frequency: string;
 }
 
 interface TaskList {
