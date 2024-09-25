@@ -24,9 +24,9 @@ const CardPage = () => {
   };
 
   return (
-    <div className="px-4 mt-10">
+    <div className="px-4 mt-10 md:px-6 md:mt-14 lg:px-[360px]">
       <div className="flex justify-between items-center">
-        <h3 className="text-text-secondary font-medium text-lg">
+        <h3 className="text-text-secondary font-medium text-lg md:text-2lg">
           게시글 제목 영역입니다.
         </h3>
         <Dropdown
@@ -57,7 +57,9 @@ const CardPage = () => {
         </div>
       </div>
       <p className="font-regular text-text-secondary text-md mt-12">본문</p>
-      <h2 className="mt-20 text-text-primary font-medium text-lg">댓글달기</h2>
+      <h2 className="mt-20 text-text-primary font-medium text-lg md:text-xl">
+        댓글달기
+      </h2>
       <Input
         placeholder="댓글을 입력해주세요."
         option="text"

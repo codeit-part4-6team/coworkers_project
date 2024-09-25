@@ -29,7 +29,7 @@ const Boards = ({ id }: Article) => {
         const response = await getArticle();
         const { list } = response.data;
 
-        setArticles(list); // API에서 받아온 게시글 목록 저장
+        setArticles(list);
       } catch (error) {
         console.error('Error fetching articles:', error);
       }
