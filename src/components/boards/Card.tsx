@@ -43,16 +43,13 @@ const Card = ({
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // 1월이 0이므로 +1
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}.${month}.${day}`;
   };
 
   return (
-    <div
-      onClick={handleCardClick}
-      className="border rounded-[12px] bg-background-secondary border-background-tertiary pt-6 px-4 pb-4"
-    >
+    <div className="border rounded-[12px] bg-background-secondary border-background-tertiary pt-6 px-4 pb-4">
       <div className="flex justify-between md:flex-row">
         <div>
           <p className="text-text-secondary text-md font-medium">{title}</p>

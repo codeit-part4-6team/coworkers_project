@@ -19,7 +19,7 @@ interface Article {
   likeCount: number;
 }
 
-const Boards = () => {
+const Boards = ({ id }: Article) => {
   const router = useRouter();
   const [articles, setArticles] = useState<Article[]>([]);
 
@@ -40,6 +40,10 @@ const Boards = () => {
 
   const handleButtonClick = () => {
     router.push('/addboard');
+  };
+
+  const handleCardClick = () => {
+    router.push(`/boards/${id}`);
   };
 
   const orderOprions: DropdownOption[] = [
@@ -86,14 +90,16 @@ const Boards = () => {
       </div>
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
         {articles.map((article) => (
-          <Card
-            key={article.id}
-            id={article.id}
-            title={article.title}
-            writerNickname={article.writer.nickname}
-            createdAt={article.createdAt}
-            likeCount={article.likeCount}
-          />
+          <div onClick={handleCardClick}>
+            <Card
+              key={article.id}
+              id={article.id}
+              title={article.title}
+              writerNickname={article.writer.nickname}
+              createdAt={article.createdAt}
+              likeCount={article.likeCount}
+            />
+          </div>
         ))}
       </div>
       <div className="fixed bottom-[230px] w-[104px] h-12 right-4 md:bottom-[125px] lg:bottom-[45px] lg:right-[360px]">
