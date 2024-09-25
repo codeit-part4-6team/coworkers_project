@@ -55,7 +55,7 @@ const Dropdown = ({
     onChange(option);
   };
 
-  const displayText = selectedOption?.label || placeholder || options[0]?.label;
+  const displayText = placeholder || selectedOption?.label || options[0]?.label;
 
   const buttonClasses = clsx(
     'inline-flex justify-between items-center font-regular focus:outline-none',
