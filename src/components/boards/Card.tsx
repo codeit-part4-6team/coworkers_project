@@ -2,7 +2,6 @@ import Kebab from '@/assets/kebab.svg';
 import Dropdown, { DropdownOption } from '../common/Dropdown';
 import Profile from '@/assets/profile_member_large.svg';
 import Heart from '@/assets/heart.svg';
-import { useRouter } from 'next/router';
 
 interface CardProps {
   id: number;
@@ -19,8 +18,6 @@ const Card = ({
   createdAt,
   likeCount,
 }: CardProps) => {
-  const router = useRouter();
-
   const kebabOptions: DropdownOption[] = [
     { label: '수정하기', value: 'edit' },
     { label: '삭제하기', value: 'delete' },
@@ -34,10 +31,6 @@ const Card = ({
 
   const handleChange = (selectedOption: DropdownOption) => {
     console.log('Selected option:', selectedOption);
-  };
-
-  const handleCardClick = () => {
-    router.push(`/boards/${id}`);
   };
 
   const formatDate = (dateString: string) => {
@@ -57,7 +50,7 @@ const Card = ({
             {formatDate(createdAt)}
           </p>
         </div>
-        <div className="hidden md:block">
+        <div className="hidden md:block" onClick={(e) => e.stopPropagation()}>
           <Dropdown
             options={kebabOptions}
             onChange={handleChange}
@@ -81,7 +74,7 @@ const Card = ({
               {likeCount}
             </p>
           </div>
-          <div className="md:hidden">
+          <div className="md:hidden flex" onClick={(e) => e.stopPropagation()}>
             <Dropdown
               options={kebabOptions}
               onChange={handleChange}

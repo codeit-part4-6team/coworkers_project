@@ -42,8 +42,8 @@ const Boards = ({ id }: Article) => {
     router.push('/addboard');
   };
 
-  const handleCardClick = () => {
-    router.push(`/boards/${id}`);
+  const handleCardClick = (articleId: number) => {
+    router.push(`/boards/${articleId}`);
   };
 
   const orderOprions: DropdownOption[] = [
@@ -90,7 +90,7 @@ const Boards = ({ id }: Article) => {
       </div>
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
         {articles.map((article) => (
-          <div onClick={handleCardClick}>
+          <div key={article.id} onClick={() => handleCardClick(article.id)}>
             <Card
               key={article.id}
               id={article.id}

@@ -6,8 +6,41 @@ import Heart from '@/assets/heart.svg';
 import Input from '@/components/input/Input';
 import Button from '@/components/common/Button';
 import Card from '@/components/boards/Card';
+import { getComment } from '@/lib/articleApi';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+
+interface Comment {
+  id: number;
+  writer: {
+    image: string;
+    nickname: string;
+    id: number;
+  };
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 const CardPage = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  const fetchComments = async () => {
+    if (!id) return;
+    try {
+      const response = await getComment(Number(id));
+      setComments(response.data.list);
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, [id]);
+
   const kebabOptions: DropdownOption[] = [
     { label: '수정하기', value: 'edit' },
     { label: '삭제하기', value: 'delete' },
@@ -70,7 +103,16 @@ const CardPage = () => {
         <Button option="solid" size="xsmall" text="등록" disabled={false} />
       </div>
       <div className="w-full border-t border-border-primary-10 my-8"></div>
-      <Card />
+      {comments.map((comment) => (
+        <Card
+          key={comment.id}
+          id={comment.id}
+          title={comment.content}
+          writerNickname={comment.writer.nickname}
+          createdAt={comment.createdAt}
+          likeCount={0}
+        />
+      ))}
     </div>
   );
 };
