@@ -27,17 +27,22 @@ const MemberItem = ({ member }: MemberItemProps) => {
   };
 
   return (
-    <div className="bg-background-secondary rounded-2xl py-3 px-4 flex justify-between items-start">
-      <div>
-        <div className="flex items-center mb-1">
-          <Member className="mr-2" />
-          <p className="font-medium text-md">{member.userName}</p>
+    <div className="bg-background-secondary rounded-2xl py-5 px-6 flex justify-between items-start">
+      <div className="flex items-start w-full">
+        <div className="hidden sm:block sm:mr-3">
+          <Member className="size-8" />
         </div>
-        <p className="text-xs text-text-secondary truncate">
-          {member.userEmail}
-        </p>
+        <div className="flex-grow">
+          <div className="flex items-center mb-1 sm:mb-0">
+            <Member className="size-6 mr-2 sm:hidden" />
+            <p className="font-medium text-md">{member.userName}</p>
+          </div>
+          <p className="text-xs text-text-secondary truncate">
+            {member.userEmail}
+          </p>
+        </div>
       </div>
-      <div className="self-stretch flex items-center">
+      <div className="self-stretch flex items-center ml-2">
         <Dropdown
           options={kebabOptions}
           onChange={handleChange}
