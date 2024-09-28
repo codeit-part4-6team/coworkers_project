@@ -63,7 +63,7 @@ const GroupMemberCard = ({ members }: GroupMemberCardProps) => {
           + 새로운 멤버 초대하기
         </button>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {members.map((member) => (
           <MemberItem key={member.userId} member={member} />
         ))}

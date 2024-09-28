@@ -157,9 +157,17 @@ const TodoListCard = ({ taskLists }: TodoListCardProps) => {
           + 새로운 목록 추가하기
         </button>
       </div>
-      {taskLists.map((taskList, index) => (
-        <TaskItem key={taskList.id} taskList={taskList} index={index} />
-      ))}
+      {taskLists.length > 0 ? (
+        taskLists.map((taskList, index) => (
+          <TaskItem key={taskList.id} taskList={taskList} index={index} />
+        ))
+      ) : (
+        <div className="flex justify-center items-center py-16">
+          <p className="text-text-default font-medium text-sm py-16">
+            아직 할 일 목록이 없습니다.
+          </p>
+        </div>
+      )}
     </div>
   );
 };
