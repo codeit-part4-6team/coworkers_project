@@ -4,6 +4,7 @@ import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   useCreateTaskListMutation,
+  useDeleteTaskListDetailMutation,
   useTaskListsQuery,
 } from '@/lib/taskListApi';
 import Modal from '@/components/common/Modal';
@@ -15,6 +16,8 @@ import { TaskList } from '@/types/taskTypes';
 interface TaskItemProps {
   taskList: TaskList;
   index: number;
+  groupId: number;
+  onDelete: () => void;
 }
 
 const pointColors = [
@@ -66,17 +69,33 @@ const ProgressChart = ({
   );
 };
 
-const TaskItem = ({ taskList, index }: TaskItemProps) => {
+const TaskItem = ({ taskList, index, groupId, onDelete }: TaskItemProps) => {
   const colorIndex = index % pointColors.length;
   const borderColor = `${pointColors[colorIndex]}`;
+  const queryClient = useQueryClient();
+
+  const deleteTaskListMutation = useDeleteTaskListDetailMutation(
+    groupId,
+    taskList.id,
+  );
 
   const kebabOptions = [
     { label: '수정하기', value: 'edit' },
     { label: '삭제하기', value: 'delete' },
   ];
 
-  const handleChange = (selectedOption: DropdownOption) => {
-    console.log('Selected option:', selectedOption);
+  const handleChange = async (selectedOption: DropdownOption) => {
+    if (selectedOption.value === 'delete') {
+      try {
+        await deleteTaskListMutation.mutateAsync();
+        queryClient.invalidateQueries({ queryKey: ['taskLists', groupId] });
+        onDelete();
+      } catch (error) {
+        console.error('Failed to delete task list:', error);
+      }
+    } else if (selectedOption.value === 'edit') {
+      console.log('Edit option selected');
+    }
   };
 
   const totalTasks = taskList.tasks.length;
@@ -185,7 +204,13 @@ const TodoListCard = ({ groupId }: { groupId: number }) => {
       </div>
       {taskLists.length > 0 ? (
         taskLists.map((taskList, index) => (
-          <TaskItem key={taskList.id} taskList={taskList} index={index} />
+          <TaskItem
+            key={taskList.id}
+            taskList={taskList}
+            index={index}
+            groupId={groupId}
+            onDelete={() => refetch()}
+          />
         ))
       ) : (
         <div className="flex justify-center items-center py-16">
