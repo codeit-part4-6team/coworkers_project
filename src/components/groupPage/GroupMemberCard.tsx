@@ -27,7 +27,7 @@ const MemberItem = ({ member }: MemberItemProps) => {
   };
 
   return (
-    <div className="bg-background-secondary rounded-2xl py-5 px-6 flex justify-between items-start">
+    <div className="bg-background-secondary rounded-2xl sm:py-5 sm:px-6 py-3 px-4 flex justify-between items-start">
       <div className="flex items-start w-full">
         <div className="hidden sm:block sm:mr-3">
           <Member className="size-8" />
