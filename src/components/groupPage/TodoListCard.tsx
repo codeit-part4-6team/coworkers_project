@@ -110,29 +110,36 @@ const TaskItem = ({ taskList, index }: TaskItemProps) => {
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
-    <div className="relative bg-background-secondary rounded-xl flex items-center overflow-hidden">
-      <div className={`absolute left-0 top-0 bottom-0 w-3 ${borderColor}`} />
-      <div className="flex-1 flex justify-between items-center pl-4 pr-2 py-3 ml-2">
-        <span className="font-medium text-md text-white">{taskList.name}</span>
-        <div className="flex items-center">
-          <div className="flex items-center bg-background-primary rounded-xl py-1 px-2 mr-1">
-            {progressPercentage === 100 ? (
-              <Done className="size-4" />
-            ) : (
-              <div className="size-4 flex items-center">
-                <ProgressChart progress={progressPercentage} />
-              </div>
-            )}
-            <span className="text-sm w-5 text-color-brand-primary ml-2">
-              {completedTasks}/{totalTasks}
-            </span>
+    <div className="relative bg-transparent">
+      <div className="absolute inset-0 overflow-hidden rounded-xl">
+        <div className="absolute inset-0 bg-background-secondary" />
+        <div className={`absolute left-0 top-0 bottom-0 w-3 ${borderColor}`} />
+      </div>
+      <div className="relative flex items-center">
+        <div className="flex-1 flex justify-between items-center pl-4 pr-2 py-3 ml-2">
+          <span className="font-medium text-md text-white">
+            {taskList.name}
+          </span>
+          <div className="flex items-center">
+            <div className="flex items-center bg-background-primary rounded-xl py-1 px-2 mr-1">
+              {progressPercentage === 100 ? (
+                <Done className="size-4" />
+              ) : (
+                <div className="size-4 flex items-center">
+                  <ProgressChart progress={progressPercentage} />
+                </div>
+              )}
+              <span className="text-sm w-5 text-color-brand-primary ml-2">
+                {completedTasks}/{totalTasks}
+              </span>
+            </div>
+            <Dropdown
+              options={kebabOptions}
+              onChange={handleChange}
+              customButton={<Kebab width="16" height="16" />}
+              size="sm"
+            />
           </div>
-          <Dropdown
-            options={kebabOptions}
-            onChange={handleChange}
-            customButton={<Kebab width="16" height="16" />}
-            size="sm"
-          />
         </div>
       </div>
     </div>
