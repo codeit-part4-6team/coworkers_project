@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   useCreateTaskListMutation,
   useDeleteTaskListDetailMutation,
+  useEditTaskListDetailMutation,
   useTaskListsQuery,
 } from '@/lib/taskListApi';
 import Modal from '@/components/common/Modal';
@@ -18,6 +19,7 @@ interface TaskItemProps {
   index: number;
   groupId: number;
   onDelete: () => void;
+  onEdit: (id: number, name: string) => void;
 }
 
 const pointColors = [
@@ -69,7 +71,13 @@ const ProgressChart = ({
   );
 };
 
-const TaskItem = ({ taskList, index, groupId, onDelete }: TaskItemProps) => {
+const TaskItem = ({
+  taskList,
+  index,
+  groupId,
+  onDelete,
+  onEdit,
+}: TaskItemProps) => {
   const colorIndex = index % pointColors.length;
   const borderColor = `${pointColors[colorIndex]}`;
   const queryClient = useQueryClient();
@@ -94,7 +102,7 @@ const TaskItem = ({ taskList, index, groupId, onDelete }: TaskItemProps) => {
         console.error('Failed to delete task list:', error);
       }
     } else if (selectedOption.value === 'edit') {
-      console.log('Edit option selected');
+      onEdit(taskList.id, taskList.name);
     }
   };
 
@@ -144,6 +152,8 @@ const TaskItem = ({ taskList, index, groupId, onDelete }: TaskItemProps) => {
 
 const TodoListCard = ({ groupId }: { groupId: number }) => {
   const [newListName, setNewListName] = useState('');
+  const [editingListId, setEditingListId] = useState<number | null>(null);
+  const [editingListName, setEditingListName] = useState('');
   const queryClient = useQueryClient();
   const { openModal, closeModal } = useModalStore();
   const {
@@ -154,14 +164,24 @@ const TodoListCard = ({ groupId }: { groupId: number }) => {
   } = useTaskListsQuery(groupId);
 
   const createTaskListMutation = useCreateTaskListMutation();
+  const editTaskListMutation = useEditTaskListDetailMutation(
+    groupId,
+    editingListId || 0,
+    editingListName,
+  );
 
-  const handleOpenModal = () => {
-    openModal('newTaskList');
+  const handleOpenModal = (modalId: string) => {
+    openModal(modalId);
   };
 
-  const handleCloseModal = () => {
-    closeModal('newTaskList');
-    setNewListName('');
+  const handleCloseModal = (modalId: string) => {
+    closeModal(modalId);
+    if (modalId === 'newTaskList') {
+      setNewListName('');
+    } else if (modalId === 'editTaskList') {
+      setEditingListId(null);
+      setEditingListName('');
+    }
   };
 
   const handleCreateList = async () => {
@@ -172,13 +192,32 @@ const TodoListCard = ({ groupId }: { groupId: number }) => {
           name: newListName,
         });
         queryClient.invalidateQueries({ queryKey: ['taskLists', groupId] });
-        refetch(); // 명시적으로 refetch를 호출하여 데이터를 다시 불러옴
+        refetch();
         setNewListName('');
-        handleCloseModal();
+        handleCloseModal('newTaskList');
       } catch (error) {
         console.error('Failed to create new task list:', error);
       }
     }
+  };
+
+  const handleEditList = async () => {
+    if (editingListName.trim() && editingListId) {
+      try {
+        await editTaskListMutation.mutateAsync();
+        queryClient.invalidateQueries({ queryKey: ['taskLists', groupId] });
+        refetch();
+        handleCloseModal('editTaskList');
+      } catch (error) {
+        console.error('Failed to edit task list:', error);
+      }
+    }
+  };
+
+  const handleEdit = (id: number, name: string) => {
+    setEditingListId(id);
+    setEditingListName(name);
+    handleOpenModal('editTaskList');
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -197,7 +236,7 @@ const TodoListCard = ({ groupId }: { groupId: number }) => {
         </h2>
         <button
           className="text-color-brand-primary text-sm font-medium"
-          onClick={handleOpenModal}
+          onClick={() => handleOpenModal('newTaskList')}
         >
           + 새로운 목록 추가하기
         </button>
@@ -210,6 +249,7 @@ const TodoListCard = ({ groupId }: { groupId: number }) => {
             index={index}
             groupId={groupId}
             onDelete={() => refetch()}
+            onEdit={handleEdit}
           />
         ))
       ) : (
@@ -228,7 +268,7 @@ const TodoListCard = ({ groupId }: { groupId: number }) => {
       >
         <div className="flex flex-col">
           <button
-            onClick={handleCloseModal}
+            onClick={() => handleCloseModal('newTaskList')}
             className="ml-auto text-gray-400 hover:text-white mb-2"
           >
             <XIcon />
@@ -249,6 +289,40 @@ const TodoListCard = ({ groupId }: { groupId: number }) => {
             className="w-[280px] mx-auto bg-color-brand-primary text-white py-3 rounded-xl font-medium hover:bg-[#0d9668] transition-colors"
           >
             만들기
+          </button>
+        </div>
+      </Modal>
+      <Modal
+        id="editTaskList"
+        className="sm:w-96 w-full p-6 rounded-2xl bg-background-secondary text-text-primary
+                   fixed sm:top-1/2 sm:left-1/2 sm:right-1/2 sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2
+                   top-auto bottom-0 left-0 right-0 transform-none rounded-t-xl sm:rounded-b-xl rounded-b-none"
+        positionBottom
+      >
+        <div className="flex flex-col">
+          <button
+            onClick={() => handleCloseModal('editTaskList')}
+            className="ml-auto text-gray-400 hover:text-white mb-2"
+          >
+            <XIcon />
+          </button>
+          <p className="text-center text-lg font-medium mb-4">
+            할 일 목록 수정
+          </p>
+
+          <input
+            type="text"
+            value={editingListName}
+            onChange={(e) => setEditingListName(e.target.value)}
+            className="w-[280px] mx-auto p-3 bg-background-secondary text-text-primary rounded-xl mb-6 
+                       border border-text-default focus:outline-none
+                       placeholder-text-default"
+          />
+          <button
+            onClick={handleEditList}
+            className="w-[280px] mx-auto bg-color-brand-primary text-white py-3 rounded-xl font-medium hover:bg-[#0d9668] transition-colors"
+          >
+            수정하기
           </button>
         </div>
       </Modal>
