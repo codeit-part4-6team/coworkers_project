@@ -13,7 +13,9 @@ export default function GoogleAuth() {
       // 구글 인증 코드로 서버 API 호출
       const response = await axios.get(`/api/googleToken?code=${authCode}`);
       const accessToken = response.data.access_token;
+      const idToken = response.data.id_token;
 
+      console.log(response);
       console.log(accessToken);
 
       if (!response) {
@@ -25,7 +27,7 @@ export default function GoogleAuth() {
           'GOOGLE',
           'test',
           'http://localhost:3000/socialauth/google',
-          accessToken,
+          idToken,
         );
 
         // 로그인 정보 저장
@@ -34,7 +36,8 @@ export default function GoogleAuth() {
         localStorage.setItem('userData', JSON.stringify(providerResponse.data.user));
 
         // 실 서비스 페이지로 이동
-        router.push('/');
+        // router.push('/');
+        console.log(providerResponse);
       }
     } catch (error) {
       setErrorMessage('로그인 처리 중 오류가 발생했습니다.');

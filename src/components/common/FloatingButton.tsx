@@ -39,10 +39,9 @@ export default function FloatingButton({
   };
 
   return (
-    <div className="w-full h-full">
-      <button
-        className={clsx(defaultClassName, optionClassName[option])}
-        {...rest}
+    <div className='w-full h-full'>
+      <button className={clsx(defaultClassName, optionClassName[option])}
+      {...rest}
       >
         {floatingIcon()}
         {text}
