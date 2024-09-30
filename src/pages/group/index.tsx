@@ -7,11 +7,11 @@ const NoteamPage = () => {
 
   const handleCreateGroup = () => {
     router.push('/addteam');
-  }
+  };
 
   const handleJoinGroup = () => {
     router.push('/jointeam');
-  }
+  };
 
   return (
     <div className="py-[185px] md:py-[272px] lg:py-[212px]">
@@ -25,10 +25,16 @@ const NoteamPage = () => {
         <p>팀을 생성하거나 팀에 참여해보세요.</p>
       </div>
       <div className="w-[186px] mx-auto mt-12 md:mt-20">
-        <button className="w-full border border-color-brand-primary rounded-xl h-12 text-center bg-color-brand-primary mt-4">
+        <button
+          className="w-full border border-color-brand-primary rounded-xl h-12 text-center bg-color-brand-primary mt-4"
+          onClick={handleCreateGroup}
+        >
           팀 생성하기
         </button>
-        <button className="w-full border border-color-brand-primary rounded-xl h-12 text-center text-color-brand-primary mt-4">
+        <button
+          className="w-full border border-color-brand-primary rounded-xl h-12 text-center text-color-brand-primary mt-4"
+          onClick={handleJoinGroup}
+        >
           팀 참여하기
         </button>
       </div>
