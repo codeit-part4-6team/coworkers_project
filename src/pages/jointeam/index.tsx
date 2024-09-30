@@ -2,6 +2,7 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import Button from '@/components/common/Button';
 import { acceptGroupInvitation } from '@/lib/groupApi';
+import { basicAuthAxios } from '@/lib/basicAxios';
 
 const JoinTeamPage = () => {
   const [teamLink, setTeamLink] = useState('');
@@ -12,6 +13,16 @@ const JoinTeamPage = () => {
   const handleTeamLinkChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTeamLink(e.target.value);
     setErrors({});
+  };
+
+  const getUserEmail = async (): Promise<string | null> => {
+    try {
+      const { data } = await basicAuthAxios.get('/user');
+      return data.email;
+    } catch (error) {
+      console.error('Failed to fetch user email:', error);
+      return null;
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -32,9 +43,15 @@ const JoinTeamPage = () => {
 
     setIsLoading(true);
     try {
-      const userEmail = 'user@example.com';
-      await acceptGroupInvitation({ userEmail, token });
-      router.push(`/groups/${token}`);
+      const userEmail = await getUserEmail();
+      if (!userEmail) {
+        setErrors({ name: '유저 이메일을 가져올 수 없습니다.' });
+        return;
+      }
+
+      const response = await acceptGroupInvitation({ userEmail, token });
+      const { groupId } = response.data;
+      router.push(`/group/${groupId}`);
     } catch (error) {
       console.error('Failed to join group:', error);
       setErrors({ name: '그룹에 참여하는 중 오류가 발생했습니다.' });
