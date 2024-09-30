@@ -1,9 +1,8 @@
-export interface InputProp extends React.InputHTMLAttributes<HTMLInputElement> {
-    labeltext : string;
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+    labeltext? : string;
     option : 'text' | 'password';
+    errorText? : string;
+    inValid : boolean;
     inputSize : 'large' | 'small';
     placeholder : string;
-    errorText? : string[];
-    passwordCheck? : string;
-    pattern? : 'email' | 'password' | 'nickName' | 'passwordCheck';
 }

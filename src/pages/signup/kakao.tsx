@@ -10,8 +10,7 @@ export default function KakaoAuth() {
   const handleKakaoLogin = async (authToken: string) => {
     try {
       // signInProvider로 인증 요청
-      const response = await signInProvider('KAKAO', 'test', 'http://localhost:3000/socialauth/kakao', authToken);
-      console.log(response);
+      const response = await signInProvider('KAKAO', 'test', 'http://localhost:3000/signup/kakao', authToken);
       //로그인 정보 저장
       localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('refreshToken', response.data.refreshToken);

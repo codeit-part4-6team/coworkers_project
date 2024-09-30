@@ -36,7 +36,7 @@ export default function FloatingButton( {option, text, ...rest} : FloatingButton
   }
 
   return (
-    <div>
+    <div className='w-full h-full'>
       <button className={clsx(defaultClassName, optionClassName[option])}
       {...rest}
       >
