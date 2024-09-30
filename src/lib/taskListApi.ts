@@ -42,10 +42,9 @@ const editTaskListDetail = (
   taskListId: number,
   name: string,
 ) => {
-  return basicAuthAxios.patch(
-    `/groups/${groupId}/task-lists/${taskListId}`,
-    name,
-  );
+  return basicAuthAxios.patch(`/groups/${groupId}/task-lists/${taskListId}`, {
+    name: name,
+  });
 };
 
 export const useEditTaskListDetailMutation = (

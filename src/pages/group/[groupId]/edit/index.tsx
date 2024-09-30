@@ -1,16 +1,34 @@
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import Button from '@/components/common/Button';
 import Picture from '@/assets/picture.svg';
 import Pencil from '@/assets/pencil.svg';
-import { uploadImage, createGroup } from '@/lib/groupApi';
-
-const AddTeamPage = () => {
+import { uploadImage, editGroup, getGroup } from '@/lib/groupApi';
+const EditTeamPage = () => {
   const [teamName, setTeamName] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [errors, setErrors] = useState({ image: '', name: '' });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { groupId } = router.query;
+
+  useEffect(() => {
+    const fetchGroupDetails = async () => {
+      if (groupId) {
+        try {
+          setIsLoading(true);
+          const response = await getGroup(Number(groupId));
+          setTeamName(response.data.name);
+          setImageUrl(response.data.image);
+        } catch (error) {
+          console.error('Failed to load group details:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    fetchGroupDetails();
+  }, [groupId]);
 
   const handleTeamNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTeamName(event.target.value);
@@ -52,16 +70,15 @@ const AddTeamPage = () => {
 
     setIsLoading(true);
     try {
-      const response = await createGroup({ image: imageUrl, name: teamName });
-      const groupId = response.data.id;
-      router.push(`/${groupId}`);
+      await editGroup(Number(groupId), { image: imageUrl, name: teamName });
+      router.push(`/group/${groupId}`);
     } catch (err: any) {
       if (err.response && err.response.status === 409) {
         setErrors((prev) => ({ ...prev, name: '이미 존재하는 이름입니다.' }));
       } else {
         setErrors((prev) => ({
           ...prev,
-          name: '팀 생성에 실패했습니다. 다시 시도해주세요.',
+          name: '팀 수정에 실패했습니다. 다시 시도해주세요.',
         }));
       }
     } finally {
@@ -74,7 +91,9 @@ const AddTeamPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center bg-background-primary text-text-primary py-[140px]">
-      <div className="text-4xl font-medium mb-20 text-center">팀 생성하기</div>
+      <div className="text-4xl font-medium mb-20 text-center">
+        팀 수정하기
+      </div>
       <div className="w-full max-w-[480px]">
         <form onSubmit={handleSubmit}>
           <div className="relative">
@@ -129,7 +148,7 @@ const AddTeamPage = () => {
             <Button
               option="solid"
               size="large"
-              text="생성하기"
+              text="수정하기"
               type="submit"
               disabled={isLoading}
             />
@@ -143,4 +162,4 @@ const AddTeamPage = () => {
   );
 };
 
-export default AddTeamPage;
+export default EditTeamPage;

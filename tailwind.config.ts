@@ -69,6 +69,7 @@ const config: Config = {
         inverse: '#F8FAFC',
         brand: '#10B981',
       },
+      transparent: 'transparent',
     },
     fontSize: {
       xs: ['12px', '14px'],

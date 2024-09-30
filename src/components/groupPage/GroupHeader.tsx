@@ -1,19 +1,25 @@
 import Gear from '@/assets/gear.svg';
 import thumbnail from '@/assets/thumbnail_team.png';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
+import { useRouter } from 'next/router';
 
 interface GroupHeaderProps {
   groupName: string;
+  groupId: number;
 }
 
-const GroupHeader = ({ groupName }: GroupHeaderProps) => {
+const GroupHeader = ({ groupName, groupId }: GroupHeaderProps) => {
+  const router = useRouter();
+
   const teamOptions: DropdownOption[] = [
     { label: '수정하기', value: 'edit' },
     { label: '삭제하기', value: 'delete' },
   ];
 
-  const handleTeamOptionChange = (option: DropdownOption) => {
-    console.log('Selected option:', option);
+  const handleOptionChange = (option: DropdownOption) => {
+    if (option.value === 'edit') {
+      router.push(`/group/${groupId}/edit`);
+    }
   };
 
   return (
@@ -31,7 +37,7 @@ const GroupHeader = ({ groupName }: GroupHeaderProps) => {
           <h1 className="text-xl font-bold text-white">{groupName}</h1>
           <Dropdown
             options={teamOptions}
-            onChange={handleTeamOptionChange}
+            onChange={handleOptionChange}
             customButton={<Gear />}
             size="md"
           />

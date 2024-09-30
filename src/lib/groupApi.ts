@@ -5,6 +5,18 @@ export const createGroup = (groupData: { image: string; name: string }) => {
   return basicAuthAxios.post(`/groups`, groupData);
 };
 
+//이미지 업로드
+export const uploadImage = (file: File) => {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  return basicAuthAxios.post('/images/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
 // 특정 그룹 정보 불러오기
 export const getGroup = (groupId: number) => {
   return basicAuthAxios.get(`/groups/${groupId}`);

@@ -79,7 +79,7 @@ const DonutChart = ({ size, progress, strokeWidth }: DonutChartProps) => {
           </linearGradient>
         </defs>
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
+      <div className="absolute inset-0 flex flex-col items-center justify-center md:hidden">
         <span className="text-sm font-medium">오늘</span>
         <span className="text-2xl font-bold bg-color-brand-gradient bg-clip-text text-transparent">
           {progress}%
@@ -115,7 +115,16 @@ const ReportCard = ({ taskLists }: ReportCardProps) => {
             progress={completionPercentage}
             strokeWidth={24}
           />
-          <div className="flex-1 w-full">
+          <div className="hidden md:block mt-4 md:mt-0">
+            <p className="text-md font-medium">오늘의</p>
+            <p className="text-md font-medium pb-1">진행 상황</p>
+            <p className="text-4xl font-bold">
+            <span className="bg-color-brand-gradient bg-clip-text inline-block text-transparent">
+            {completionPercentage}%
+              </span>
+            </p>
+          </div>
+          <div className="flex-1 w-full md:mt-0">
             <div className="flex flex-col space-y-4 items-end">
               <div className="bg-background-tertiary rounded-lg p-4 flex justify-between items-center w-full max-w-[400px]">
                 <div>
