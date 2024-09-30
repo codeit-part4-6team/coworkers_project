@@ -5,11 +5,33 @@ import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 interface Task {
   id: number;
   name: string;
+  description: string;
+  date: string;
+  doneAt: string | null;
+  updatedAt: string;
+  user: any | null;
+  recurringId: number;
+  deletedAt: string | null;
+  displayIndex: number;
+  writer: {
+    id: number;
+    nickname: string;
+    image: string | null;
+  };
+  doneBy: {
+    user: any | null;
+  };
+  commentCount: number;
+  frequency: string;
 }
 
 interface TaskList {
   id: number;
   name: string;
+  createdAt: string;
+  updatedAt: string;
+  groupId: number;
+  displayIndex: number;
   tasks: Task[];
 }
 
@@ -79,9 +101,11 @@ const TaskItem = ({ taskList, index }: TaskItemProps) => {
   const handleChange = (selectedOption: DropdownOption) => {
     console.log('Selected option:', selectedOption);
   };
-  {/*수정필요*/}
+
   const totalTasks = taskList.tasks.length;
-  const completedTasks = taskList.tasks.length - 1;
+  const completedTasks = taskList.tasks.filter(
+    (task) => task.doneAt && task.doneBy.user !== null,
+  ).length;
   const progressPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 

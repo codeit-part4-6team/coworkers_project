@@ -4,11 +4,33 @@ import Done from '@/assets/img_done.svg';
 interface Task {
   id: number;
   name: string;
+  description: string;
+  date: string;
+  doneAt: string | null;
+  updatedAt: string;
+  user: any | null;
+  recurringId: number;
+  deletedAt: string | null;
+  displayIndex: number;
+  writer: {
+    id: number;
+    nickname: string;
+    image: string | null;
+  };
+  doneBy: {
+    user: any | null;
+  };
+  commentCount: number;
+  frequency: string;
 }
 
 interface TaskList {
   id: number;
   name: string;
+  createdAt: string;
+  updatedAt: string;
+  groupId: number;
+  displayIndex: number;
   tasks: Task[];
 }
 
@@ -68,12 +90,18 @@ const DonutChart = ({ size, progress, strokeWidth }: DonutChartProps) => {
 };
 
 const ReportCard = ({ taskLists }: ReportCardProps) => {
-    {/*수정필요*/}
   const totalTasks = taskLists.reduce(
     (acc, taskList) => acc + taskList.tasks.length,
     0,
   );
-  const completedTasks = totalTasks - 1;
+  const completedTasks = taskLists.reduce(
+    (acc, taskList) =>
+      acc +
+      taskList.tasks.filter(
+        (task) => task.doneAt !== null && task.doneBy.user !== null,
+      ).length,
+    0,
+  );
   const completionPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
