@@ -74,6 +74,7 @@ const config: Config = {
       xs: ['12px', '14px'],
       sm: ['13px', '16px'],
       md: ['14px', '17px'],
+      '2md': ['14px', '24px'],
       lg: ['16px', '19px'],
       '2lg': ['18px', '21px'],
       xl: ['20px', '24px'],
