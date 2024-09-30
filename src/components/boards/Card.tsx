@@ -1,7 +1,18 @@
+import { useState, useEffect } from 'react';
 import Kebab from '@/assets/kebab.svg';
 import Dropdown, { DropdownOption } from '../common/Dropdown';
 import Profile from '@/assets/profile_member_large.svg';
 import Heart from '@/assets/heart.svg';
+import RedHeart from '@/assets/heart_red.svg';
+import {
+  isLike,
+  deleteLike,
+  getDetailArticle,
+  deleteArticle,
+  deleteComment,
+  editArticle,
+  editComment,
+} from '@/lib/articleApi';
 
 interface CardProps {
   id: number;
@@ -9,6 +20,10 @@ interface CardProps {
   writerNickname: string;
   createdAt: string;
   likeCount: number;
+  isLiked?: boolean;
+  hideHeart?: boolean;
+  type: 'article' | 'comment';
+  onDelete?: (id: number) => void;
 }
 
 const Card = ({
@@ -16,8 +31,15 @@ const Card = ({
   title,
   writerNickname,
   createdAt,
-  likeCount,
+  likeCount: initialLikeCount,
+  isLiked: initialIsLiked,
+  hideHeart = false,
+  type,
+  onDelete,
 }: CardProps) => {
+  const [likeCount, setLikeCount] = useState(initialLikeCount);
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
+
   const kebabOptions: DropdownOption[] = [
     { label: '수정하기', value: 'edit' },
     { label: '삭제하기', value: 'delete' },
@@ -29,16 +51,66 @@ const Card = ({
     </div>
   );
 
-  const handleChange = (selectedOption: DropdownOption) => {
+  const handleChange = async (selectedOption: DropdownOption) => {
     console.log('Selected option:', selectedOption);
+    if (selectedOption.value === 'edit') {
+      if (type === 'article') {
+        // 게시글 수정
+        console.log('게시글 수정 로직 실행');
+      } else if (type === 'comment') {
+        // 댓글 수정
+        console.log('댓글 수정 로직 실행');
+      }
+    } else if (selectedOption.value === 'delete') {
+      if (type === 'article') {
+        try {
+          await deleteArticle(id);
+          console.log('게시글 삭제 성공');
+          if (onDelete) onDelete(id);
+        } catch (error) {
+          console.error('게시글 삭제 실패:', error);
+        }
+      } else if (type === 'comment') {
+        try {
+          await deleteComment(id);
+          console.log('댓글 삭제 성공');
+          if (onDelete) onDelete(id);
+        } catch (error) {
+          console.error('댓글 삭제 실패:', error);
+        }
+      }
+    }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}.${month}.${day}`;
+  const fetchArticleDetail = async () => {
+    try {
+      const response = await getDetailArticle(id);
+      setLikeCount(response.data.likeCount);
+      setIsLiked(response.data.isLiked);
+    } catch (error) {
+      console.error('게시글 상세 정보 가져오기 실패:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchArticleDetail();
+  }, [id]);
+
+  const handleLikeClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    try {
+      if (!isLiked) {
+        await isLike(id);
+        setLikeCount(likeCount + 1);
+      } else {
+        await deleteLike(id);
+        setLikeCount(likeCount - 1);
+      }
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error('좋아요 요청 에러:', error);
+    }
   };
 
   return (
@@ -47,7 +119,7 @@ const Card = ({
         <div>
           <p className="text-text-secondary text-md font-medium">{title}</p>
           <p className="text-xs font-medium text-text-default mt-3">
-            {formatDate(createdAt)}
+            {new Date(createdAt).toLocaleDateString()}
           </p>
         </div>
         <div className="hidden md:block" onClick={(e) => e.stopPropagation()}>
@@ -68,12 +140,17 @@ const Card = ({
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1">
-            <Heart />
-            <p className="text-text-default text-xs font-regular">
-              {likeCount}
-            </p>
-          </div>
+          {!hideHeart && (
+            <div
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={handleLikeClick}
+            >
+              {isLiked ? <RedHeart /> : <Heart />}
+              <p className="text-text-default text-xs font-regular">
+                {likeCount}
+              </p>
+            </div>
+          )}
           <div className="md:hidden flex" onClick={(e) => e.stopPropagation()}>
             <Dropdown
               options={kebabOptions}

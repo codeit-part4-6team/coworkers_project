@@ -19,24 +19,37 @@ interface Article {
   likeCount: number;
 }
 
-const Boards = ({ id }: Article) => {
+const Boards = () => {
   const router = useRouter();
   const [articles, setArticles] = useState<Article[]>([]);
+  const [sortOrder, setSortOrder] = useState<string>('recent');
+  const [keyword, setKeyword] = useState<string>('');
+
+  const fetchArticles = async (searchKeyword = '', order = 'recent') => {
+    try {
+      const response = await getArticle({
+        keyword: searchKeyword,
+        orderBy: order,
+      });
+      const { list } = response.data;
+      setArticles(list);
+    } catch (error) {
+      console.error('Error fetching articles:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await getArticle();
-        const { list } = response.data;
+    fetchArticles(keyword, sortOrder);
+  }, [sortOrder]);
 
-        setArticles(list);
-      } catch (error) {
-        console.error('Error fetching articles:', error);
-      }
-    };
+  const handleSearchChange = (searchKeyword: string) => {
+    setKeyword(searchKeyword);
+    fetchArticles(searchKeyword, sortOrder);
+  };
 
-    fetchArticles();
-  }, []);
+  const handleOrderChange = (option: DropdownOption) => {
+    setSortOrder(option.value);
+  };
 
   const handleButtonClick = () => {
     router.push('/addboard');
@@ -46,21 +59,21 @@ const Boards = ({ id }: Article) => {
     router.push(`/boards/${articleId}`);
   };
 
-  const orderOprions: DropdownOption[] = [
-    { label: '최신순', value: 'latest' },
+  const handleDeleteArticle = (id: number) => {
+    setArticles(articles.filter((article) => article.id !== id));
+  };
+
+  const orderOptions: DropdownOption[] = [
+    { label: '최신순', value: 'recent' },
     { label: '좋아요 많은순', value: 'like' },
   ];
-
-  const handleOrderChange = (option: DropdownOption) => {
-    console.log('Selected option:', option);
-  };
 
   return (
     <div className="mt-8 px-4 md:mt-10 lg:mt-10 lg:px-[360px]">
       <h2 className="text-2lg font-bold text-text-primary mb-6 md:text-2xl">
         자유게시판
       </h2>
-      <SearchInput />
+      <SearchInput onSearchChange={handleSearchChange} />
       <div className="flex justify-between items-center my-6">
         <h3 className="text-lg font-medium text-text-primary md:text-xl">
           베스트 게시글
@@ -82,13 +95,13 @@ const Boards = ({ id }: Article) => {
         </h3>
         <div>
           <Dropdown
-            options={orderOprions}
+            options={orderOptions}
             onChange={handleOrderChange}
             size="sm"
           />
         </div>
       </div>
-      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 mb-3">
         {articles.map((article) => (
           <div key={article.id} onClick={() => handleCardClick(article.id)}>
             <Card
@@ -98,6 +111,8 @@ const Boards = ({ id }: Article) => {
               writerNickname={article.writer.nickname}
               createdAt={article.createdAt}
               likeCount={article.likeCount}
+              type="article"
+              onDelete={handleDeleteArticle}
             />
           </div>
         ))}
@@ -112,4 +127,5 @@ const Boards = ({ id }: Article) => {
     </div>
   );
 };
+
 export default Boards;
