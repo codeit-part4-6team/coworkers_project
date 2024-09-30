@@ -112,7 +112,7 @@ const GroupMemberCard = ({ members, groupId }: GroupMemberCardProps) => {
       <Modal
         id="inviteMember"
         className="sm:w-96 w-full p-6 rounded-2xl bg-background-secondary text-text-primary
-                     fixed sm:top-1/2 sm:left-1/2 sm:right-1/2 sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2
+                     fixed sm:top-1/2 sm:bottom-1/2 sm:left-1/2 sm:right-1/2 sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2
                      top-auto bottom-0 left-0 right-0 transform-none rounded-t-xl sm:rounded-b-xl rounded-b-none"
         positionBottom
       >

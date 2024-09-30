@@ -85,7 +85,7 @@ const GroupPage = () => {
   return (
     <div className="bg-background-primary text-text-primary min-h-screen p-4">
       <main>
-        <GroupHeader groupName={groupData.name} />
+        <GroupHeader groupName={groupData.name} groupId={Number(groupId)} />
         <TodoListCard groupId={Number(groupId)} />
         <ReportCard taskLists={groupData.taskLists} />
         <GroupMemberCard members={groupData.members} groupId={Number(groupId)} />
