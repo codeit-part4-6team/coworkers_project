@@ -1,6 +1,11 @@
+import Modal from '../common/Modal';
 import Member from '@/assets/member.svg';
 import Kebab from '@/assets/kebab.svg';
+import XIcon from '@/assets/x_icon.svg';
 import Dropdown, { DropdownOption } from '../common/Dropdown';
+import { getGroupInvitation } from '@/lib/groupApi';
+import useModalStore from '@/store/modalStore';
+import { useState } from 'react';
 
 interface GroupMember {
   userId: number;
@@ -13,6 +18,7 @@ interface GroupMember {
 
 interface GroupMemberCardProps {
   members: GroupMember[];
+  groupId: number;
 }
 
 interface MemberItemProps {
@@ -54,7 +60,33 @@ const MemberItem = ({ member }: MemberItemProps) => {
   );
 };
 
-const GroupMemberCard = ({ members }: GroupMemberCardProps) => {
+const GroupMemberCard = ({ members, groupId }: GroupMemberCardProps) => {
+  const { openModal, closeModal } = useModalStore();
+  const [invitationLink, setInvitationLink] = useState('');
+
+  const handleOpenModal = () => {
+    console.log('Open modal');
+    getGroupInvitation(groupId)
+      .then((response) => {
+        const token = response.data;
+        const link = `${window.location.origin}/invitation?token=${token}`;
+        setInvitationLink(link);
+        openModal('inviteMember');
+      })
+      .catch((err) => {
+        console.error('Error fetching invitation token:', err);
+      });
+  };
+
+  const handleCloseModal = () => closeModal('inviteMember');
+
+  const handleCopyLink = () => {
+    if (!invitationLink) return;
+    navigator.clipboard.writeText(invitationLink).then(() => {
+      alert('링크가 클립보드에 복사되었습니다.');
+    });
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mt-6 mb-4">
@@ -64,7 +96,10 @@ const GroupMemberCard = ({ members }: GroupMemberCardProps) => {
             ({members.length}명)
           </span>
         </h2>
-        <button className="text-color-brand-primary text-sm font-medium">
+        <button
+          onClick={handleOpenModal}
+          className="text-color-brand-primary text-sm font-medium"
+        >
           + 새로운 멤버 초대하기
         </button>
       </div>
@@ -73,6 +108,33 @@ const GroupMemberCard = ({ members }: GroupMemberCardProps) => {
           <MemberItem key={member.userId} member={member} />
         ))}
       </div>
+
+      <Modal
+        id="inviteMember"
+        className="sm:w-96 w-full p-6 rounded-2xl bg-background-secondary text-text-primary
+                     fixed sm:top-1/2 sm:left-1/2 sm:right-1/2 sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2
+                     top-auto bottom-0 left-0 right-0 transform-none rounded-t-xl sm:rounded-b-xl rounded-b-none"
+        positionBottom
+      >
+        <div className="flex flex-col">
+          <button
+            onClick={handleCloseModal}
+            className="ml-auto text-gray-400 hover:text-white mb-2"
+          >
+            <XIcon />
+          </button>
+          <p className="text-center text-lg font-medium mb-4">멤버 초대</p>
+          <p className="text-center text-md mb-6">
+            그룹에 참여할 수 있는 링크를 복사합니다.
+          </p>
+          <button
+            onClick={handleCopyLink}
+            className="w-[280px] mx-auto bg-color-brand-primary text-white py-3 rounded-xl font-medium hover:bg-[#0d9668] transition-colors"
+          >
+            링크 복사하기
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 };

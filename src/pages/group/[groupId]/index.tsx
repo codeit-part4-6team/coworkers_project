@@ -88,7 +88,7 @@ const GroupPage = () => {
         <GroupHeader groupName={groupData.name} />
         <TodoListCard groupId={Number(groupId)} />
         <ReportCard taskLists={groupData.taskLists} />
-        <GroupMemberCard members={groupData.members} />
+        <GroupMemberCard members={groupData.members} groupId={Number(groupId)} />
       </main>
     </div>
   );

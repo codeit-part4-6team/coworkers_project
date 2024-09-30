@@ -70,7 +70,7 @@ const AddTeamPage = () => {
   };
 
   const getInputClassName = (error: string) =>
-    `w-full h-12 text-text-default border ${error ? 'border-status-danger' : 'border-border-primary-10'} bg-background-secondary rounded-xl px-4 py-2 mt-3 focus:border-none`;
+    `w-full h-12 placeholder-text-default border ${error ? 'border-status-danger' : 'border-border-primary-10'} bg-background-secondary rounded-xl px-4 py-2 mt-3 focus:outline-none focus:ring-0`;
 
   return (
     <div className="flex flex-col items-center justify-center bg-background-primary text-text-primary py-[140px]">
