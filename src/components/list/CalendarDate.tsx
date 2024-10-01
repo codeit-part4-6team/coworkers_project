@@ -1,43 +1,29 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import Calendar from 'react-calendar';
 import ArrowLeftIcon from '@/assets/btn_arrow_left.svg';
 import ArrowRightIcon from '@/assets/btn_arrow_right.svg';
 import CalendarIcon from '@/assets/btn_calendar.svg';
 import { formatSecondDate } from '@/utils/formatDate';
-import { SelectedDate } from '@/types/listTypes';
+import useSelectedDateStore from '@/store/selectedDateStore';
 
-interface Props {
-  selectedDate: SelectedDate;
-  setSelectedDate: Dispatch<SetStateAction<SelectedDate>>;
-}
-
-export default function CalendarDate({ selectedDate, setSelectedDate }: Props) {
-  const [isClient, setIsClient] = useState(false);
+export default function CalendarDate() {
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+  const { selectedDate, setSelectedDate } = useSelectedDateStore();
 
   const handleCalendarIconClick = () => {
-    setIsClient((prev) => !prev);
+    setIsCalendarVisible((prev) => !prev);
   };
 
   const handlePreviousDayClick = () => {
-    setSelectedDate((prevDate) => {
-      if (prevDate instanceof Date) {
-        const newDate = new Date(prevDate);
-        newDate.setDate(newDate.getDate() - 1);
-        return newDate;
-      }
-      return prevDate;
-    });
+    const newDate = new Date(selectedDate);
+    newDate.setDate(newDate.getDate() - 1);
+    setSelectedDate(newDate);
   };
 
   const handleNextDayClick = () => {
-    setSelectedDate((prevDate) => {
-      if (prevDate instanceof Date) {
-        const newDate = new Date(prevDate);
-        newDate.setDate(newDate.getDate() + 1);
-        return newDate;
-      }
-      return prevDate;
-    });
+    const newDate = new Date(selectedDate);
+    newDate.setDate(newDate.getDate() + 1);
+    setSelectedDate(newDate);
   };
 
   return (
@@ -61,10 +47,10 @@ export default function CalendarDate({ selectedDate, setSelectedDate }: Props) {
         <button type="button" onClick={handleCalendarIconClick}>
           <CalendarIcon />
         </button>
-        {isClient && (
+        {isCalendarVisible && (
           <Calendar
             onChange={setSelectedDate}
-            onClickDay={() => setIsClient(false)}
+            onClickDay={() => setIsCalendarVisible(false)}
             value={selectedDate}
             calendarType="gregory"
             prev2Label={null}

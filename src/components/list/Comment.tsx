@@ -1,7 +1,16 @@
+import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useQueryClient } from '@tanstack/react-query';
 import KebabIcon from '@/assets/kebab_large.svg';
 import ProfileMemberIcon from '@/assets/profile_member_large.svg';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import Button from '@/components/common/Button';
+import { useTaskCommentsQuery } from '@/lib/taskCommentApi';
+import { CommentResponse } from '@/types/listTypes';
+import { formatElapsedTime } from '@/utils/formatDate';
+import { useEditTaskCommentMutation } from '@/lib/taskCommentApi';
+import useModalStore from '@/store/modalStore';
+import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
 
 const WorkToDoOptions: DropdownOption[] = [
   { label: '수정하기', value: 'edit' },
@@ -9,45 +18,109 @@ const WorkToDoOptions: DropdownOption[] = [
 ];
 
 export default function Comment() {
-  const handleWorkToDoOptionChange = (option: DropdownOption) => {
-    console.log('dasd');
+  const router = useRouter();
+  const taskId = router.query.taskId;
+  const queryClient = useQueryClient();
+  const taskCommentsQuery = useTaskCommentsQuery(Number(taskId));
+  const editTaskCommentMutation = useEditTaskCommentMutation();
+  const { openModal } = useModalStore();
+  const { setCommentId } = useApiResponseIdsStore();
+
+  const [editComment, setEditComment] = useState('');
+  const [editCommentId, setEditCommentId] = useState(0);
+
+  const handleWorkToDoOptionChange = (
+    option: DropdownOption,
+    commentId: number,
+  ) => {
+    const { value } = option;
+    if (value === 'edit') {
+      setEditCommentId(commentId);
+    }
+    if (value === 'delete') {
+      openModal('deleteComment');
+      setCommentId(commentId);
+    }
+  };
+
+  const handleEditClick = () => {
+    editTaskCommentMutation.mutate(
+      {
+        taskId: Number(taskId),
+        commentId: Number(editCommentId),
+        content: editComment,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['tasks'],
+          });
+          setEditCommentId(0);
+          setEditComment('');
+        },
+      },
+    );
   };
   return (
-    <div className="flex flex-col gap-4 pb-4 border-b border-border-primary-10">
-      <div className="flex justify-between items-start">
-        <p className="text-md font-regular">
-          법인 설립 서비스 관련 링크 첨부 드려요 https://www.codeit.kr
-          아아아고고고라라라니니니 링크 첨부 부탇 아아아고고고라라라니니니 링크
-          첨부 부탇 아아아고고고라라라니니니 링크 첨부
-          부탇아아고고고라라라니니니 링크 첨부 부탇 아아아고고고라라라니니니
-          링크 첨부 부탇아아고고고라라라니니니 링크 첨부 부탇
-          아아아고고고라라라니니니 링크 첨부 부탇
-        </p>
-        <Dropdown
-          options={WorkToDoOptions}
-          customButton={<KebabIcon />}
-          onChange={handleWorkToDoOptionChange}
-          size="md"
-        />
-      </div>
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <ProfileMemberIcon />
-          <span className="text-md font-medium">우지은</span>
-        </div>
-        <span className="text-md font-regular text-text-secondary">
-          2025.05.30
-        </span>
-      </div>
-      <div className="flex justify-end items-center gap-2">
-        <button
-          type="button"
-          className="w-12 h-8 text-md font-semibold text-text-default hover:text-opacity-70 active:text-opacity-40"
-        >
-          취소
-        </button>
-        <Button option="outlined" size="xsmall" text="수정하기" blank={true} />
-      </div>
-    </div>
+    <>
+      {taskCommentsQuery.data?.data.map(
+        ({ content, user, updatedAt, id }: CommentResponse) => (
+          <div
+            key={id}
+            className="flex flex-col gap-4 mb-4 pb-4 border-b border-border-primary-10"
+          >
+            <div className="flex justify-between items-center">
+              {editCommentId !== id && (
+                <p className="text-md font-regular">{content}</p>
+              )}
+              {editCommentId === id && (
+                <input
+                  type="text"
+                  value={editComment}
+                  onChange={(e) => setEditComment(e.target.value)}
+                  className="px-3 w-full h-9 rounded-md bg-background-tertiary"
+                />
+              )}
+              <Dropdown
+                options={WorkToDoOptions}
+                customButton={<KebabIcon />}
+                onChange={(option) => handleWorkToDoOptionChange(option, id)}
+                size="md"
+              />
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <ProfileMemberIcon />
+                <span className="text-md font-medium">{user.nickname}</span>
+              </div>
+              <span className="text-md font-regular text-text-secondary">
+                {formatElapsedTime(updatedAt)}
+              </span>
+            </div>
+            {editCommentId === id && (
+              <div className="flex justify-end items-center gap-2">
+                <button
+                  type="button"
+                  className="w-12 h-8 text-md font-semibold text-text-default hover:text-opacity-70 active:text-opacity-40"
+                  onClick={() => {
+                    setEditCommentId(0);
+                    setEditComment('');
+                  }}
+                >
+                  취소
+                </button>
+                <Button
+                  option="outlined"
+                  size="xsmall"
+                  text="수정하기"
+                  blank={true}
+                  onClick={handleEditClick}
+                />
+              </div>
+            )}
+          </div>
+        ),
+      )}
+    </>
   );
 }
