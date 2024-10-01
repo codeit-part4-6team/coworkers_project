@@ -65,7 +65,7 @@ const Boards = () => {
 
   const orderOptions: DropdownOption[] = [
     { label: '최신순', value: 'recent' },
-    { label: '좋아요 많은순', value: 'like' },
+    { label: '좋아요 순', value: 'like' },
   ];
 
   return (

@@ -12,7 +12,6 @@ import { useRouter } from 'next/router';
 interface Comment {
   id: number;
   writer: {
-    image: string;
     nickname: string;
     id: number;
   };
@@ -96,7 +95,10 @@ const CardPage = () => {
         ...prevComments,
         {
           id: response.data.id,
-          writer: response.data.user,
+          writer: {
+            nickname: response.data.writer.nickname,
+            id: response.data.writer.id,
+          },
           content: response.data.content,
           createdAt: response.data.createdAt,
           updatedAt: response.data.updatedAt,
@@ -128,9 +130,9 @@ const CardPage = () => {
         />
       </div>
       <div className="w-full border-t border-border-primary-10 my-4"></div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <div className="flex gap-2 items-center">
-          <Profile />
+          <Profile className="w-8 h-8" />
           <p className="text-text-primary font-medium text-xs">
             {article?.writer.nickname}
           </p>
@@ -180,21 +182,26 @@ const CardPage = () => {
 
       <div className="w-full border-t border-border-primary-10 my-8"></div>
       <div className="grid gap-4 grid-rows-1 mb-3">
-        {comments.map((comment) => (
-          <div>
-            <Card
-              key={comment.id}
-              id={comment.id}
-              title={comment.content}
-              writerNickname={comment.writer?.nickname}
-              createdAt={comment.createdAt}
-              likeCount={0}
-              hideHeart={true}
-              type="comment"
-              onDelete={handleDeleteComment}
-            />
-          </div>
-        ))}
+        {comments.length > 0 ? (
+          comments.map((comment) => (
+            <div key={comment.id}>
+              <Card
+                id={comment.id}
+                title={comment.content}
+                writerNickname={comment.writer?.nickname}
+                createdAt={comment.createdAt}
+                likeCount={0}
+                hideHeart={true}
+                type="comment"
+                onDelete={handleDeleteComment}
+              />
+            </div>
+          ))
+        ) : (
+          <p className="text-text-default text-md font-medium text-center mt-[180px] md:mt-[158px]">
+            아직 작성된 댓글이 없습니다.
+          </p>
+        )}
       </div>
     </div>
   );
