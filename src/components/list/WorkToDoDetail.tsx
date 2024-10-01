@@ -1,69 +1,158 @@
 import { Dispatch, SetStateAction } from 'react';
+import { useRouter } from 'next/router';
 import XIcon from '@/assets/x_icon.svg';
 import KebabIcon from '@/assets/kebab_large.svg';
 import ProfileMemberIcon from '@/assets/profile_member_large.svg';
-import DateNRepeat from './DateNRepeat';
-import CommentWriting from './CommentWriting';
-import Comment from './Comment';
+import DateNRepeat from '@/components/list/DateNRepeat';
+import CommentWriting from '@/components/list/CommentWriting';
+import Comment from '@/components/list/Comment';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import FloatingButton from '@/components/common/FloatingButton';
+import { formatFifthDate } from '@/utils/formatDate';
+import { useQueryClient } from '@tanstack/react-query';
+import { useTaskDetailQuery, useEditTaskDetailMutation } from '@/lib/taskApi';
+import useModalStore from '@/store/modalStore';
+import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
+
+interface Props {
+  setWorkToDoName: Dispatch<SetStateAction<string>>;
+}
 
 const WorkToDoOptions: DropdownOption[] = [
   { label: '수정하기', value: 'edit' },
   { label: '삭제하기', value: 'delete' },
 ];
 
-interface Props {
-  setIsWorkToDoDetailVisible: Dispatch<SetStateAction<boolean>>;
-}
+export default function WorkToDoDetail({ setWorkToDoName }: Props) {
+  const { openModal } = useModalStore();
+  const router = useRouter();
+  const taskListId = router.query.tasklistid;
+  const taskId = router.query.taskId;
+  const taskDetailQuery = useTaskDetailQuery(
+    869,
+    Number(taskListId),
+    Number(taskId),
+  );
+  const { setTaskId, setRecurringId } = useApiResponseIdsStore();
+  const queryClient = useQueryClient();
+  const editTaskDetailMutation = useEditTaskDetailMutation();
 
-export default function WorkToDoDetail({ setIsWorkToDoDetailVisible }: Props) {
+  const taskDetailData = taskDetailQuery.data?.data;
+
   const handleWorkToDoOptionChange = (option: DropdownOption) => {
-    console.log('dasd');
+    const { value } = option;
+    if (value === 'edit') {
+      setTaskId(Number(taskId));
+      openModal('editToDo');
+    }
+    if (value === 'delete') {
+      setWorkToDoName(taskDetailData?.name);
+      setRecurringId(taskDetailData?.recurringId);
+      openModal('deleteToDo');
+    }
+  };
+
+  const handleSuccessClick = () => {
+    editTaskDetailMutation.mutate(
+      {
+        taskId: Number(taskId),
+        data: {
+          done: true,
+        },
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['groups', 869, 'taskLists'],
+          });
+        },
+      },
+    );
+  };
+
+  const handleCancelClick = () => {
+    editTaskDetailMutation.mutate(
+      {
+        taskId: Number(taskId),
+        data: {
+          done: false,
+        },
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ['groups', 869, 'taskLists'],
+          });
+        },
+      },
+    );
   };
 
   return (
-    <div className="absolute top-[60px] bottom-0 right-0 z-10 p-4 md:p-6 lg:p-10 w-full md:w-[434px] lg:w-[780px] h-full md:border-l md:border-solid md:border-border-primary-10 bg-background-secondary antialiased animate-slide-in">
-      <button
-        type="button"
-        className="mb-4"
-        onClick={() => setIsWorkToDoDetailVisible(false)}
-      >
-        <XIcon />
-      </button>
-      <div className="flex justify-between items-start mb-3 md:mb-4">
-        <h4 className="text-2lg md:text-xl font-bold">
-          법인 설립 비용 안내 드리기
-        </h4>
-        <Dropdown
-          options={WorkToDoOptions}
-          customButton={<KebabIcon />}
-          onChange={handleWorkToDoOptionChange}
-          size="md"
-        />
-      </div>
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center gap-3">
-          <ProfileMemberIcon />
-          <span className="text-md font-medium">안해나</span>
+    <>
+      <div className="absolute top-[60px] bottom-0 right-0 z-20 p-4 md:p-6 lg:p-10 w-full md:w-[434px] lg:w-[780px] h-full overflow-auto md:border-l md:border-solid md:border-border-primary-10 bg-background-secondary antialiased animate-slide-in">
+        <button
+          type="button"
+          className="mb-4"
+          onClick={() => {
+            router.push({
+              pathname: `/list/${taskListId}`,
+            });
+          }}
+        >
+          <XIcon />
+        </button>
+        <div className="flex justify-between items-start mb-3 md:mb-4">
+          <h4 className="text-2lg md:text-xl font-bold">
+            {taskDetailData?.name}
+          </h4>
+          <Dropdown
+            options={WorkToDoOptions}
+            customButton={<KebabIcon />}
+            onChange={handleWorkToDoOptionChange}
+            size="md"
+          />
         </div>
-        <span className="text-md font-regular text-text-secondary">
-          2025.05.30
-        </span>
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center gap-3">
+            <ProfileMemberIcon />
+            <span className="text-md font-medium">
+              {taskDetailData?.writer.nickname}
+            </span>
+          </div>
+          <span className="text-md font-regular text-text-secondary">
+            {formatFifthDate(String(taskDetailData?.updatedAt))}
+          </span>
+        </div>
+        <div className="mb-6">
+          <DateNRepeat
+            date={taskDetailData?.date}
+            frequency={taskDetailData?.frequency}
+          />
+        </div>
+        <p className="mb-[100px] md:mb-[182px] text-md font-regular">
+          {taskDetailData?.description}
+        </p>
+        <CommentWriting />
+        <Comment />
       </div>
-      <div className="mb-6">
-        <DateNRepeat />
+      <div className="fixed z-20 right-4 bottom-6 md:right-6 md:bottom-5 lg:right-10 lg:bottom-10">
+        {!taskDetailData?.doneAt ? (
+          <FloatingButton
+            option="success"
+            text="완료하기"
+            disabled={false}
+            onClick={handleSuccessClick}
+          />
+        ) : (
+          <FloatingButton
+            option="cancel"
+            text="완료 취소하기"
+            disabled={false}
+            onClick={handleCancelClick}
+          />
+        )}
       </div>
-      <p className="mb-[100px] md:mb-[182px] text-md font-regular">
-        필수 정보 10분 입력하면 3일 안에 법인 설립이 완료되는 법인 설립 서비스의
-        장점에 대해 상세하게 설명드리기
-      </p>
-      <CommentWriting />
-      <Comment />
-      <div className="fixed right-4 bottom-6 md:right-6 md:bottom-5 lg:right-10 lg:bottom-10">
-        <FloatingButton option="success" text="완료하기" disabled={false} />
-        {/* <FloatingButton option="cancel" text="완료 취소하기" disabled={false} /> */}
-      </div>
-    </div>
+    </>
   );
 }

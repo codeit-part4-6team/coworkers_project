@@ -9,6 +9,8 @@ interface State {
   setTaskId: (id: number) => void;
   recurringId: number;
   setRecurringId: (id: number) => void;
+  commentId: number;
+  setCommentId: (id: number) => void;
 }
 
 const useApiResponseIdsStore = create<State>((set) => ({
@@ -20,6 +22,8 @@ const useApiResponseIdsStore = create<State>((set) => ({
   setTaskId: (id) => set({ taskId: id }),
   recurringId: 0,
   setRecurringId: (id) => set({ recurringId: id }),
+  commentId: 0,
+  setCommentId: (id) => set({ commentId: id }),
 }));
 
 export default useApiResponseIdsStore;

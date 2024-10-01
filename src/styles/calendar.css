@@ -125,6 +125,7 @@ abbr {
   font-size: 14px;
   line-height: 17px;
   font-weight: 500;
+  color: #ffffff;
 }
 
 .react-calendar__tile:disabled {
