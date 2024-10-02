@@ -28,7 +28,7 @@ export default function Button({
 
   const sizeClassName = {
     large: 'w-full h-12 text-lg font-semibold',
-    xsmall: 'w-[74px] h-8 px-[12px] text-md font-semibold',
+    xsmall: 'w-full h-8 px-[12px] text-md font-semibold',
   };
 
   return (
