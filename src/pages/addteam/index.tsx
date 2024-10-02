@@ -54,7 +54,7 @@ const AddTeamPage = () => {
     try {
       const response = await createGroup({ image: imageUrl, name: teamName });
       const groupId = response.data.id;
-      router.push(`/${groupId}`);
+      router.push(`/group/${groupId}`);
     } catch (err: any) {
       setErrors((prev) => ({
         ...prev,
