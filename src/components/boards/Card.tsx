@@ -5,7 +5,6 @@ import Profile from '@/assets/profile_member_large.svg';
 import Heart from '@/assets/heart.svg';
 import RedHeart from '@/assets/heart_red.svg';
 import Image from 'next/image';
-import test from '@/assets/testimg.png';
 import {
   isLike,
   deleteLike,
@@ -26,6 +25,7 @@ interface CardProps {
   hideHeart?: boolean;
   type: 'article' | 'comment';
   onDelete?: (id: number) => void;
+  imageUrl?: string;
 }
 
 const Card = ({
@@ -38,6 +38,7 @@ const Card = ({
   hideHeart = false,
   type,
   onDelete,
+  imageUrl,
 }: CardProps) => {
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [isLiked, setIsLiked] = useState(initialIsLiked);
@@ -116,27 +117,39 @@ const Card = ({
   };
 
   return (
-    <div className="border rounded-[12px] bg-background-secondary border-background-tertiary pt-6 px-4 pb-4">
-      <div className="flex justify-between md:flex-row md:items-start">
-        <p className="text-text-secondary text-md font-medium">{title}</p>
-        <div className="flex items-start gap-2">
-          <Image src={test} alt="image" width={64} height={64} />
-          <div className="hidden md:block" onClick={(e) => e.stopPropagation()}>
-            <Dropdown
-              options={kebabOptions}
-              onChange={handleChange}
-              customButton={kebabButton}
-              size="sm"
-              direction="down"
-            />
+    <div className="border h-[176px] rounded-[12px] bg-background-secondary border-background-tertiary pt-6 px-4 pb-4 flex flex-col justify-between">
+      <div>
+        <div className="flex justify-between md:flex-row md:items-start">
+          <p className="text-text-secondary text-md font-medium">{title}</p>
+          <div className="flex items-start gap-2">
+            {imageUrl && (
+              <Image
+                src={imageUrl}
+                alt="게시글 이미지"
+                width={72}
+                height={72}
+                className="rounded-[12px] object-cover"
+              />
+            )}
+            <div
+              className="hidden md:block"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Dropdown
+                options={kebabOptions}
+                onChange={handleChange}
+                customButton={kebabButton}
+                size="sm"
+                direction="down"
+              />
+            </div>
           </div>
         </div>
+        <p className="text-xs font-medium text-text-default mt-3">
+          {new Date(createdAt).toLocaleDateString()}
+        </p>
       </div>
-      <p className="text-xs font-medium text-text-default mt-3">
-        {new Date(createdAt).toLocaleDateString()}
-      </p>
-
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex items-center justify-between mt-2">
         <div className="flex items-center gap-3">
           <Profile />
           <p className="text-xs font-medium text-text-primary">

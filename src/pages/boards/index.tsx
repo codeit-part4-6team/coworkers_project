@@ -1,16 +1,16 @@
 import SearchInput from '@/components/boards/SearchInput';
 import Card from '@/components/boards/Card';
-import Arrow from '@/assets/ic_arrow_right.svg';
 import FloatingButton from '@/components/common/FloatingButton';
-import BestCard from '@/components/boards/BestCard';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { getArticle } from '@/lib/articleApi';
+import BestList from '@/components/boards/BestList';
 
 interface Article {
   id: number;
   title: string;
+  image?: string;
   writer: {
     nickname: string;
     id: number;
@@ -78,15 +78,9 @@ const Boards = () => {
         <h3 className="text-lg font-medium text-text-primary md:text-xl">
           베스트 게시글
         </h3>
-        <div className="flex items-center gap-0.5">
-          <p className="text-text-default text-xs">더보기</p>
-          <Arrow />
-        </div>
       </div>
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        <BestCard />
-        <BestCard />
-        <BestCard />
+      <div>
+        <BestList />
       </div>
       <div className="w-full border-t border-border-primary-10 my-8"></div>
       <div className="flex justify-between items-center mb-6">
@@ -113,6 +107,7 @@ const Boards = () => {
               likeCount={article.likeCount}
               type="article"
               onDelete={handleDeleteArticle}
+              imageUrl={article.image}
             />
           </div>
         ))}
