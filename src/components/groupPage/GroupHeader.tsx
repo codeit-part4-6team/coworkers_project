@@ -6,9 +6,10 @@ import { useRouter } from 'next/router';
 interface GroupHeaderProps {
   groupName: string;
   groupId: number;
+  userRole: string | null;
 }
 
-const GroupHeader = ({ groupName, groupId }: GroupHeaderProps) => {
+const GroupHeader = ({ groupName, groupId, userRole }: GroupHeaderProps) => {
   const router = useRouter();
 
   const teamOptions: DropdownOption[] = [
@@ -35,12 +36,14 @@ const GroupHeader = ({ groupName, groupId }: GroupHeaderProps) => {
       <div className="relative z-10">
         <div className="flex justify-between items-center">
           <h1 className="text-xl font-bold text-white">{groupName}</h1>
-          <Dropdown
-            options={teamOptions}
-            onChange={handleOptionChange}
-            customButton={<Gear />}
-            size="md"
-          />
+          {userRole === 'ADMIN' && (
+            <Dropdown
+              options={teamOptions}
+              onChange={handleOptionChange}
+              customButton={<Gear />}
+              size="md"
+            />
+          )}
         </div>
       </div>
     </div>

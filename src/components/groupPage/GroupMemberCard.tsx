@@ -19,6 +19,7 @@ interface GroupMember {
 interface GroupMemberCardProps {
   members: GroupMember[];
   groupId: number;
+  userRole: string | null;
 }
 
 interface MemberItemProps {
@@ -64,7 +65,7 @@ const MemberItem = ({ member, onClick }: MemberItemProps) => {
   );
 };
 
-const GroupMemberCard = ({ members, groupId }: GroupMemberCardProps) => {
+const GroupMemberCard = ({ members, groupId, userRole }: GroupMemberCardProps) => {
   const { openModal, closeModal } = useModalStore();
   const [invitationLink, setInvitationLink] = useState('');
   const [selectedMember, setSelectedMember] = useState<GroupMember | null>(
@@ -123,12 +124,14 @@ const GroupMemberCard = ({ members, groupId }: GroupMemberCardProps) => {
             ({members.length}명)
           </span>
         </h2>
-        <button
-          onClick={handleOpenInviteModal}
-          className="text-color-brand-primary text-sm font-medium"
-        >
-          + 새로운 멤버 초대하기
-        </button>
+        {userRole === 'ADMIN' && (
+          <button
+            onClick={handleOpenInviteModal}
+            className="text-color-brand-primary text-sm font-medium"
+          >
+            + 새로운 멤버 초대하기
+          </button>
+        )}
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {members.map((member) => (
