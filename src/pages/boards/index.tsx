@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { getArticle } from '@/lib/articleApi';
 import BestList from '@/components/boards/BestList';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 interface Article {
   id: number;
@@ -24,31 +25,72 @@ const Boards = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [sortOrder, setSortOrder] = useState<string>('recent');
   const [keyword, setKeyword] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const pageSize = 4;
 
-  const fetchArticles = async (searchKeyword = '', order = 'recent') => {
+  const fetchArticles = async (
+    searchKeyword = '',
+    order = 'recent',
+    page = 1,
+  ) => {
     try {
+      setIsLoading(true);
       const response = await getArticle({
         keyword: searchKeyword,
         orderBy: order,
+        page: page,
+        pageSize: pageSize,
       });
       const { list } = response.data;
-      setArticles(list);
+
+      if (page === 1) {
+        setArticles(list);
+      } else {
+        setArticles((prevArticles) => [
+          ...prevArticles,
+          ...list.filter(
+            (article: Article) =>
+              !prevArticles.some((a) => a.id === article.id),
+          ),
+        ]);
+      }
+
+      if (list.length < pageSize) {
+        setHasMore(false);
+      } else {
+        setHasMore(true);
+      }
     } catch (error) {
       console.error('Error fetching articles:', error);
+      setHasMore(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchArticles(keyword, sortOrder);
-  }, [sortOrder]);
+    setArticles([]);
+    setPage(1);
+    setHasMore(true);
+    fetchArticles(keyword, sortOrder, 1);
+  }, [keyword, sortOrder]);
+
+  useEffect(() => {
+    if (page > 1) {
+      fetchArticles(keyword, sortOrder, page);
+    }
+  }, [page]);
 
   const handleSearchChange = (searchKeyword: string) => {
     setKeyword(searchKeyword);
-    fetchArticles(searchKeyword, sortOrder);
+    setPage(1);
   };
 
   const handleOrderChange = (option: DropdownOption) => {
     setSortOrder(option.value);
+    setPage(1);
   };
 
   const handleButtonClick = () => {
@@ -95,23 +137,31 @@ const Boards = () => {
           />
         </div>
       </div>
-      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 mb-3">
-        {articles.map((article) => (
-          <div key={article.id} onClick={() => handleCardClick(article.id)}>
-            <Card
-              key={article.id}
-              id={article.id}
-              title={article.title}
-              writerNickname={article.writer.nickname}
-              createdAt={article.createdAt}
-              likeCount={article.likeCount}
-              type="article"
-              onDelete={handleDeleteArticle}
-              imageUrl={article.image}
-            />
-          </div>
-        ))}
-      </div>
+
+      <InfiniteScroll
+        dataLength={articles.length}
+        next={() => setPage((prevPage) => prevPage + 1)}
+        hasMore={hasMore}
+        loader={<h4>Loading...</h4>}
+      >
+        <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 mb-3">
+          {articles.map((article) => (
+            <div key={article.id} onClick={() => handleCardClick(article.id)}>
+              <Card
+                id={article.id}
+                title={article.title}
+                writerNickname={article.writer.nickname}
+                createdAt={article.createdAt}
+                likeCount={article.likeCount}
+                type="article"
+                onDelete={handleDeleteArticle}
+                imageUrl={article.image}
+              />
+            </div>
+          ))}
+        </div>
+      </InfiniteScroll>
+
       <div className="fixed bottom-[230px] w-[104px] h-12 right-4 md:bottom-[125px] lg:bottom-[45px] lg:right-[360px]">
         <FloatingButton
           option="add"

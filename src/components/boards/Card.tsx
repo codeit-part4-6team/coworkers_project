@@ -11,9 +11,8 @@ import {
   getDetailArticle,
   deleteArticle,
   deleteComment,
-  editArticle,
-  editComment,
 } from '@/lib/articleApi';
+import { useRouter } from 'next/router';
 
 interface CardProps {
   id: number;
@@ -40,13 +39,17 @@ const Card = ({
   onDelete,
   imageUrl,
 }: CardProps) => {
+  const router = useRouter();
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [isLiked, setIsLiked] = useState(initialIsLiked);
 
-  const kebabOptions: DropdownOption[] = [
-    { label: '수정하기', value: 'edit' },
-    { label: '삭제하기', value: 'delete' },
-  ];
+  const kebabOptions: DropdownOption[] =
+    type === 'comment'
+      ? [{ label: '삭제하기', value: 'delete' }]
+      : [
+          { label: '수정하기', value: 'edit' },
+          { label: '삭제하기', value: 'delete' },
+        ];
 
   const kebabButton = (
     <div>
@@ -54,13 +57,15 @@ const Card = ({
     </div>
   );
 
+  const handleEditClick = () => {
+    router.push(`/boards/${id}/edit`);
+  };
+
   const handleChange = async (selectedOption: DropdownOption) => {
     console.log('Selected option:', selectedOption);
     if (selectedOption.value === 'edit') {
       if (type === 'article') {
-        console.log('게시글 수정 로직 실행');
-      } else if (type === 'comment') {
-        console.log('댓글 수정 로직 실행');
+        handleEditClick();
       }
     } else if (selectedOption.value === 'delete') {
       if (type === 'article') {

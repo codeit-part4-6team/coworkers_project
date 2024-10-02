@@ -5,7 +5,13 @@ import Comment from '@/assets/comment.svg';
 import Heart from '@/assets/heart.svg';
 import Button from '@/components/common/Button';
 import Card from '@/components/boards/Card';
-import { getComment, createComment, getDetailArticle } from '@/lib/articleApi';
+import Image from 'next/image';
+import {
+  getComment,
+  createComment,
+  getDetailArticle,
+  deleteArticle,
+} from '@/lib/articleApi';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
@@ -27,6 +33,7 @@ interface Article {
   createdAt: string;
   updatedAt: string;
   likeCount: number;
+  image?: string;
   commentCount: number;
   writer: {
     nickname: string;
@@ -78,8 +85,23 @@ const CardPage = () => {
     </div>
   );
 
-  const handleChange = (selectedOption: DropdownOption) => {
-    console.log('Selected option:', selectedOption);
+  const handleEditClick = () => {
+    router.push(`/boards/${id}/edit`);
+  };
+
+  const handleChange = async (selectedOption: DropdownOption) => {
+    if (selectedOption.value === 'edit') {
+      handleEditClick();
+    } else if (selectedOption.value === 'delete') {
+      try {
+        await deleteArticle(Number(id));
+        alert('게시글이 삭제되었습니다.');
+        router.push('/boards');
+      } catch (error) {
+        console.error('Error deleting article:', error);
+        alert('게시글 삭제에 실패했습니다.');
+      }
+    }
   };
 
   const handleCommentSubmit = async () => {
@@ -161,6 +183,15 @@ const CardPage = () => {
       <p className="font-regular text-text-secondary text-md mt-12">
         {article?.content}
       </p>
+      {article?.image && (
+        <Image
+          src={article.image}
+          alt="게시글 이미지"
+          width={180}
+          height={180}
+          className="rounded-[12px] object-cover mt-2"
+        />
+      )}
 
       <h2 className="mt-20 text-text-primary font-medium text-lg md:text-xl">
         댓글달기
