@@ -71,27 +71,30 @@ const GroupMemberCard = ({ members, groupId }: GroupMemberCardProps) => {
     null,
   );
 
-  const handleOpenInviteModal = () => {
-    console.log('Open modal');
-    getGroupInvitation(groupId)
-      .then((response) => {
-        const token = response.data;
-        const link = `${window.location.origin}/invitation?token=${token}`;
-        setInvitationLink(link);
-        openModal('inviteMember');
-      })
-      .catch((err) => {
-        console.error('Error fetching invitation token:', err);
-      });
+  const handleOpenInviteModal = async () => {
+    try {
+      console.log('Open modal');
+      const response = await getGroupInvitation(groupId);
+      const token = response.data;
+      const link = `${window.location.origin}/invitation?token=${token}`;
+      setInvitationLink(link);
+      openModal('inviteMember');
+    } catch (err) {
+      console.error('Error fetching invitation token:', err);
+    }
   };
 
   const handleCloseInviteModal = () => closeModal('inviteMember');
 
-  const handleCopyLink = () => {
+  const handleCopyLink = async () => {
     if (!invitationLink) return;
-    navigator.clipboard.writeText(invitationLink).then(() => {
+
+    try {
+      await navigator.clipboard.writeText(invitationLink);
       alert('링크가 클립보드에 복사되었습니다.');
-    });
+    } catch (error) {
+      console.error('Error copying link to clipboard:', error);
+    }
   };
 
   const handleOpenMemberModal = (member: GroupMember) => {
