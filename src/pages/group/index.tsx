@@ -1,18 +1,8 @@
 import noTeam from '@/assets/noteam.png';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const NoteamPage = () => {
-  const router = useRouter();
-
-  const handleCreateGroup = () => {
-    router.push('/addteam');
-  };
-
-  const handleJoinGroup = () => {
-    router.push('/jointeam');
-  };
-
   return (
     <div className="py-[185px] md:py-[272px] lg:py-[212px]">
       <Image
@@ -25,18 +15,16 @@ const NoteamPage = () => {
         <p>팀을 생성하거나 팀에 참여해보세요.</p>
       </div>
       <div className="w-[186px] mx-auto mt-12 md:mt-20">
-        <button
-          className="w-full border border-color-brand-primary rounded-xl h-12 text-center bg-color-brand-primary mt-4"
-          onClick={handleCreateGroup}
-        >
-          팀 생성하기
-        </button>
-        <button
-          className="w-full border border-color-brand-primary rounded-xl h-12 text-center text-color-brand-primary mt-4"
-          onClick={handleJoinGroup}
-        >
-          팀 참여하기
-        </button>
+        <Link href="/addteam">
+          <button className="w-full border border-color-brand-primary rounded-xl h-12 text-center bg-color-brand-primary mt-4">
+            팀 생성하기
+          </button>
+        </Link>
+        <Link href="/jointeam">
+          <button className="w-full border border-color-brand-primary rounded-xl h-12 text-center text-color-brand-primary mt-4">
+            팀 참여하기
+          </button>
+        </Link>
       </div>
     </div>
   );

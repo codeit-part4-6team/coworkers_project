@@ -18,7 +18,9 @@ export default function AddCategoryModal() {
       { groupId: 869, name: categoryName },
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['groups', 869] });
+          queryClient.invalidateQueries({
+            queryKey: ['groups', 869],
+          });
         },
       },
     );

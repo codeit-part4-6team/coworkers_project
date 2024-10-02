@@ -19,6 +19,7 @@ interface GroupMember {
 interface GroupMemberCardProps {
   members: GroupMember[];
   groupId: number;
+  userRole: string | null;
 }
 
 interface MemberItemProps {
@@ -64,34 +65,37 @@ const MemberItem = ({ member, onClick }: MemberItemProps) => {
   );
 };
 
-const GroupMemberCard = ({ members, groupId }: GroupMemberCardProps) => {
+const GroupMemberCard = ({ members, groupId, userRole }: GroupMemberCardProps) => {
   const { openModal, closeModal } = useModalStore();
   const [invitationLink, setInvitationLink] = useState('');
   const [selectedMember, setSelectedMember] = useState<GroupMember | null>(
     null,
   );
 
-  const handleOpenInviteModal = () => {
-    console.log('Open modal');
-    getGroupInvitation(groupId)
-      .then((response) => {
-        const token = response.data;
-        const link = `${window.location.origin}/invitation?token=${token}`;
-        setInvitationLink(link);
-        openModal('inviteMember');
-      })
-      .catch((err) => {
-        console.error('Error fetching invitation token:', err);
-      });
+  const handleOpenInviteModal = async () => {
+    try {
+      console.log('Open modal');
+      const response = await getGroupInvitation(groupId);
+      const token = response.data;
+      const link = `${window.location.origin}/invitation?token=${token}`;
+      setInvitationLink(link);
+      openModal('inviteMember');
+    } catch (err) {
+      console.error('Error fetching invitation token:', err);
+    }
   };
 
   const handleCloseInviteModal = () => closeModal('inviteMember');
 
-  const handleCopyLink = () => {
+  const handleCopyLink = async () => {
     if (!invitationLink) return;
-    navigator.clipboard.writeText(invitationLink).then(() => {
+
+    try {
+      await navigator.clipboard.writeText(invitationLink);
       alert('링크가 클립보드에 복사되었습니다.');
-    });
+    } catch (error) {
+      console.error('Error copying link to clipboard:', error);
+    }
   };
 
   const handleOpenMemberModal = (member: GroupMember) => {
@@ -120,12 +124,14 @@ const GroupMemberCard = ({ members, groupId }: GroupMemberCardProps) => {
             ({members.length}명)
           </span>
         </h2>
-        <button
-          onClick={handleOpenInviteModal}
-          className="text-color-brand-primary text-sm font-medium"
-        >
-          + 새로운 멤버 초대하기
-        </button>
+        {userRole === 'ADMIN' && (
+          <button
+            onClick={handleOpenInviteModal}
+            className="text-color-brand-primary text-sm font-medium"
+          >
+            + 새로운 멤버 초대하기
+          </button>
+        )}
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {members.map((member) => (

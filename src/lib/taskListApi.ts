@@ -1,8 +1,9 @@
 import { basicAuthAxios } from './basicAxios';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { CreateTaskListParams } from '@/types/listTypes';
 
-// 할 일 리스트 생성
-const createTaskList = async ({ groupId, name }: any) => {
+// 할 일 리스트 생성 (사용중)
+const createTaskList = async ({ groupId, name }: CreateTaskListParams) => {
   return basicAuthAxios.post(`/groups/${groupId}/task-lists`, { name });
 };
 
@@ -12,7 +13,7 @@ export const useCreateTaskListMutation = () => {
   });
 };
 
-// 할 일 리스트 불러오기
+// 할 일 리스트 불러오기 (사용중)
 const getTaskLists = (groupId: number) => {
   return basicAuthAxios.get(`/groups/${groupId}`);
 };
