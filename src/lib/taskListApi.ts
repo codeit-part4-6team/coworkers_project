@@ -80,7 +80,7 @@ const orderTaskListDetail = (
 ) => {
   return basicAuthAxios.patch(
     `/groups/${groupId}/task-lists/${taskListId}/order`,
-    displayIndex,
+    {displayIndex},
   );
 };
 

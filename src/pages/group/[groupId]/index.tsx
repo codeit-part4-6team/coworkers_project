@@ -1,43 +1,12 @@
 import { useRouter } from 'next/router';
-import TodoListCard from '@/components/groupPage/TodoListCard';
 import GroupMemberCard from '@/components/groupPage/GroupMemberCard';
 import ReportCard from '@/components/groupPage/GroupReport';
 import GroupHeader from '@/components/groupPage/GroupHeader';
 import { useEffect, useState } from 'react';
 import { getGroup } from '@/lib/groupApi';
-
-interface Task {
-  id: number;
-  name: string;
-  description: string;
-  date: string;
-  doneAt: string | null;
-  updatedAt: string;
-  user: any | null;
-  recurringId: number;
-  deletedAt: string | null;
-  displayIndex: number;
-  writer: {
-    id: number;
-    nickname: string;
-    image: string | null;
-  };
-  doneBy: {
-    user: any | null;
-  };
-  commentCount: number;
-  frequency: string;
-}
-
-interface TaskList {
-  id: number;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-  groupId: number;
-  displayIndex: number;
-  tasks: Task[];
-}
+import { TaskList } from '@/types/taskTypes';
+import { getUserMemberships } from '@/lib/userApi';
+import TaskListCard from '@/components/groupPage/TaskListCard';
 
 interface Member {
   userId: number;
@@ -64,20 +33,34 @@ const GroupPage = () => {
   const { groupId } = router.query;
 
   const [groupData, setGroupData] = useState<GroupData | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    if (groupId) {
-      getGroup(Number(groupId))
-        .then((response) => {
-          const groupDetails = response.data;
-          setGroupData(groupDetails);
-        })
-        .catch((error) => {
-          console.error('Error fetching group data:', error);
-        });
-    }
-  }, [groupId]);
+    const fetchGroupDataAndRole = async () => {
+      if (groupId) {
+        try {
+          // Fetch group details
+          const groupResponse = await getGroup(Number(groupId));
+          setGroupData(groupResponse.data);
 
+          // Fetch user memberships
+          const membershipsResponse = await getUserMemberships();
+          const memberships = membershipsResponse.data;
+          const userMembership = memberships.find(
+            (membership: any) => membership.groupId === Number(groupId),
+          );
+
+          if (userMembership) {
+            setUserRole(userMembership.role);
+          }
+        } catch (error) {
+          console.error('Error fetching group data or memberships:', error);
+        }
+      }
+    };
+
+    fetchGroupDataAndRole();
+  }, [groupId]);
   if (!groupData) {
     return <div>Loading...</div>;
   }
@@ -85,10 +68,14 @@ const GroupPage = () => {
   return (
     <div className="bg-background-primary text-text-primary min-h-screen p-4">
       <main>
-        <GroupHeader groupName={groupData.name} groupId={Number(groupId)} />
-        <TodoListCard groupId={Number(groupId)} />
-        <ReportCard taskLists={groupData.taskLists} />
-        <GroupMemberCard members={groupData.members} groupId={Number(groupId)} />
+        <GroupHeader groupName={groupData.name} groupId={Number(groupId)} userRole={userRole} />
+        <TaskListCard groupId={Number(groupId)} />
+        {userRole === 'ADMIN' && <ReportCard taskLists={groupData.taskLists} />}
+        <GroupMemberCard
+          members={groupData.members}
+          groupId={Number(groupId)}
+          userRole={userRole}
+        />
       </main>
     </div>
   );

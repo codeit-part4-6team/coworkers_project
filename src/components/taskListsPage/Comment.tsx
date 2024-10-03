@@ -19,9 +19,9 @@ const WorkToDoOptions: DropdownOption[] = [
 
 export default function Comment() {
   const router = useRouter();
-  const taskId = router.query.taskId;
+  const taskId = Number(router.query.taskId);
   const queryClient = useQueryClient();
-  const taskCommentsQuery = useTaskCommentsQuery(Number(taskId));
+  const taskCommentsQuery = useTaskCommentsQuery(taskId);
   const editTaskCommentMutation = useEditTaskCommentMutation();
   const { openModal } = useModalStore();
   const { setCommentId } = useApiResponseIdsStore();
@@ -46,14 +46,14 @@ export default function Comment() {
   const handleEditClick = () => {
     editTaskCommentMutation.mutate(
       {
-        taskId: Number(taskId),
-        commentId: Number(editCommentId),
+        taskId: taskId,
+        commentId: editCommentId,
         content: editComment,
       },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ['tasks'],
+            queryKey: ['tasks', taskId, 'comments'],
           });
           setEditCommentId(0);
           setEditComment('');
@@ -79,6 +79,7 @@ export default function Comment() {
                   value={editComment}
                   onChange={(e) => setEditComment(e.target.value)}
                   className="px-3 w-full h-9 rounded-md bg-background-tertiary"
+                  autoFocus
                 />
               )}
               <Dropdown
@@ -90,7 +91,11 @@ export default function Comment() {
             </div>
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <ProfileMemberIcon />
+                {user.image ? (
+                  <img src={user.image} className="w-8 h-8 rounded-full" />
+                ) : (
+                  <ProfileMemberIcon />
+                )}
                 <span className="text-md font-medium">{user.nickname}</span>
               </div>
               <span className="text-md font-regular text-text-secondary">

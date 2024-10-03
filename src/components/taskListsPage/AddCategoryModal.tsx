@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import Modal from '@/components/common/Modal';
 import Button from '@/components/common/Button';
 import XIcon from '@/assets/x_icon.svg';
@@ -7,6 +8,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCreateTaskListMutation } from '@/lib/taskListApi';
 
 export default function AddCategoryModal() {
+  const router = useRouter();
+  const groupId = Number(router.query.groupId);
   const { closeModal } = useModalStore();
   const queryClient = useQueryClient();
   const createTaskListMutation = useCreateTaskListMutation();
@@ -15,11 +18,11 @@ export default function AddCategoryModal() {
 
   const handleSubmitClick = () => {
     createTaskListMutation.mutate(
-      { groupId: 869, name: categoryName },
+      { groupId: groupId, name: categoryName },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ['groups', 869],
+            queryKey: ['groups', groupId],
           });
         },
       },

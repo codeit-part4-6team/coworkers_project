@@ -1,16 +1,17 @@
 import SearchInput from '@/components/boards/SearchInput';
 import Card from '@/components/boards/Card';
-import Arrow from '@/assets/ic_arrow_right.svg';
 import FloatingButton from '@/components/common/FloatingButton';
-import BestCard from '@/components/boards/BestCard';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { getArticle } from '@/lib/articleApi';
+import BestList from '@/components/boards/BestList';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 interface Article {
   id: number;
   title: string;
+  image?: string;
   writer: {
     nickname: string;
     id: number;
@@ -24,31 +25,72 @@ const Boards = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [sortOrder, setSortOrder] = useState<string>('recent');
   const [keyword, setKeyword] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const pageSize = 4;
 
-  const fetchArticles = async (searchKeyword = '', order = 'recent') => {
+  const fetchArticles = async (
+    searchKeyword = '',
+    order = 'recent',
+    page = 1,
+  ) => {
     try {
+      setIsLoading(true);
       const response = await getArticle({
         keyword: searchKeyword,
         orderBy: order,
+        page: page,
+        pageSize: pageSize,
       });
       const { list } = response.data;
-      setArticles(list);
+
+      if (page === 1) {
+        setArticles(list);
+      } else {
+        setArticles((prevArticles) => [
+          ...prevArticles,
+          ...list.filter(
+            (article: Article) =>
+              !prevArticles.some((a) => a.id === article.id),
+          ),
+        ]);
+      }
+
+      if (list.length < pageSize) {
+        setHasMore(false);
+      } else {
+        setHasMore(true);
+      }
     } catch (error) {
       console.error('Error fetching articles:', error);
+      setHasMore(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchArticles(keyword, sortOrder);
-  }, [sortOrder]);
+    setArticles([]);
+    setPage(1);
+    setHasMore(true);
+    fetchArticles(keyword, sortOrder, 1);
+  }, [keyword, sortOrder]);
+
+  useEffect(() => {
+    if (page > 1) {
+      fetchArticles(keyword, sortOrder, page);
+    }
+  }, [page]);
 
   const handleSearchChange = (searchKeyword: string) => {
     setKeyword(searchKeyword);
-    fetchArticles(searchKeyword, sortOrder);
+    setPage(1);
   };
 
   const handleOrderChange = (option: DropdownOption) => {
     setSortOrder(option.value);
+    setPage(1);
   };
 
   const handleButtonClick = () => {
@@ -65,7 +107,7 @@ const Boards = () => {
 
   const orderOptions: DropdownOption[] = [
     { label: '최신순', value: 'recent' },
-    { label: '좋아요 많은순', value: 'like' },
+    { label: '좋아요 순', value: 'like' },
   ];
 
   return (
@@ -78,15 +120,9 @@ const Boards = () => {
         <h3 className="text-lg font-medium text-text-primary md:text-xl">
           베스트 게시글
         </h3>
-        <div className="flex items-center gap-0.5">
-          <p className="text-text-default text-xs">더보기</p>
-          <Arrow />
-        </div>
       </div>
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        <BestCard />
-        <BestCard />
-        <BestCard />
+      <div>
+        <BestList />
       </div>
       <div className="w-full border-t border-border-primary-10 my-8"></div>
       <div className="flex justify-between items-center mb-6">
@@ -101,22 +137,31 @@ const Boards = () => {
           />
         </div>
       </div>
-      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 mb-3">
-        {articles.map((article) => (
-          <div key={article.id} onClick={() => handleCardClick(article.id)}>
-            <Card
-              key={article.id}
-              id={article.id}
-              title={article.title}
-              writerNickname={article.writer.nickname}
-              createdAt={article.createdAt}
-              likeCount={article.likeCount}
-              type="article"
-              onDelete={handleDeleteArticle}
-            />
-          </div>
-        ))}
-      </div>
+
+      <InfiniteScroll
+        dataLength={articles.length}
+        next={() => setPage((prevPage) => prevPage + 1)}
+        hasMore={hasMore}
+        loader={<h4>Loading...</h4>}
+      >
+        <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 mb-3">
+          {articles.map((article) => (
+            <div key={article.id} onClick={() => handleCardClick(article.id)}>
+              <Card
+                id={article.id}
+                title={article.title}
+                writerNickname={article.writer.nickname}
+                createdAt={article.createdAt}
+                likeCount={article.likeCount}
+                type="article"
+                onDelete={handleDeleteArticle}
+                imageUrl={article.image}
+              />
+            </div>
+          ))}
+        </div>
+      </InfiniteScroll>
+
       <div className="fixed bottom-[230px] w-[104px] h-12 right-4 md:bottom-[125px] lg:bottom-[45px] lg:right-[360px]">
         <FloatingButton
           option="add"

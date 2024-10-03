@@ -91,7 +91,7 @@ export default function SignIn() {
 };
 useEffect(() => {
   if(localStorage.getItem('accessToken')) {
-    router.push('/');
+    router.replace('/');
   }
 }, [router]);
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { useQueryClient } from '@tanstack/react-query';
 import XIcon from '@/assets/x_icon.svg';
 import Button from '@/components/common/Button';
@@ -8,9 +9,12 @@ import { useEditTaskDetailMutation } from '@/lib/taskApi';
 import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
 
 export default function EditWorkToDoModal() {
+  const router = useRouter();
+  const groupId = Number(router.query.groupId);
+  const taskListId = Number(router.query.taskListId);
   const { closeModal } = useModalStore();
   const queryClient = useQueryClient();
-  const { groupId, taskListId, taskId } = useApiResponseIdsStore();
+  const { taskId } = useApiResponseIdsStore();
   const editTaskDetailMutation = useEditTaskDetailMutation();
 
   const [title, setTitle] = useState('');
@@ -19,7 +23,7 @@ export default function EditWorkToDoModal() {
   const handleSubmitClick = () => {
     editTaskDetailMutation.mutate(
       {
-        groupId: 869,
+        groupId: groupId,
         taskListId: taskListId,
         taskId: taskId,
         data: {
@@ -30,7 +34,7 @@ export default function EditWorkToDoModal() {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ['groups', 869, 'taskLists', taskListId, 'tasks'],
+            queryKey: ['groups', groupId, 'taskLists', taskListId, 'tasks'],
           });
           setTitle('');
           setMemo('');

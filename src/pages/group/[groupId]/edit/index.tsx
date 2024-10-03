@@ -73,14 +73,10 @@ const EditTeamPage = () => {
       await editGroup(Number(groupId), { image: imageUrl, name: teamName });
       router.push(`/group/${groupId}`);
     } catch (err: any) {
-      if (err.response && err.response.status === 409) {
-        setErrors((prev) => ({ ...prev, name: '이미 존재하는 이름입니다.' }));
-      } else {
-        setErrors((prev) => ({
-          ...prev,
-          name: '팀 수정에 실패했습니다. 다시 시도해주세요.',
-        }));
-      }
+      setErrors((prev) => ({
+        ...prev,
+        name: '팀 수정에 실패했습니다. 다시 시도해주세요.',
+      }));
     } finally {
       setIsLoading(false);
     }
@@ -91,9 +87,7 @@ const EditTeamPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center bg-background-primary text-text-primary py-[140px]">
-      <div className="text-4xl font-medium mb-20 text-center">
-        팀 수정하기
-      </div>
+      <div className="text-4xl font-medium mb-20 text-center">팀 수정하기</div>
       <div className="w-full max-w-[480px]">
         <form onSubmit={handleSubmit}>
           <div className="relative">

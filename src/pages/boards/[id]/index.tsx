@@ -5,14 +5,19 @@ import Comment from '@/assets/comment.svg';
 import Heart from '@/assets/heart.svg';
 import Button from '@/components/common/Button';
 import Card from '@/components/boards/Card';
-import { getComment, createComment, getDetailArticle } from '@/lib/articleApi';
+import Image from 'next/image';
+import {
+  getComment,
+  createComment,
+  getDetailArticle,
+  deleteArticle,
+} from '@/lib/articleApi';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 interface Comment {
   id: number;
   writer: {
-    image: string;
     nickname: string;
     id: number;
   };
@@ -28,6 +33,7 @@ interface Article {
   createdAt: string;
   updatedAt: string;
   likeCount: number;
+  image?: string;
   commentCount: number;
   writer: {
     nickname: string;
@@ -79,8 +85,23 @@ const CardPage = () => {
     </div>
   );
 
-  const handleChange = (selectedOption: DropdownOption) => {
-    console.log('Selected option:', selectedOption);
+  const handleEditClick = () => {
+    router.push(`/boards/${id}/edit`);
+  };
+
+  const handleChange = async (selectedOption: DropdownOption) => {
+    if (selectedOption.value === 'edit') {
+      handleEditClick();
+    } else if (selectedOption.value === 'delete') {
+      try {
+        await deleteArticle(Number(id));
+        alert('게시글이 삭제되었습니다.');
+        router.push('/boards');
+      } catch (error) {
+        console.error('Error deleting article:', error);
+        alert('게시글 삭제에 실패했습니다.');
+      }
+    }
   };
 
   const handleCommentSubmit = async () => {
@@ -96,7 +117,10 @@ const CardPage = () => {
         ...prevComments,
         {
           id: response.data.id,
-          writer: response.data.user,
+          writer: {
+            nickname: response.data.writer.nickname,
+            id: response.data.writer.id,
+          },
           content: response.data.content,
           createdAt: response.data.createdAt,
           updatedAt: response.data.updatedAt,
@@ -128,9 +152,9 @@ const CardPage = () => {
         />
       </div>
       <div className="w-full border-t border-border-primary-10 my-4"></div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <div className="flex gap-2 items-center">
-          <Profile />
+          <Profile className="w-8 h-8" />
           <p className="text-text-primary font-medium text-xs">
             {article?.writer.nickname}
           </p>
@@ -159,6 +183,15 @@ const CardPage = () => {
       <p className="font-regular text-text-secondary text-md mt-12">
         {article?.content}
       </p>
+      {article?.image && (
+        <Image
+          src={article.image}
+          alt="게시글 이미지"
+          width={180}
+          height={180}
+          className="rounded-[12px] object-cover mt-2"
+        />
+      )}
 
       <h2 className="mt-20 text-text-primary font-medium text-lg md:text-xl">
         댓글달기
@@ -180,21 +213,26 @@ const CardPage = () => {
 
       <div className="w-full border-t border-border-primary-10 my-8"></div>
       <div className="grid gap-4 grid-rows-1 mb-3">
-        {comments.map((comment) => (
-          <div>
-            <Card
-              key={comment.id}
-              id={comment.id}
-              title={comment.content}
-              writerNickname={comment.writer?.nickname}
-              createdAt={comment.createdAt}
-              likeCount={0}
-              hideHeart={true}
-              type="comment"
-              onDelete={handleDeleteComment}
-            />
-          </div>
-        ))}
+        {comments.length > 0 ? (
+          comments.map((comment) => (
+            <div key={comment.id}>
+              <Card
+                id={comment.id}
+                title={comment.content}
+                writerNickname={comment.writer?.nickname}
+                createdAt={comment.createdAt}
+                likeCount={0}
+                hideHeart={true}
+                type="comment"
+                onDelete={handleDeleteComment}
+              />
+            </div>
+          ))
+        ) : (
+          <p className="text-text-default text-md font-medium text-center mt-[180px] md:mt-[158px]">
+            아직 작성된 댓글이 없습니다.
+          </p>
+        )}
       </div>
     </div>
   );

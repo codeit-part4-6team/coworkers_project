@@ -54,16 +54,12 @@ const AddTeamPage = () => {
     try {
       const response = await createGroup({ image: imageUrl, name: teamName });
       const groupId = response.data.id;
-      router.push(`/${groupId}`);
+      router.push(`/group/${groupId}`);
     } catch (err: any) {
-      if (err.response && err.response.status === 409) {
-        setErrors((prev) => ({ ...prev, name: '이미 존재하는 이름입니다.' }));
-      } else {
-        setErrors((prev) => ({
-          ...prev,
-          name: '팀 생성에 실패했습니다. 다시 시도해주세요.',
-        }));
-      }
+      setErrors((prev) => ({
+        ...prev,
+        name: '팀 생성에 실패했습니다. 다시 시도해주세요.',
+      }));
     } finally {
       setIsLoading(false);
     }

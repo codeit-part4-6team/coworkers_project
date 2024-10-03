@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import Calendar from 'react-calendar';
 import { useQueryClient } from '@tanstack/react-query';
@@ -11,7 +12,6 @@ import { today } from '@/utils/today';
 import { formatThirdDate, formatFourthDate } from '@/utils/formatDate';
 import { SelectedDate, TaskCreateRequestBody } from '@/types/listTypes';
 import { useCreateRecurringTaskMutation } from '@/lib/taskApi';
-import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
 
 const repeatOptions = [
   { label: '한 번', value: 'ONCE' },
@@ -33,10 +33,12 @@ const weekDays = [
 const MonthDays = Array.from({ length: 31 }, (_, i) => i + 1);
 
 export default function CreateWorkToDoModal() {
+  const router = useRouter();
+  const groupId = Number(router.query.groupId);
+  const taskListId = Number(router.query.taskListId);
   const { closeModal } = useModalStore();
   const queryClient = useQueryClient();
   const createRecurringTaskMutation = useCreateRecurringTaskMutation();
-  const { groupId, taskListId } = useApiResponseIdsStore();
 
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [isWeekDaysVisible, setIsWeekDaysVisible] = useState(false);
@@ -92,14 +94,14 @@ export default function CreateWorkToDoModal() {
 
     createRecurringTaskMutation.mutate(
       {
-        groupId: 869,
+        groupId: groupId,
         taskListId: taskListId,
         data: taskData,
       },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ['groups', 869, 'taskLists', taskListId],
+            queryKey: ['groups', groupId, 'taskLists', taskListId, 'tasks'],
           });
           setTitle('');
           setSelectedDate(new Date());
