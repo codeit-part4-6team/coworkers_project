@@ -56,9 +56,8 @@ export default function Modal({
       {...rest}
       ref={dialogRef}
       className={clsx(
-        positionBottom
-          ? `mb-0 md:mb-auto w-full max-w-full rounded-t-3xl ${className}`
-          : `${className}`,
+        className,
+        positionBottom && `mb-0 md:mb-auto w-full max-w-full rounded-t-3xl`,
       )}
     >
       {children}

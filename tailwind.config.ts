@@ -14,6 +14,9 @@ const config: Config = {
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
         'color-brand-gradient': 'linear-gradient(to right, #10B981, #A3E635)',
       },
+      screens: {
+        '2lg': '1200px',
+      },
     },
     colors: {
       color: {
@@ -59,18 +62,20 @@ const config: Config = {
         disabled: '#94A3B8',
       },
       status: {
-        danger: '#DC2626',
+        danger: '#EF4444',
       },
       icon: {
         primary: '#64748B',
         inverse: '#F8FAFC',
         brand: '#10B981',
       },
+      transparent: 'transparent',
     },
     fontSize: {
       xs: ['12px', '14px'],
       sm: ['13px', '16px'],
       md: ['14px', '17px'],
+      '2md': ['14px', '24px'],
       lg: ['16px', '19px'],
       '2lg': ['18px', '21px'],
       xl: ['20px', '24px'],

@@ -1,57 +1,95 @@
 import { basicAuthAxios } from './basicAxios';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { CreateTaskListParams } from '@/types/listTypes';
 
-// 할 일 리스트 생성
-export async function createTaskList(groupId: number, name: string) {
-  const response = await basicAuthAxios.post(
-    `groups/${groupId}/task-lists`,
-    name,
-  );
+// 할 일 리스트 생성 (사용중)
+const createTaskList = async ({ groupId, name }: CreateTaskListParams) => {
+  return basicAuthAxios.post(`/groups/${groupId}/task-lists`, { name });
+};
 
-  return response;
-}
+export const useCreateTaskListMutation = () => {
+  return useMutation({
+    mutationFn: createTaskList,
+  });
+};
 
-// 할 일 특정 리스트 불러오기
-export async function getTaskList(groupId: number, taskListId: number) {
-  const response = await basicAuthAxios.get(
-    `groups/${groupId}/task-lists/${taskListId}`,
-  );
+// 할 일 리스트 불러오기 (사용중)
+const getTaskLists = (groupId: number) => {
+  return basicAuthAxios.get(`/groups/${groupId}`);
+};
 
-  return response;
-}
+export const useTaskListsQuery = (groupId: number) => {
+  return useQuery({
+    queryKey: ['groups', groupId],
+    queryFn: () => getTaskLists(groupId),
+  });
+};
 
-// 할 일 특정 리스트 수정
-export async function editTaskList(
+// 특정 할 일 리스트 불러오기
+const getTaskListDetail = (groupId: number, taskListId: number) => {
+  return basicAuthAxios.get(`/groups/${groupId}/task-lists/${taskListId}`);
+};
+
+export const useTaskListDetailQuery = (groupId: number, taskListId: number) => {
+  return useQuery({
+    queryKey: ['groups', groupId, 'taskLists', taskListId],
+    queryFn: () => getTaskListDetail(groupId, taskListId),
+  });
+};
+
+// 특정 할 일 리스트 수정
+const editTaskListDetail = (
   groupId: number,
   taskListId: number,
   name: string,
-) {
-  const response = await basicAuthAxios.patch(
-    `groups/${groupId}/task-lists/${taskListId}`,
-    name,
-  );
+) => {
+  return basicAuthAxios.patch(`/groups/${groupId}/task-lists/${taskListId}`, {
+    name: name,
+  });
+};
 
-  return response;
-}
+export const useEditTaskListDetailMutation = (
+  groupId: number,
+  taskListId: number,
+  name: string,
+) => {
+  return useMutation({
+    mutationFn: () => editTaskListDetail(groupId, taskListId, name),
+  });
+};
 
-// 할 일 특정 리스트 삭제
-export async function deleteTaskList(groupId: number, taskListId: number) {
-  const response = await basicAuthAxios.delete(
-    `groups/${groupId}/task-lists/${taskListId}`,
-  );
+// 특정 할 일 리스트 삭제
+const deleteTaskListDetail = (groupId: number, taskListId: number) => {
+  return basicAuthAxios.delete(`/groups/${groupId}/task-lists/${taskListId}`);
+};
 
-  return response;
-}
+export const useDeleteTaskListDetailMutation = (
+  groupId: number,
+  taskListId: number,
+) => {
+  return useMutation({
+    mutationFn: () => deleteTaskListDetail(groupId, taskListId),
+  });
+};
 
-// 할 일 리스트 순서 변경
-export async function orderTaskList(
+// 특정 할 일 리스트 순서 변경
+const orderTaskListDetail = (
   groupId: number,
   taskListId: number,
   displayIndex: number,
-) {
-  const response = await basicAuthAxios.patch(
-    `groups/${groupId}/task-lists/${taskListId}/order`,
-    displayIndex,
+) => {
+  return basicAuthAxios.patch(
+    `/groups/${groupId}/task-lists/${taskListId}/order`,
+    {displayIndex},
   );
+};
 
-  return response;
-}
+export const useOrderTaskListDetailMutation = (
+  groupId: number,
+  taskListId: number,
+  displayIndex: number,
+) => {
+  return useMutation({
+    mutationFn: () => orderTaskListDetail(groupId, taskListId, displayIndex),
+  });
+};
