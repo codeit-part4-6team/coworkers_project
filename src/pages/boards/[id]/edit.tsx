@@ -97,7 +97,7 @@ const EditArticle = () => {
   };
 
   return (
-    <div className="px-4 mt-10 md:px-6 md:mt-14 lg:px-[360px]">
+    <div className="px-4 mt-10 md:px-6 md:mt-14 lg:px-6 2lg:max-w-[1200px] 2lg:mx-auto">
       <h3 className="text-2lg font-medium text-text-primary md:text-xl md:font-bold">
         게시글 수정하기
       </h3>

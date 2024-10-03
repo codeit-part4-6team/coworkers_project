@@ -138,7 +138,7 @@ const CardPage = () => {
   };
 
   return (
-    <div className="px-4 mt-10 md:px-6 md:mt-14 lg:px-[360px]">
+    <div className="px-4 mt-10 md:px-6 md:mt-14 lg:px-6 2lg:max-w-[1200px] 2lg:mx-auto">
       <div className="flex justify-between items-center">
         <h3 className="text-text-secondary font-medium text-lg md:text-2lg">
           {article?.title}
