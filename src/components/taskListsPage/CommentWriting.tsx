@@ -7,14 +7,14 @@ import { useCreateTaskCommentMutation } from '@/lib/taskCommentApi';
 
 export default function CommentWriting() {
   const router = useRouter();
+  const taskId = Number(router.query.taskId);
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const queryClient = useQueryClient();
   const createTaskCommentMutation = useCreateTaskCommentMutation();
   const [commentValue, setCommentValue] = useState('');
-  const { taskId } = router.query;
 
   const handleResizeHeight = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setCommentValue(e.target.value);
+    setCommentValue(e.target.value.trimStart());
     if (commentRef.current) {
       commentRef.current.style.height = 'auto';
       commentRef.current.style.height = commentRef.current.scrollHeight + 'px';
@@ -25,13 +25,13 @@ export default function CommentWriting() {
     if (!taskId) return;
     createTaskCommentMutation.mutate(
       {
-        taskId: Number(taskId),
+        taskId: taskId,
         content: commentValue,
       },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: ['tasks'],
+            queryKey: ['tasks', taskId, 'comments'],
           });
           setCommentValue('');
         },

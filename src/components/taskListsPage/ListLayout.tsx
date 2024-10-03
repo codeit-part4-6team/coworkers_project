@@ -1,11 +1,11 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import clsx from 'clsx';
-import CalendarDate from '@/components/list/CalendarDate';
+import CalendarDate from '@/components/taskListsPage/CalendarDate';
 import useModalStore from '@/store/modalStore';
-import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
 import { useTaskListsQuery } from '@/lib/taskListApi';
-import AddCategoryModal from '@/components/list/AddCategoryModal';
+import AddCategoryModal from '@/components/taskListsPage/AddCategoryModal';
 import { TaskListResponse } from '@/types/listTypes';
 
 interface Props {
@@ -13,17 +13,15 @@ interface Props {
 }
 
 export default function ListLayout({ children }: Props) {
+  const router = useRouter();
+  const groupId = Number(router.query.groupId);
+  const taskListId = Number(router.query.taskListId);
   const { openModal } = useModalStore();
-  const { taskListId, setTaskListId } = useApiResponseIdsStore();
 
-  const taskListsQuery = useTaskListsQuery(869);
+  const taskListsQuery = useTaskListsQuery(groupId);
 
   const handleAddCategoryClick = () => {
     openModal('AddCategory');
-  };
-
-  const handleListNameClick = (id: number) => {
-    setTaskListId(id);
   };
 
   return (
@@ -52,9 +50,10 @@ export default function ListLayout({ children }: Props) {
                     taskLists.id === taskListId &&
                       'border-b border-text-tertiary text-text-tertiary',
                   )}
-                  onClick={() => handleListNameClick(taskLists.id)}
                 >
-                  <Link href={`/list/${taskLists.id}`}>{taskLists.name}</Link>
+                  <Link href={`/group/${groupId}/task-lists/${taskLists.id}`}>
+                    {taskLists.name}
+                  </Link>
                 </li>
               ),
             )}

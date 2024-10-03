@@ -1,41 +1,35 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import ListLayout from '@/components/list/ListLayout';
-import WorkToDoContainer from '@/components/list/WorkToDoContainer';
+import ListLayout from '@/components/taskListsPage/ListLayout';
+import WorkToDoContainer from '@/components/taskListsPage/WorkToDoContainer';
 import FloatingButton from '@/components/common/FloatingButton';
-import WorkToDoDetail from '@/components/list/WorkToDoDetail';
-import CreateWorkToDoModal from '@/components/list/CreateWorkToDoModal';
-import EditWorkToDoModal from '@/components/list/EditWorkToDoModal';
-import DeleteWorkToDoModal from '@/components/list/DeleteWorkToDoModal';
-import DeleteCommentModal from '@/components/list/DeleteCommentModal';
+import CreateWorkToDoModal from '@/components/taskListsPage/CreateWorkToDoModal';
+import EditWorkToDoModal from '@/components/taskListsPage/EditWorkToDoModal';
+import DeleteWorkToDoModal from '@/components/taskListsPage/DeleteWorkToDoModal';
 import useModalStore from '@/store/modalStore';
 import { useTasksQuery } from '@/lib/taskApi';
 import { formatThirdDate } from '@/utils/formatDate';
 import useSelectedDateStore from '@/store/selectedDateStore';
 import { TaskResponse } from '@/types/listTypes';
 
-export default function Task() {
+export default function List() {
   const router = useRouter();
-  const { tasklistid } = router.query;
-  const { taskId } = router.query;
+  const groupId = Number(router.query.groupId);
+  const taskListId = Number(router.query.taskListId);
   const { openModal } = useModalStore();
   const { selectedDate } = useSelectedDateStore();
-
-  const taskListId = Number(tasklistid);
 
   const [workToDoName, setWorkToDoName] = useState('');
 
   const formattedDate = formatThirdDate(selectedDate);
 
-  const tasksQuery = useTasksQuery(869, taskListId, formattedDate);
+  const tasksQuery = useTasksQuery(groupId, taskListId, formattedDate);
 
   return (
     <>
       <CreateWorkToDoModal />
       <EditWorkToDoModal />
       <DeleteWorkToDoModal workToDoName={workToDoName} />
-      <DeleteCommentModal />
-      {taskId && <WorkToDoDetail setWorkToDoName={setWorkToDoName} />}
       <ListLayout>
         {tasksQuery.data?.data.length > 0 ? (
           <div className="flex flex-col gap-4">
@@ -54,7 +48,7 @@ export default function Task() {
             <p>새로운 목록을 추가해주세요.</p>
           </div>
         )}
-        <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-12 2lg:custom-right">
+        <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 lg:bottom-12 2lg:custom-right w-[125px] h-12 font-semibold">
           <FloatingButton
             option="add"
             text="할 일 추가"
