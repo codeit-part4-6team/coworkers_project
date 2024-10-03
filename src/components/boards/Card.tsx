@@ -4,15 +4,15 @@ import Dropdown, { DropdownOption } from '../common/Dropdown';
 import Profile from '@/assets/profile_member_large.svg';
 import Heart from '@/assets/heart.svg';
 import RedHeart from '@/assets/heart_red.svg';
+import Image from 'next/image';
 import {
   isLike,
   deleteLike,
   getDetailArticle,
   deleteArticle,
   deleteComment,
-  editArticle,
-  editComment,
 } from '@/lib/articleApi';
+import { useRouter } from 'next/router';
 
 interface CardProps {
   id: number;
@@ -24,6 +24,7 @@ interface CardProps {
   hideHeart?: boolean;
   type: 'article' | 'comment';
   onDelete?: (id: number) => void;
+  imageUrl?: string;
 }
 
 const Card = ({
@@ -36,14 +37,19 @@ const Card = ({
   hideHeart = false,
   type,
   onDelete,
+  imageUrl,
 }: CardProps) => {
+  const router = useRouter();
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [isLiked, setIsLiked] = useState(initialIsLiked);
 
-  const kebabOptions: DropdownOption[] = [
-    { label: '수정하기', value: 'edit' },
-    { label: '삭제하기', value: 'delete' },
-  ];
+  const kebabOptions: DropdownOption[] =
+    type === 'comment'
+      ? [{ label: '삭제하기', value: 'delete' }]
+      : [
+          { label: '수정하기', value: 'edit' },
+          { label: '삭제하기', value: 'delete' },
+        ];
 
   const kebabButton = (
     <div>
@@ -51,15 +57,15 @@ const Card = ({
     </div>
   );
 
+  const handleEditClick = () => {
+    router.push(`/boards/${id}/edit`);
+  };
+
   const handleChange = async (selectedOption: DropdownOption) => {
     console.log('Selected option:', selectedOption);
     if (selectedOption.value === 'edit') {
       if (type === 'article') {
-        // 게시글 수정
-        console.log('게시글 수정 로직 실행');
-      } else if (type === 'comment') {
-        // 댓글 수정
-        console.log('댓글 수정 로직 실행');
+        handleEditClick();
       }
     } else if (selectedOption.value === 'delete') {
       if (type === 'article') {
@@ -103,9 +109,11 @@ const Card = ({
       if (!isLiked) {
         await isLike(id);
         setLikeCount(likeCount + 1);
+        setIsLiked(true);
       } else {
         await deleteLike(id);
         setLikeCount(likeCount - 1);
+        setIsLiked(false);
       }
       setIsLiked(!isLiked);
     } catch (error) {
@@ -114,25 +122,39 @@ const Card = ({
   };
 
   return (
-    <div className="border rounded-[12px] bg-background-secondary border-background-tertiary pt-6 px-4 pb-4">
-      <div className="flex justify-between md:flex-row">
-        <div>
+    <div className="border h-[176px] rounded-[12px] bg-background-secondary border-background-tertiary pt-6 px-4 pb-4 flex flex-col justify-between">
+      <div>
+        <div className="flex justify-between md:flex-row md:items-start">
           <p className="text-text-secondary text-md font-medium">{title}</p>
-          <p className="text-xs font-medium text-text-default mt-3">
-            {new Date(createdAt).toLocaleDateString()}
-          </p>
+          <div className="flex items-start gap-2">
+            {imageUrl && (
+              <Image
+                src={imageUrl}
+                alt="게시글 이미지"
+                width={72}
+                height={72}
+                className="rounded-[12px] object-cover"
+              />
+            )}
+            <div
+              className="hidden md:block"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Dropdown
+                options={kebabOptions}
+                onChange={handleChange}
+                customButton={kebabButton}
+                size="sm"
+                direction="down"
+              />
+            </div>
+          </div>
         </div>
-        <div className="hidden md:block" onClick={(e) => e.stopPropagation()}>
-          <Dropdown
-            options={kebabOptions}
-            onChange={handleChange}
-            customButton={kebabButton}
-            size="sm"
-            direction="down"
-          />
-        </div>
+        <p className="text-xs font-medium text-text-default mt-3">
+          {new Date(createdAt).toLocaleDateString()}
+        </p>
       </div>
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex items-center justify-between mt-2">
         <div className="flex items-center gap-3">
           <Profile />
           <p className="text-xs font-medium text-text-primary">

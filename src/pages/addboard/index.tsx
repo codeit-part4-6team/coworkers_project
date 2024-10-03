@@ -34,7 +34,7 @@ const AddBoard = () => {
       return;
     }
 
-    let imageUrl: string = 'https://example.com';
+    let imageUrl: string | undefined = undefined;
 
     if (image) {
       setIsUploading(true);
@@ -44,7 +44,7 @@ const AddBoard = () => {
 
         const imageResponse = await imageFile(image);
         if (imageResponse && imageResponse.data) {
-          imageUrl = imageResponse.data.imageUrl;
+          imageUrl = imageResponse.data.url;
         } else {
           throw new Error('이미지 URL을 가져오지 못했습니다.');
         }
@@ -59,11 +59,16 @@ const AddBoard = () => {
 
     setIsSubmitting(true);
     try {
-      const response = await createArticle({
+      const articleData: any = {
         title,
         content,
-        image: imageUrl,
-      });
+      };
+
+      if (imageUrl) {
+        articleData.image = imageUrl;
+      }
+
+      const response = await createArticle(articleData);
 
       if (response.status === 201) {
         const createdArticleId = response.data.id;
