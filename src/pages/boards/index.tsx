@@ -111,7 +111,7 @@ const Boards = () => {
   ];
 
   return (
-    <div className="mt-8 px-4 md:mt-10 lg:mt-10 lg:px-[360px]">
+    <div className="mt-8 px-4 md:mt-10 lg:px-6 2lg:max-w-[1200px] 2lg:mx-auto">
       <h2 className="text-2lg font-bold text-text-primary mb-6 md:text-2xl">
         자유게시판
       </h2>
