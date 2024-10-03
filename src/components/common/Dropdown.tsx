@@ -5,11 +5,15 @@ import Toggle from '@/assets/toggle.svg';
 export interface DropdownOption {
   label: string;
   value: string;
+  onClick?: () => void;
 }
 
 interface DropdownProps {
   options: DropdownOption[];
   onChange: (selectedOption: DropdownOption) => void;
+  onClick?: (
+    event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>,
+  ) => void;
   placeholder?: string;
   customButton?: ReactNode;
   size?: 'sm' | 'md';
@@ -49,7 +53,11 @@ const Dropdown = ({
     };
   }, []);
 
-  const handleOptionClick = (option: DropdownOption) => {
+  const handleOptionClick = (
+    option: DropdownOption,
+    event: React.MouseEvent,
+  ) => {
+    event.stopPropagation();
     setSelectedOption(option);
     setIsOpen(false);
     onChange(option);
@@ -98,14 +106,23 @@ const Dropdown = ({
   return (
     <div className={clsx('relative inline-block text-left', className)}>
       {customButton ? (
-        <div onClick={() => setIsOpen(!isOpen)} className="text-center">
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(!isOpen);
+          }}
+          className="text-center"
+        >
           {customButton}
         </div>
       ) : (
         <button
           type="button"
           className={buttonClasses}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(!isOpen);
+          }}
         >
           <span>{displayText}</span>
           <Toggle className="w-6 h-6 text-icon-primary" />
@@ -119,7 +136,7 @@ const Dropdown = ({
               <button
                 key={option.value}
                 className={optionClasses}
-                onClick={() => handleOptionClick(option)}
+                onClick={(e) => handleOptionClick(option, e)}
               >
                 {option.label}
               </button>
