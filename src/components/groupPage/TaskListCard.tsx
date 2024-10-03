@@ -105,19 +105,15 @@ const TaskListCard = ({ groupId }: { groupId: number }) => {
       </div>
       {taskLists.length > 0 ? (
         taskLists.map((taskList, index) => (
-          <Link
+          <TaskItem
             key={taskList.id}
-            href={`/group/${groupId}/task-lists/${taskList.id}`}
-            className="block"
-          >
-            <TaskItem
-              taskList={taskList}
-              index={index}
-              groupId={groupId}
-              onDelete={() => refetch()}
-              onEdit={handleEdit}
-            />
-          </Link>
+            taskList={taskList}
+            index={index}
+            groupId={groupId}
+            taskListId={taskList.id}
+            onDelete={() => refetch()}
+            onEdit={handleEdit}
+          />
         ))
       ) : (
         <div className="flex justify-center items-center py-16">
