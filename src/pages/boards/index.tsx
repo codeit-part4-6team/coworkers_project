@@ -28,7 +28,7 @@ const Boards = () => {
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const pageSize = 4;
+  const pageSize = 6;
 
   const fetchArticles = async (
     searchKeyword = '',

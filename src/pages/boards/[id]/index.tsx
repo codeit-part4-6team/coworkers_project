@@ -3,6 +3,7 @@ import Kebab from '@/assets/kebab.svg';
 import Profile from '@/assets/member.svg';
 import Comment from '@/assets/comment.svg';
 import Heart from '@/assets/heart.svg';
+import RedHeart from '@/assets/heart_red.svg';
 import Button from '@/components/common/Button';
 import Card from '@/components/boards/Card';
 import Image from 'next/image';
@@ -11,6 +12,8 @@ import {
   createComment,
   getDetailArticle,
   deleteArticle,
+  isLike,
+  deleteLike,
 } from '@/lib/articleApi';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -48,12 +51,17 @@ const CardPage = () => {
   const [article, setArticle] = useState<Article | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState<string>('');
+  const [likeCount, setLikeCount] = useState<number>(0);
+  const [isLiked, setIsLiked] = useState<boolean>(false);
 
   const fetchArticle = async () => {
     if (!id) return;
     try {
       const response = await getDetailArticle(Number(id));
-      setArticle(response.data);
+      const articleData = response.data;
+      setArticle(articleData);
+      setLikeCount(articleData.likeCount);
+      setIsLiked(articleData.isLiked);
     } catch (error) {
       console.error('Error fetching article:', error);
     }
@@ -126,6 +134,14 @@ const CardPage = () => {
           updatedAt: response.data.updatedAt,
         },
       ]);
+
+      if (article) {
+        setArticle({
+          ...article,
+          commentCount: article.commentCount + 1,
+        });
+      }
+
       setNewComment('');
     } catch (error) {
       console.error('댓글 등록 실패:', error);
@@ -135,6 +151,22 @@ const CardPage = () => {
 
   const handleDeleteComment = (commentId: number) => {
     setComments(comments.filter((comment) => comment.id !== commentId));
+  };
+
+  const handleLikeClick = async () => {
+    try {
+      if (!isLiked) {
+        await isLike(Number(id));
+        setLikeCount(likeCount + 1);
+        setIsLiked(true);
+      } else {
+        await deleteLike(Number(id));
+        setLikeCount(likeCount - 1);
+        setIsLiked(false);
+      }
+    } catch (error) {
+      console.error('좋아요 처리 실패:', error);
+    }
   };
 
   return (
@@ -172,10 +204,13 @@ const CardPage = () => {
               {article?.commentCount}
             </p>
           </div>
-          <div className="flex items-center gap-1">
-            <Heart />
+          <div
+            className="flex items-center gap-1 cursor-pointer"
+            onClick={handleLikeClick}
+          >
+            {isLiked ? <RedHeart /> : <Heart />}
             <p className="text-text-secondary text-xs font-medium">
-              {article?.likeCount}
+              {likeCount}
             </p>
           </div>
         </div>
@@ -211,28 +246,22 @@ const CardPage = () => {
         />
       </div>
 
-      <div className="w-full border-t border-border-primary-10 my-8"></div>
+      <div className="w-full border-t border-border-primary-10 my-4"></div>
+
       <div className="grid gap-4 grid-rows-1 mb-3">
-        {comments.length > 0 ? (
-          comments.map((comment) => (
-            <div key={comment.id}>
-              <Card
-                id={comment.id}
-                title={comment.content}
-                writerNickname={comment.writer?.nickname}
-                createdAt={comment.createdAt}
-                likeCount={0}
-                hideHeart={true}
-                type="comment"
-                onDelete={handleDeleteComment}
-              />
-            </div>
-          ))
-        ) : (
-          <p className="text-text-default text-md font-medium text-center mt-[180px] md:mt-[158px]">
-            아직 작성된 댓글이 없습니다.
-          </p>
-        )}
+        {comments.map((comment) => (
+          <Card
+            key={comment.id}
+            id={comment.id}
+            writerNickname={comment.writer.nickname}
+            title={comment.content}
+            createdAt={comment.createdAt}
+            type="comment"
+            likeCount={0}
+            hideHeart={true}
+            onDelete={handleDeleteComment}
+          />
+        ))}
       </div>
     </div>
   );
