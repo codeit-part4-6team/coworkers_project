@@ -10,7 +10,7 @@ import {
 } from '@/lib/taskListApi';
 import XIcon from '@/assets/x_icon.svg';
 import { TaskList } from '@/types/taskTypes';
-
+import Link from 'next/link';
 
 const TaskListCard = ({ groupId }: { groupId: number }) => {
   const [newListName, setNewListName] = useState('');
@@ -110,6 +110,7 @@ const TaskListCard = ({ groupId }: { groupId: number }) => {
             taskList={taskList}
             index={index}
             groupId={groupId}
+            taskListId={taskList.id}
             onDelete={() => refetch()}
             onEdit={handleEdit}
           />

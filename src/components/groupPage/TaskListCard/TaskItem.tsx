@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useDeleteTaskListDetailMutation } from '@/lib/taskListApi';
 import ProgressChart from './ProgressChart';
 import { TaskList } from '@/types/taskTypes';
+import Link from 'next/link';
 
 const pointColors = [
   'bg-color-point-purple',
@@ -20,16 +21,27 @@ interface TaskItemProps {
   taskList: TaskList;
   index: number;
   groupId: number;
+  taskListId: number;
   onDelete: () => void;
   onEdit: (id: number, name: string) => void;
 }
 
-const TaskItem = ({ taskList, index, groupId, onDelete, onEdit }: TaskItemProps) => {
+const TaskItem = ({
+  taskList,
+  index,
+  groupId,
+  taskListId,
+  onDelete,
+  onEdit,
+}: TaskItemProps) => {
   const colorIndex = index % pointColors.length;
   const borderColor = `${pointColors[colorIndex]}`;
   const queryClient = useQueryClient();
 
-  const deleteTaskListMutation = useDeleteTaskListDetailMutation(groupId, taskList.id);
+  const deleteTaskListMutation = useDeleteTaskListDetailMutation(
+    groupId,
+    taskList.id,
+  );
 
   const kebabOptions = [
     { label: '수정하기', value: 'edit' },
@@ -52,9 +64,10 @@ const TaskItem = ({ taskList, index, groupId, onDelete, onEdit }: TaskItemProps)
 
   const totalTasks = taskList.tasks.length;
   const completedTasks = taskList.tasks.filter(
-    (task) => task.doneAt && task.doneBy.user !== null
+    (task) => task.doneAt && task.doneBy.user !== null,
   ).length;
-  const progressPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  const progressPercentage =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
     <div className="relative bg-transparent">
@@ -62,9 +75,17 @@ const TaskItem = ({ taskList, index, groupId, onDelete, onEdit }: TaskItemProps)
         <div className="absolute inset-0 bg-background-secondary" />
         <div className={`absolute left-0 top-0 bottom-0 w-3 ${borderColor}`} />
       </div>
+
       <div className="relative flex items-center">
         <div className="flex-1 flex justify-between items-center pl-4 pr-2 py-3 ml-2">
-          <span className="font-medium text-md text-white">{taskList.name}</span>
+          <Link
+            href={`/group/${groupId}/task-lists/${taskListId}`}
+            className="block"
+          >
+            <span className="font-medium text-md text-white">
+              {taskList.name}
+            </span>
+          </Link>
           <div className="flex items-center">
             <div className="flex items-center bg-background-primary rounded-xl py-1 px-2 mr-1">
               {progressPercentage === 100 ? (
@@ -81,6 +102,10 @@ const TaskItem = ({ taskList, index, groupId, onDelete, onEdit }: TaskItemProps)
             <Dropdown
               options={kebabOptions}
               onChange={handleChange}
+              onClick={(event) => {
+                event.stopPropagation();
+                event.preventDefault();
+              }}
               customButton={<Kebab width="16" height="16" />}
               size="sm"
             />
