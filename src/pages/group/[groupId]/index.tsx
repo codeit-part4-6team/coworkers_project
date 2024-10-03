@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import TodoListCard from '@/components/groupPage/TodoListCard';
 import GroupMemberCard from '@/components/groupPage/GroupMemberCard';
 import ReportCard from '@/components/groupPage/GroupReport';
 import GroupHeader from '@/components/groupPage/GroupHeader';
@@ -7,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { getGroup } from '@/lib/groupApi';
 import { TaskList } from '@/types/taskTypes';
 import { getUserMemberships } from '@/lib/userApi';
+import TaskListCard from '@/components/groupPage/TaskListCard';
 
 interface Member {
   userId: number;
@@ -69,7 +69,7 @@ const GroupPage = () => {
     <div className="bg-background-primary text-text-primary min-h-screen p-4">
       <main>
         <GroupHeader groupName={groupData.name} groupId={Number(groupId)} userRole={userRole} />
-        <TodoListCard groupId={Number(groupId)} />
+        <TaskListCard groupId={Number(groupId)} />
         {userRole === 'ADMIN' && <ReportCard taskLists={groupData.taskLists} />}
         <GroupMemberCard
           members={groupData.members}
