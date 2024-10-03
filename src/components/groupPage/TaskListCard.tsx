@@ -10,7 +10,7 @@ import {
 } from '@/lib/taskListApi';
 import XIcon from '@/assets/x_icon.svg';
 import { TaskList } from '@/types/taskTypes';
-
+import Link from 'next/link';
 
 const TaskListCard = ({ groupId }: { groupId: number }) => {
   const [newListName, setNewListName] = useState('');
@@ -105,14 +105,19 @@ const TaskListCard = ({ groupId }: { groupId: number }) => {
       </div>
       {taskLists.length > 0 ? (
         taskLists.map((taskList, index) => (
-          <TaskItem
+          <Link
             key={taskList.id}
-            taskList={taskList}
-            index={index}
-            groupId={groupId}
-            onDelete={() => refetch()}
-            onEdit={handleEdit}
-          />
+            href={`/group/${groupId}/task-lists/${taskList.id}`}
+            className="block"
+          >
+            <TaskItem
+              taskList={taskList}
+              index={index}
+              groupId={groupId}
+              onDelete={() => refetch()}
+              onEdit={handleEdit}
+            />
+          </Link>
         ))
       ) : (
         <div className="flex justify-center items-center py-16">
