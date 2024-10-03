@@ -31,7 +31,8 @@ export default function WorkToDoContainer({ data, setWorkToDoName }: Props) {
   const setWorkToDo = useWorkToDoStore((state) => state.setWorkToDo);
   const router = useRouter();
 
-  const taskListId = router.query.tasklistid;
+  const groupId = Number(router.query.groupId);
+  const taskListId = Number(router.query.taskListId);
 
   const handleWorkToDoOptionChange = (option: DropdownOption) => {
     const { value } = option;
@@ -50,12 +51,12 @@ export default function WorkToDoContainer({ data, setWorkToDoName }: Props) {
     <>
       <Link
         href={{
-          pathname: `/list/${taskListId}/task`,
+          pathname: `/group/${groupId}/task-lists/${taskListId}/task`,
           query: {
             taskId: id,
           },
         }}
-        // as={`/list/${taskListId}/task/${id}`}
+        // as={`/group/${groupId}/task-lists/${taskListId}/task/${id}`}
       >
         <div
           className="flex flex-col gap-2.5 w-full py-3 px-3.5 rounded-lg bg-background-secondary"

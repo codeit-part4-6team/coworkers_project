@@ -13,7 +13,7 @@ const getTaskComments = (taskId: number) => {
 
 export const useTaskCommentsQuery = (taskId: number) => {
   return useQuery({
-    queryKey: ['tasks', taskId, 'comment'], // ['tasks', taskId, 'comment'] << 로 할 때는 안되는 이유가 뭐지?
+    queryKey: ['tasks', taskId, 'comments'],
     queryFn: () => getTaskComments(taskId),
   });
 };

@@ -1,47 +1,40 @@
 import { useRouter } from 'next/router';
-import { useQueryClient } from '@tanstack/react-query';
 import Modal from '@/components/common/Modal';
 import Button from '@/components/common/Button';
 import AlertIcon from '@/assets/alert.svg';
 import useModalStore from '@/store/modalStore';
 import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
-import { useDeleteRecurringTaskMutation } from '@/lib/taskApi';
+import { useQueryClient } from '@tanstack/react-query';
+import { useDeleteTaskCommentMutation } from '@/lib/taskCommentApi';
 
-interface Props {
-  workToDoName: string;
-}
-
-export default function DeleteWorkToDoModal({ workToDoName }: Props) {
+export default function DeleteCommentModal() {
   const router = useRouter();
-  const taskListId = router.query.tasklistid;
+  const taskId = Number(router.query.taskId);
   const { closeModal } = useModalStore();
-  const { recurringId } = useApiResponseIdsStore();
-
+  const { commentId, setCommentId } = useApiResponseIdsStore();
   const queryClient = useQueryClient();
-  const deleteRecurringTaskMutation = useDeleteRecurringTaskMutation();
+  const deleteTaskCommentMutation = useDeleteTaskCommentMutation();
 
   const handleDeleteClick = () => {
-    deleteRecurringTaskMutation.mutate(
+    deleteTaskCommentMutation.mutate(
       {
-        recurringId,
+        commentId,
       },
       {
         onSuccess: () => {
-          closeModal('deleteToDo');
-          queryClient.invalidateQueries({ queryKey: ['groups'] });
-          router.push({
-            pathname: `/list/${taskListId}`,
+          queryClient.invalidateQueries({
+            queryKey: ['tasks', taskId, 'comments'],
           });
-        },
-        onError: () => {
-          alert('삭제에 실패했습니다.');
+          closeModal('deleteComment');
+          setCommentId(0);
         },
       },
     );
   };
+
   return (
     <Modal
-      id="deleteToDo"
+      id="deleteComment"
       className="px-4 pt-4 pb-8 md:w-[384px] md:rounded-xl bg-background-secondary antialiased"
       positionBottom={true}
     >
@@ -49,8 +42,7 @@ export default function DeleteWorkToDoModal({ workToDoName }: Props) {
         <div className="flex flex-col items-center mb-6">
           <AlertIcon className="mb-4" />
           <p className="mb-2 text-center text-lg font-medium text-text-primary">
-            {`'${workToDoName}'`}
-            <br /> 할 일을 정말 삭제하시겠어요?
+            정말 삭제하시겠어요?
           </p>
           <p className="text-center text-md font-medium text-text-secondary">
             삭제 후에는 되돌릴 수 없습니다.
@@ -62,7 +54,7 @@ export default function DeleteWorkToDoModal({ workToDoName }: Props) {
             size="large"
             text="닫기"
             disabled={false}
-            onClick={() => closeModal('deleteToDo')}
+            onClick={() => closeModal('deleteComment')}
           />
           <Button
             option="danger"
