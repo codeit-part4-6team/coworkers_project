@@ -143,7 +143,6 @@ export default function SignUp() {
         <Input
           labeltext="이름"
           option="text"
-          inputSize="large"
           inValid={!!errors.nickNameError} // !!해당 값이 있으면 true 없으면 false
           errorText={errors.nickNameError}
           placeholder="이름을 입력해주세요."
@@ -152,7 +151,6 @@ export default function SignUp() {
         <Input
           labeltext="이메일"
           option="text"
-          inputSize="large"
           inValid={!!errors.emailError}
           errorText={errors.emailError}
           placeholder="이메일을 입력해주세요."
@@ -161,7 +159,6 @@ export default function SignUp() {
         <Input
           labeltext="비밀번호"
           option="password"
-          inputSize="large"
           inValid={!!errors.passwordError}
           errorText={errors.passwordError}
           placeholder="비밀번호를 입력해주세요."
@@ -170,7 +167,6 @@ export default function SignUp() {
         <Input
           labeltext="비밀번호 확인"
           option="password"
-          inputSize="large"
           inValid={!!errors.passwordCheckError}
           errorText={errors.passwordCheckError}
           placeholder="비밀번호를 다시 입력해주세요."

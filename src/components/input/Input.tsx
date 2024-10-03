@@ -8,7 +8,6 @@ export default function Input({
   labeltext,
   option,
   placeholder,
-  inputSize,
   inValid,
   errorText,
   onChange = undefined,
