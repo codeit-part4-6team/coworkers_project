@@ -55,9 +55,9 @@ export const deleteLike = (articleid: number) => {
 export const imageFile = (image: File) => {
   const formData = new FormData();
   formData.append('image', image);
-  return basicAuthAxios.post(`/iamges/upload`, formData, {
+  return basicAuthAxios.post(`/images/upload`, formData, {
     headers: {
-      'Content-Type': 'multipart/foram-data',
+      'Content-Type': 'multipart/form-data',
     },
   });
 };
