@@ -91,7 +91,7 @@ export default function SignIn() {
 };
 useEffect(() => {
   if(localStorage.getItem('accessToken')) {
-    router.push('/');
+    router.replace('/');
   }
 }, [router]);
 
@@ -108,7 +108,6 @@ useEffect(() => {
         <Input
           labeltext="이메일"
           option="text"
-          inputSize="large"
           inValid={!!errors.emailError}
           errorText={errors.emailError}
           placeholder="이메일을 입력해주세요."
@@ -119,7 +118,6 @@ useEffect(() => {
         <Input
           labeltext="비밀번호"
           option="password"
-          inputSize="large"
           inValid={!!errors.passwordError}
           errorText={errors.passwordError}
           placeholder="비밀번호를 입력해주세요."
