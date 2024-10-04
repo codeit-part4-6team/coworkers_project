@@ -93,3 +93,14 @@ export const useOrderTaskListDetailMutation = (
     mutationFn: () => orderTaskListDetail(groupId, taskListId, displayIndex),
   });
 };
+
+const getUserGroups = () => {
+  return basicAuthAxios.get('/user/groups');
+};
+
+export const useUserGroupsQuery = () => {
+  return useQuery({
+    queryKey: ['user', 'groups'],
+    queryFn: getUserGroups,
+  });
+};
