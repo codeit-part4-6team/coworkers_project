@@ -57,7 +57,6 @@ const Dropdown = ({
     option: DropdownOption,
     event: React.MouseEvent,
   ) => {
-    event.stopPropagation();
     setSelectedOption(option);
     setIsOpen(false);
     onChange(option);
@@ -107,8 +106,7 @@ const Dropdown = ({
     <div className={clsx('relative inline-block text-left', className)}>
       {customButton ? (
         <div
-          onClick={(e) => {
-            e.stopPropagation();
+          onClick={() => {
             setIsOpen(!isOpen);
           }}
           className="text-center"
@@ -119,8 +117,7 @@ const Dropdown = ({
         <button
           type="button"
           className={buttonClasses}
-          onClick={(e) => {
-            e.stopPropagation();
+          onClick={() => {
             setIsOpen(!isOpen);
           }}
         >
