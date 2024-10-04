@@ -82,7 +82,7 @@ export async function myHistory() {
 export async function sendPasswordRestEmail(email: string) {
   const requestbody = {
     email,
-    "redirectUrl": "http://localhost:3000/passreset"
+    "redirectUrl": "http://localhost:3000/passwordreset"
   }
   const response = await basicAuthAxios.post(
     '/user/send-reset-password-email',
@@ -101,5 +101,19 @@ export async function resetPassword(passwordConfirmation: string, passwrod: stri
     '/user/reset-password',
     requestbody
   )
+  return response;
+}
+
+export async function userPatch(nickname: string, image: string) {
+  const requestbody = {
+    nickname,
+    image
+  }
+
+  const response = await basicAuthAxios.patch(
+    '/user',
+    requestbody
+  );
+
   return response;
 }
