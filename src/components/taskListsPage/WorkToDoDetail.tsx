@@ -136,7 +136,7 @@ export default function WorkToDoDetail({ setWorkToDoName }: Props) {
             frequency={taskDetailData?.frequency}
           />
         </div>
-        <p className="mb-[100px] md:mb-[182px] text-md font-regular">
+        <p className="mb-[100px] md:mb-[182px] text-md font-regular overflow-hidden">
           {taskDetailData?.description}
         </p>
         <CommentWriting />

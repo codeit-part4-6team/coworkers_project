@@ -159,10 +159,14 @@ export default function CreateWorkToDoModal() {
           <input
             type="text"
             id="title"
-            placeholder="할 일 제목을 입력해주세요"
+            placeholder="할 일 제목을 입력해주세요. (30자 이내)"
             value={title.trimStart()}
             className="px-4 w-full h-12 border border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none"
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 30) {
+                setTitle(e.target.value.trimStart());
+              }
+            }}
           />
         </div>
         <div className="flex flex-col gap-4">
@@ -270,10 +274,14 @@ export default function CreateWorkToDoModal() {
           </label>
           <textarea
             id="memo"
-            placeholder="메모를 입력해주세요"
+            placeholder="메모를 입력해주세요. (255자 이내)"
             value={description.trimStart()}
             className="mb-2 px-4 py-3 w-full h-[75px] border border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none resize-none"
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 255) {
+                setDescription(e.target.value.trimStart());
+              }
+            }}
           />
         </div>
         <Button
