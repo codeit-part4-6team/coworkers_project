@@ -21,7 +21,7 @@ export const getArticle = (params: {
 
 //게시글 상세 조회
 export const getDetailArticle = (articleid: number) => {
-  return basicAxios.get(`/articles/${articleid}`);
+  return basicAuthAxios.get(`/articles/${articleid}`);
 };
 
 //게시글 삭제
