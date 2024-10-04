@@ -1,9 +1,10 @@
+import { useState, useEffect } from 'react';
 import Profile from '@/assets/profile_member_large.svg';
 import Heart from '@/assets/heart.svg';
+import RedHeart from '@/assets/heart_red.svg';
 import Medal from '@/assets/medal.svg';
-import Image from 'next/image';
-import test from '@/assets/testimg.png';
 import { useRouter } from 'next/router';
+import { isLike, deleteLike, getDetailArticle } from '@/lib/articleApi';
 
 interface Article {
   id: number;
@@ -23,6 +24,40 @@ interface BestCardProps {
 
 const BestCard = ({ board }: BestCardProps) => {
   const router = useRouter();
+  const [likeCount, setLikeCount] = useState(board.likeCount);
+  const [isLiked, setIsLiked] = useState(false);
+
+  const fetchArticleDetail = async () => {
+    try {
+      const response = await getDetailArticle(board.id);
+      setLikeCount(response.data.likeCount);
+      setIsLiked(response.data.isLiked);
+    } catch (error) {
+      console.error('게시글 상세 정보 가져오기 실패:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchArticleDetail();
+  }, [board.id]);
+
+  const handleLikeClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    try {
+      if (!isLiked) {
+        await isLike(board.id);
+        setLikeCount(likeCount + 1);
+        setIsLiked(true);
+      } else {
+        await deleteLike(board.id);
+        setLikeCount(likeCount - 1);
+        setIsLiked(false);
+      }
+    } catch (error) {
+      console.error('좋아요 요청 에러:', error);
+    }
+  };
 
   const handleBestClick = () => {
     router.push(`/boards/${board.id}`);
@@ -45,12 +80,10 @@ const BestCard = ({ board }: BestCardProps) => {
             </p>
           </div>
           {board.image && (
-            <Image
+            <img
               src={board.image}
               alt="게시글 이미지"
-              width={72}
-              height={72}
-              className="rounded-[12px] object-cover"
+              className="rounded-[12px] w-[72px] h-[72px] object-cover"
             />
           )}
         </div>
@@ -67,10 +100,13 @@ const BestCard = ({ board }: BestCardProps) => {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1">
-              <Heart />
+            <div
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={handleLikeClick}
+            >
+              {isLiked ? <RedHeart /> : <Heart />}
               <p className="text-text-default text-xs font-regular">
-                {board.likeCount}
+                {likeCount}
               </p>
             </div>
           </div>
