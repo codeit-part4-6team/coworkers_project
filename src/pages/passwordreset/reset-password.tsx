@@ -26,7 +26,7 @@ export default function PassReset() {
 
   const [errors, setErrors] = useState({
     passwordError: '',
-    passwordCheckError: '',
+    confirmPasswordError: '',
   });
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export default function PassReset() {
       const { token } = router.query;
       if (!token) {
         alert('유효하지 않은 접근입니다. 토큰이 없습니다.');
-        router.push('/error'); // 오류 페이지로 이동하거나
+        router.push('/');
         return;
       }
       setToken(token as string);
@@ -47,7 +47,10 @@ export default function PassReset() {
     if (field === 'password') {
       error = validatePassword(value);
     } else if (field === 'confirmPassword') {
+      if (!values.confirmPassword) {
+        error = passwordCheckErrorText[0];
       error = validatePasswordCheck(values.password, value);
+      }
     }
 
     setValues((prev) => ({
@@ -106,17 +109,15 @@ export default function PassReset() {
           inValid={!!errors.passwordError}
           placeholder="비밀번호 (영문, 숫자, 특수문자 포함 8자 이상)를 입력해주세요."
           errorText={errors.passwordError}
-          value={values.password}
           onChange={(e) => setValues({ ...values, password: e.target.value })}
           onBlur={(e) => handleBlur('password', e.target.value)}
         />
         <Input
           labeltext="비밀번호 확인"
           option="password"
-          inValid={!!errors.passwordCheckError}
+          inValid={!!errors.confirmPasswordError}
           placeholder="비밀번호 (영문, 숫자, 특수문자 포함 8자 이상)를 입력해주세요."
-          errorText={errors.passwordCheckError}
-          value={values.confirmPassword}
+          errorText={errors.confirmPasswordError}
           onChange={(e) =>
             setValues({ ...values, confirmPassword: e.target.value })
           }

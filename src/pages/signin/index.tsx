@@ -163,7 +163,7 @@ export default function SignIn() {
               text="닫기"
               size="large"
               onClick={() => {
-                closeModal('changePassword');
+                closeModal('passowrdreset');
               }}
             />
             <Button
@@ -171,15 +171,14 @@ export default function SignIn() {
               text="링크 보내기"
               size="large"
               onClick={async () => {
-                const response = await sendPasswordRestEmail(values.modalEmail);
-                if (
-                  response &&
-                  response.status >= 200 &&
-                  response.status < 300
-                ) {
-                  // 비밀번호 변경 성공 시 모달 닫기
-                  closeModal('changePassword');
-                } else {
+                try {
+                  const response = await sendPasswordRestEmail(values.modalEmail);
+                    // 비밀번호 변경 성공 시 모달 닫기
+                  if(response.status >=200 && response.status <= 300) {
+                    closeModal('passowrdreset');
+                  }
+                }
+                catch(error) {
                   alert('링크 보내는데 실패했습니다.');
                 }
               }}
