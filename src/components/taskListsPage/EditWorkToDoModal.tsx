@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useQueryClient } from '@tanstack/react-query';
 import XIcon from '@/assets/x_icon.svg';
@@ -7,18 +7,28 @@ import Modal from '@/components/common/Modal';
 import useModalStore from '@/store/modalStore';
 import { useEditTaskDetailMutation } from '@/lib/taskApi';
 import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
+import useWorkToDoStore from '@/store/workToDoStore';
 
 export default function EditWorkToDoModal() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const groupId = Number(router.query.groupId);
   const taskListId = Number(router.query.taskListId);
   const { closeModal } = useModalStore();
-  const queryClient = useQueryClient();
   const { taskId } = useApiResponseIdsStore();
+  const { workToDo } = useWorkToDoStore();
+
   const editTaskDetailMutation = useEditTaskDetailMutation();
 
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
+
+  useEffect(() => {
+    if (workToDo) {
+      setTitle(workToDo?.name);
+      setMemo(workToDo?.description);
+    }
+  }, [workToDo]);
 
   const handleSubmitClick = () => {
     editTaskDetailMutation.mutate(
@@ -79,9 +89,9 @@ export default function EditWorkToDoModal() {
             type="text"
             id="title"
             placeholder="할 일 제목을 입력해주세요"
-            value={title.trimStart()}
+            value={title}
             className="px-4 w-full h-12 border border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none"
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => setTitle(e.target.value.trimStart())}
           />
         </div>
         <div className="flex flex-col gap-4">
@@ -94,9 +104,9 @@ export default function EditWorkToDoModal() {
           <textarea
             id="memo"
             placeholder="메모를 입력해주세요"
-            value={memo.trimStart()}
+            value={memo}
             className="mb-2 px-4 py-3 w-full h-[75px] border border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none resize-none"
-            onChange={(e) => setMemo(e.target.value)}
+            onChange={(e) => setMemo(e.target.value.trimStart())}
           />
         </div>
         <Button

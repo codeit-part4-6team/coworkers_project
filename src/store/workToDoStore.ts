@@ -1,9 +1,9 @@
 import { create } from 'zustand';
-import { Task } from '@/types/listTypes';
+import { TaskResponse } from '@/types/listTypes';
 
 interface State {
-  workToDo: Task | null;
-  setWorkToDo: (data: Task) => void;
+  workToDo: TaskResponse | null;
+  setWorkToDo: (data: TaskResponse) => void;
 }
 
 const useWorkToDoStore = create<State>((set) => ({
