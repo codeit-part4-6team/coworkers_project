@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import GroupMemberCard from '@/components/groupPage/GroupMemberCard';
 import ReportCard from '@/components/groupPage/GroupReport';
 import GroupHeader from '@/components/groupPage/GroupHeader';
 import { useEffect, useState } from 'react';
@@ -7,6 +6,7 @@ import { getGroup } from '@/lib/groupApi';
 import { TaskList } from '@/types/taskTypes';
 import { getUserMemberships } from '@/lib/userApi';
 import TaskListCard from '@/components/groupPage/TaskListCard';
+import GroupMemberCard from '@/components/groupPage/GroupMemberCard/MemberCard';
 
 interface Member {
   userId: number;
