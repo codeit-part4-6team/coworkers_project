@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, useRef } from 'react';
+import { useState, ChangeEvent, useRef, FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import { useQueryClient } from '@tanstack/react-query';
 import EnterIcon from '@/assets/enter.svg';
@@ -14,14 +14,19 @@ export default function CommentWriting() {
   const [commentValue, setCommentValue] = useState('');
 
   const handleResizeHeight = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setCommentValue(e.target.value.trimStart());
+    if (e.target.value.length <= 255) {
+      setCommentValue(e.target.value.trimStart());
+    }
+
     if (commentRef.current) {
       commentRef.current.style.height = 'auto';
       commentRef.current.style.height = commentRef.current.scrollHeight + 'px';
     }
   };
 
-  const handleSubmitClick = () => {
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (!taskId) return;
     createTaskCommentMutation.mutate(
       {
@@ -43,21 +48,24 @@ export default function CommentWriting() {
   };
 
   return (
-    <div className="flex justify-between items-start mb-6 py-[13px] border-y border-border-primary-10">
+    <form
+      className="flex justify-between items-start mb-6 py-[13px] border-y border-border-primary-10"
+      onSubmit={handleFormSubmit}
+    >
       <label htmlFor="comment" className="hidden">
         comment
       </label>
       <textarea
         ref={commentRef}
         rows={1}
-        placeholder="댓글을 달아주세요"
+        placeholder="댓글을 달아주세요. (255자 이내)"
         value={commentValue}
         onChange={handleResizeHeight}
         className="w-full h-6 pt-[3px] text-md font-regular bg-background-secondary overflow-y-hidden outline-none resize-none placeholder:text-md placeholder:font-regular placeholder:text-text-default"
       />
-      <button type="button" onClick={handleSubmitClick}>
+      <button type="submit">
         {!commentValue ? <EnterIcon /> : <EnterActiveIcon />}
       </button>
-    </div>
+    </form>
   );
 }

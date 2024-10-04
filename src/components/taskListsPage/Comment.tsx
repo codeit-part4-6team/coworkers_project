@@ -32,10 +32,12 @@ export default function Comment() {
   const handleWorkToDoOptionChange = (
     option: DropdownOption,
     commentId: number,
+    commentContent: string,
   ) => {
     const { value } = option;
     if (value === 'edit') {
       setEditCommentId(commentId);
+      setEditComment(commentContent);
     }
     if (value === 'delete') {
       openModal('deleteComment');
@@ -69,15 +71,21 @@ export default function Comment() {
             key={id}
             className="flex flex-col gap-4 mb-4 pb-4 border-b border-border-primary-10"
           >
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-start">
               {editCommentId !== id && (
-                <p className="text-md font-regular">{content}</p>
+                <p className="w-[90%] overflow-hidden text-md font-regular">
+                  {content}
+                </p>
               )}
               {editCommentId === id && (
                 <input
                   type="text"
                   value={editComment}
-                  onChange={(e) => setEditComment(e.target.value)}
+                  onChange={(e) => {
+                    if (e.target.value.length <= 255) {
+                      setEditComment(e.target.value.trimStart());
+                    }
+                  }}
                   className="px-3 w-full h-9 rounded-md bg-background-tertiary"
                   autoFocus
                 />
@@ -85,7 +93,9 @@ export default function Comment() {
               <Dropdown
                 options={WorkToDoOptions}
                 customButton={<KebabIcon />}
-                onChange={(option) => handleWorkToDoOptionChange(option, id)}
+                onChange={(option) =>
+                  handleWorkToDoOptionChange(option, id, content)
+                }
                 size="md"
               />
             </div>

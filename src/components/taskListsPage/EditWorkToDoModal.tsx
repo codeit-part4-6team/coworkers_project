@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/router';
 import { useQueryClient } from '@tanstack/react-query';
 import XIcon from '@/assets/x_icon.svg';
@@ -30,7 +30,8 @@ export default function EditWorkToDoModal() {
     }
   }, [workToDo]);
 
-  const handleSubmitClick = () => {
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     editTaskDetailMutation.mutate(
       {
         groupId: groupId,
@@ -77,7 +78,7 @@ export default function EditWorkToDoModal() {
       <p className="mb-6 mx-auto w-[227px] text-center text-md font-medium text-text-default">
         할 일의 제목과 메모를 수정합니다.
       </p>
-      <form className="flex flex-col gap-6">
+      <form className="flex flex-col gap-6" onSubmit={handleFormSubmit}>
         <div className="flex flex-col gap-4">
           <label
             htmlFor="title"
@@ -88,10 +89,14 @@ export default function EditWorkToDoModal() {
           <input
             type="text"
             id="title"
-            placeholder="할 일 제목을 입력해주세요"
+            placeholder="할 일 제목을 입력해주세요.(30자 이내)"
             value={title}
             className="px-4 w-full h-12 border border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none"
-            onChange={(e) => setTitle(e.target.value.trimStart())}
+            onChange={(e) => {
+              if (e.target.value.length <= 30) {
+                setTitle(e.target.value.trimStart());
+              }
+            }}
           />
         </div>
         <div className="flex flex-col gap-4">
@@ -103,10 +108,14 @@ export default function EditWorkToDoModal() {
           </label>
           <textarea
             id="memo"
-            placeholder="메모를 입력해주세요"
+            placeholder="메모를 입력해주세요.(255자 이내)"
             value={memo}
             className="mb-2 px-4 py-3 w-full h-[75px] border border-border-primary-10 rounded-xl text-lg font-regular text-text-primary bg-background-secondary outline-none resize-none"
-            onChange={(e) => setMemo(e.target.value.trimStart())}
+            onChange={(e) => {
+              if (e.target.value.length <= 255) {
+                setMemo(e.target.value.trimStart());
+              }
+            }}
           />
         </div>
         <Button
@@ -114,8 +123,7 @@ export default function EditWorkToDoModal() {
           size="large"
           text="수정하기"
           disabled={!title}
-          type="button"
-          onClick={handleSubmitClick}
+          type="submit"
         />
       </form>
     </Modal>
