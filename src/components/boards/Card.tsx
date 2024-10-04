@@ -139,7 +139,7 @@ const Card = ({
   return (
     <div
       className={`border rounded-[12px] bg-background-secondary border-background-tertiary pt-6 px-4 pb-4 flex flex-col justify-between
-        ${type === 'comment' ? 'h-[120px]' : 'h-[176px]'}`}
+        ${type === 'comment' ? 'h-full' : 'h-[176px]'}`}
     >
       <div>
         {isEditing ? (
