@@ -14,6 +14,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useTaskDetailQuery, useEditTaskDetailMutation } from '@/lib/taskApi';
 import useModalStore from '@/store/modalStore';
 import useApiResponseIdsStore from '@/store/apiResponseIdsStore';
+import useWorkToDoStore from '@/store/workToDoStore';
 
 interface Props {
   setWorkToDoName: Dispatch<SetStateAction<string>>;
@@ -32,6 +33,7 @@ export default function WorkToDoDetail({ setWorkToDoName }: Props) {
   const taskId = Number(router.query.taskId);
   const taskDetailQuery = useTaskDetailQuery(groupId, taskListId, taskId);
   const { setTaskId, setRecurringId } = useApiResponseIdsStore();
+  const setWorkToDo = useWorkToDoStore((state) => state.setWorkToDo);
   const queryClient = useQueryClient();
   const editTaskDetailMutation = useEditTaskDetailMutation();
 
@@ -42,6 +44,7 @@ export default function WorkToDoDetail({ setWorkToDoName }: Props) {
     if (value === 'edit') {
       setTaskId(taskId);
       openModal('editToDo');
+      setWorkToDo(taskDetailData);
     }
     if (value === 'delete') {
       setWorkToDoName(taskDetailData?.name);

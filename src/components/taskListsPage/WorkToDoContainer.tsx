@@ -39,6 +39,7 @@ export default function WorkToDoContainer({ data, setWorkToDoName }: Props) {
     if (value === 'edit') {
       setTaskId(id);
       openModal('editToDo');
+      setWorkToDo(data);
     }
     if (value === 'delete') {
       setWorkToDoName(name);
@@ -58,10 +59,7 @@ export default function WorkToDoContainer({ data, setWorkToDoName }: Props) {
         }}
         // as={`/group/${groupId}/task-lists/${taskListId}/task/${id}`}
       >
-        <div
-          className="flex flex-col gap-2.5 w-full py-3 px-3.5 rounded-lg bg-background-secondary"
-          onClick={() => setWorkToDo(data)}
-        >
+        <div className="flex flex-col gap-2.5 w-full py-3 px-3.5 rounded-lg bg-background-secondary">
           <div className="flex justify-between items-center">
             <div className="flex gap-3">
               <div className="flex gap-2 items-center">

@@ -7,7 +7,6 @@ import CreateWorkToDoModal from '@/components/taskListsPage/CreateWorkToDoModal'
 import EditWorkToDoModal from '@/components/taskListsPage/EditWorkToDoModal';
 import DeleteWorkToDoModal from '@/components/taskListsPage/DeleteWorkToDoModal';
 import DeleteCommentModal from '@/components/taskListsPage/DeleteCommentModal';
-import useModalStore from '@/store/modalStore';
 import { useTasksQuery } from '@/lib/taskApi';
 import { formatThirdDate } from '@/utils/formatDate';
 import useSelectedDateStore from '@/store/selectedDateStore';
