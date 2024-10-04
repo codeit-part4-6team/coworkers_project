@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import Modal from '@/components/common/Modal';
 import Button from '@/components/common/Button';
@@ -16,7 +16,8 @@ export default function AddCategoryModal() {
 
   const [categoryName, setCategoryName] = useState('');
 
-  const handleSubmitClick = () => {
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     createTaskListMutation.mutate(
       { groupId: groupId, name: categoryName },
       {
@@ -57,7 +58,7 @@ export default function AddCategoryModal() {
           목록별 할 일을 만들 수 있습니다.
         </p>
       </div>
-      <form className="flex justify-center">
+      <form className="flex justify-center" onSubmit={handleFormSubmit}>
         <div className="flex flex-col gap-6 w-[280px]">
           <div className="flex flex-col items-start gap-2">
             <label
@@ -70,18 +71,21 @@ export default function AddCategoryModal() {
               id="category"
               type="text"
               value={categoryName}
-              placeholder="목록 이름을 입력해주세요."
-              onChange={(e) => setCategoryName(e.target.value.trimStart())}
+              placeholder="목록 이름을 입력해주세요.(30자 이내)"
+              onChange={(e) => {
+                if (e.target.value.length <= 30) {
+                  setCategoryName(e.target.value.trimStart());
+                }
+              }}
               className="px-4 w-full h-12 border border-border-primary-10 rounded-xl text-lg font-regular text-text-primary placeholder:text-text-default bg-background-secondary outline-none"
             />
           </div>
           <Button
-            type="button"
+            type="submit"
             option="solid"
             size="large"
             text="만들기"
             disabled={createTaskListMutation.isPending || !categoryName}
-            onClick={handleSubmitClick}
           />
         </div>
       </form>

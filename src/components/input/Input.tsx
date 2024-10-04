@@ -10,8 +10,6 @@ export default function Input({
   placeholder,
   inValid,
   errorText,
-  onChange = undefined,
-  onBlur = undefined,
   ...rest
 }: InputProps & { ref?: React.Ref<HTMLInputElement> }) {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -22,10 +20,12 @@ export default function Input({
                             border-solid border-[1px] outline-none
                             w-full h-full`;
 
-  const optionClassName = ` border-border-primary-10
-                hover:border-interaction-hover
-                focus:border-interaction-focus
-                disabled:border-interacion-inactive disabled:cursor-not-allowed`;
+  const optionClassName = `
+  border-border-primary-10
+  ${rest.disabled ? 'bg-background-tertiary border-primary-10 cursor-not-allowed' : 
+    'hover:border-interaction-hover focus:border-interaction-focus'}
+  disabled:bg-background-tertiary disabled:cursor-not-allowed
+`;
 
   const isInvalidClassName = `border-status-danger`;
 
@@ -56,8 +56,10 @@ export default function Input({
             sizeClassName,
             inValid && isInvalidClassName,
           )}
-          onBlur={onBlur}
-          //   onChange={onchange}
+          onChange={rest.onChange}
+          onBlur={rest.onBlur}
+          defaultValue={rest.defaultValue}
+          disabled={rest.disabled}
         />
         {option === 'password' &&
           (isVisible ? (

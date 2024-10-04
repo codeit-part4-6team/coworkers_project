@@ -1,10 +1,11 @@
+import MyHistory from "@/components/mypage/myhistory";
+
 export default function myHistory() {
   return (
-    <div>
-      <p>마이 히스토리</p>
-      <p>날짜</p>
+    <div className={`mt-7 mx-4 lg:mt-10 lg:max-w-[1200px] lg:mx-auto`}>
+      <p className={`text-text-primary text-2lg font-bold mb-[27px] md:text-xl`}>마이 히스토리</p>
       <div>
-        <p>아직 히스토리가 없습니다.</p>
+        <MyHistory />
       </div>
     </div>
   );

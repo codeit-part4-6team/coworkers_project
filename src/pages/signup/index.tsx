@@ -36,7 +36,7 @@ export default function SignUp() {
     nickNameError: '',
     emailError: '',
     passwordError: '',
-    passwordCheckError: '',
+    confirmPasswordError: '',
   });
 
   const validateNickName = (value: string) => {
@@ -60,7 +60,7 @@ export default function SignUp() {
     return '';
   };
 
-  const validatePasswordCheck = (password: string, confirmPassword: string) => {
+  const validatePasswordCheck = (confirmPassword: string, password?: string) => {
     if (!confirmPassword) return passwordCheckErrorText[0];
     if (password !== confirmPassword) return passwordCheckErrorText[1];
     return '';
@@ -68,6 +68,12 @@ export default function SignUp() {
 
   const handleBlur = (field: string, value: string) => {
     let error = '';
+
+    setValues((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
     if (field === 'nickName') {
       error = validateNickName(value);
     } else if (field === 'email') {
@@ -75,18 +81,18 @@ export default function SignUp() {
     } else if (field === 'password') {
       error = validatePassword(value);
     } else if (field === 'confirmPassword') {
-      error = validatePasswordCheck(values.password, value);
+      if (!values.confirmPassword) {
+        error = passwordCheckErrorText[0];
+      } else {
+        error = validatePasswordCheck(values.password, value);
+      }
     }
-
-    setValues((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
 
     setErrors((prev) => ({
       ...prev,
       [`${field}Error`]: error,
     }));
+    console.log(errors, errors.confirmPasswordError);
   };
 
   const isFormValid = () => {
@@ -94,7 +100,7 @@ export default function SignUp() {
       !errors.nickNameError &&
       !errors.emailError &&
       !errors.passwordError &&
-      !errors.passwordCheckError &&
+      !errors.confirmPasswordError &&
       values.nickName &&
       values.email &&
       values.password &&
@@ -110,7 +116,7 @@ export default function SignUp() {
         values.confirmPassword,
       );
 
-      console.log(response);
+      // console.log(response);
 
       if(response.status >= 200 && response.status < 300) {
         localStorage.setItem('accessToken', response.data.accessToken);
@@ -167,8 +173,8 @@ export default function SignUp() {
         <Input
           labeltext="비밀번호 확인"
           option="password"
-          inValid={!!errors.passwordCheckError}
-          errorText={errors.passwordCheckError}
+          inValid={!!errors.confirmPasswordError}
+          errorText={errors.confirmPasswordError}
           placeholder="비밀번호를 다시 입력해주세요."
           onBlur={(e) => handleBlur('confirmPassword', e.target.value)}
         />

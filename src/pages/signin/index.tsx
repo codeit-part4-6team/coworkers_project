@@ -3,8 +3,10 @@ import Input from '@/components/input/Input';
 import SocialLogin from '@/components/sociallogin';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { signIn } from '@/lib/auth';
+import { sendPasswordRestEmail, signIn } from '@/lib/auth';
 import { useRouter } from 'next/router';
+import Modal from '@/components/common/Modal';
+import useModalStore from '@/store/modalStore';
 
 const emailErrorText = [
   '이메일은 필수 입력입니다.',
@@ -14,19 +16,23 @@ const passwordErrorText = ['비밀번호는 필수 입력입니다.'];
 
 export default function SignIn() {
   const router = useRouter();
+  const { openModal, closeModal } = useModalStore();
 
   const [values, setValues] = useState({
     email: '',
     password: '',
+    modalEmail: ''
   });
   const [errors, setErrors] = useState({
     emailError: '',
     passwordError: '',
+    modalEmail: ''
   });
 
   const [tocucheds, setTocucheds] = useState({
     email: false,
-    password: false
+    password: false,
+    modalEmail: false
   });
 
   const validateEmail = (value: string) => {
@@ -66,34 +72,29 @@ export default function SignIn() {
 
   const isFormValid = () => {
     return (
-      !errors.emailError && 
-      !errors.passwordError && 
-      tocucheds.email && 
+      !errors.emailError &&
+      !errors.passwordError &&
+      tocucheds.email &&
       tocucheds.password
     );
   };
 
   const handleSignIp = async () => {
-    const response = await signIn(
-      values.email,
-      values.password
-    );
-    if(response.status >= 200 && response.status < 300) {
+    const response = await signIn(values.email, values.password);
+    if (response.status >= 200 && response.status < 300) {
       localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('refreshToken', response.data.refreshToken);
       localStorage.setItem('userData', JSON.stringify(response.data.user));
       router.push('/');
+    } else {
+      alert(response.data.message);
     }
-    else {
-      console.log('로그인 실패', response.data.message);
-
+  };
+  useEffect(() => {
+    if (localStorage.getItem('accessToken')) {
+      router.replace('/');
     }
-};
-useEffect(() => {
-  if(localStorage.getItem('accessToken')) {
-    router.replace('/');
-  }
-}, [router]);
+  }, [router]);
 
   return (
     <div
@@ -112,7 +113,7 @@ useEffect(() => {
           errorText={errors.emailError}
           placeholder="이메일을 입력해주세요."
           onBlur={(e) => {
-            handleBlur('email', e.target.value)
+            handleBlur('email', e.target.value);
           }}
         />
         <Input
@@ -122,18 +123,69 @@ useEffect(() => {
           errorText={errors.passwordError}
           placeholder="비밀번호를 입력해주세요."
           onBlur={(e) => {
-            handleBlur('password', e.target.value)
+            handleBlur('password', e.target.value);
           }}
         />
       </div>
-      <div className={`text-right mb-10`}>
-        <Link
-          href=""
+      <div
+        className={`text-right mb-10`}
+        onClick={() => openModal('passowrdreset')}
+      >
+        <p
           className={`text-color-brand-primary text-2md font-medium underline md:text-lg`}
         >
           비밀번호를 잊으셨나요?
-        </Link>
+        </p>
       </div>
+      <Modal
+        id="passowrdreset"
+        positionBottom={true}
+        className={`w-full h-fit bg-background-secondary md:rounded-[12px] md:w-[384px]`}
+      >
+        <div className="flex flex-col w-[280px] items-center mt-12 mx-auto">
+          <div className="mb-4 text-center mx-5">
+            <p className={`text-text-primary text-lg font-medium`}>
+              비밀번호 재설정
+            </p>
+          </div>
+          <div className={`flex flex-col gap-4 mb-6`}>
+            <Input
+              option="text"
+              inValid={!!errors.modalEmail}
+              errorText={errors.modalEmail}
+              placeholder="이메일을 입력하세요."
+              onBlur={(e) => handleBlur('modalEmail', e.target.value)}
+            />
+          </div>
+          <div className={`flex w-[280px] gap-2 h-12 mb-8`}>
+            <Button
+              option="outlinedSecondary"
+              text="닫기"
+              size="large"
+              onClick={() => {
+                closeModal('passowrdreset');
+              }}
+            />
+            <Button
+              option="solid"
+              text="링크 보내기"
+              size="large"
+              onClick={async () => {
+                try {
+                  const response = await sendPasswordRestEmail(values.modalEmail);
+                    // 비밀번호 변경 성공 시 모달 닫기
+                  if(response.status >=200 && response.status <= 300) {
+                    closeModal('passowrdreset');
+                  }
+                }
+                catch(error) {
+                  alert('링크 보내는데 실패했습니다.');
+                }
+              }}
+            />
+          </div>
+        </div>
+      </Modal>
       <div className={`flex flex-col mb-6 md:mb-12`}>
         <Button
           text="로그인"
