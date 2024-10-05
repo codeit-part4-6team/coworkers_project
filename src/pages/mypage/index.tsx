@@ -9,6 +9,7 @@ import MemberIcon from '@/assets/member.svg';
 import EditIcon from '@/assets/btn_edit.svg';
 import { imageFile } from '@/lib/articleApi';
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 
 interface userProps {
   id: string;
@@ -138,10 +139,11 @@ export default function MyPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('userData');
+      const user = Cookies.get('userData');
       if (user) {
         const parsedData = JSON.parse(user);
         setUserData(parsedData);
+        setNewImage(parsedData.image)
       }
       else {
         router.push('/signin');
