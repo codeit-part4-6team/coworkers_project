@@ -32,7 +32,7 @@ export default function List() {
   const orderTaskDetailMutation = useOrderTaskDetailMutation();
 
   const onDragEnd = (result: any) => {
-    const { destination, source } = result;
+    const { destination, source, draggableId } = result;
 
     if (!destination) {
       return;
@@ -43,14 +43,14 @@ export default function List() {
 
     if (sourceIndex !== destinationIndex) {
       const updatedTasks = Array.from(tasksQuery.data?.data);
-      const [movedTask] = updatedTasks.splice(sourceIndex, 1) as [TaskResponse];
-      updatedTasks.splice(destinationIndex, 0, movedTask);
+      updatedTasks.splice(sourceIndex, 1);
+      updatedTasks.splice(destinationIndex, 0, draggableId);
 
       orderTaskDetailMutation.mutate(
         {
           groupId,
           taskListId,
-          taskId: movedTask.id,
+          taskId: draggableId,
           displayIndex: destinationIndex,
         },
         {
@@ -79,29 +79,27 @@ export default function List() {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
-                  {tasksQuery.data?.data.map(
-                    (data: TaskResponse, index: number) => (
-                      <Draggable
-                        key={data.id}
-                        draggableId={String(data.id)}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            key={data.id}
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <WorkToDoContainer
-                              data={{ ...data }}
-                              setWorkToDoName={setWorkToDoName}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ),
-                  )}
+                  {tasksQuery.data?.data.map((data: TaskResponse) => (
+                    <Draggable
+                      key={data.id}
+                      draggableId={String(data.id)}
+                      index={data.displayIndex}
+                    >
+                      {(provided) => (
+                        <div
+                          key={data.id}
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <WorkToDoContainer
+                            data={{ ...data }}
+                            setWorkToDoName={setWorkToDoName}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
                   {provided.placeholder}
                 </div>
               )}
