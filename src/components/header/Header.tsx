@@ -131,7 +131,7 @@ const Header = () => {
             options={userOptions}
             onChange={(option) => {
               if (option.value === 'logout') {
-                clearCookies;
+                clearCookies();
                 setIsLoggedIn(false);
               }
             }}

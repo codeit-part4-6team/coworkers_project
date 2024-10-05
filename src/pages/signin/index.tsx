@@ -94,9 +94,9 @@ export default function SignIn() {
     // 로그인 요청
     const response = await signIn(values.email, values.password);
     if (response.status >= 200 && response.status < 300) {
-      Cookies.set('accessToken', response.data.accessToken);
-      Cookies.set('refreshToken', response.data.refreshToken);
-      Cookies.set('userData', JSON.stringify(response.data.user));
+      Cookies.set('accessToken', response.data.accessToken, {path: '/'});
+      Cookies.set('refreshToken', response.data.refreshToken, {path: '/'});
+      Cookies.set('userData', JSON.stringify(response.data.user), {path: '/'});
       router.push('/');
     } else {
       alert(response.data.message);

@@ -126,9 +126,9 @@ export default function SignUp() {
       );
 
       if(response.status >= 200 && response.status < 300) {
-        Cookies.set('accessToken', response.data.accessToken);
-        Cookies.set('refreshToken', response.data.refreshToken);
-        Cookies.set('userData', JSON.stringify(response.data.user));
+        Cookies.set('accessToken', response.data.accessToken, {path: '/'});
+        Cookies.set('refreshToken', response.data.refreshToken, {path: '/'});
+        Cookies.set('userData', JSON.stringify(response.data.user), {path: '/'});
         router.push('/');
       }
       else {

@@ -143,6 +143,7 @@ export default function MyPage() {
       if (user) {
         const parsedData = JSON.parse(user);
         setUserData(parsedData);
+        setNewImage(parsedData.image)
       }
       else {
         router.push('/signin');
