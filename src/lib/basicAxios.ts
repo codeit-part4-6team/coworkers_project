@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import Cookies from 'js-cookie';
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -20,7 +21,7 @@ export const basicAuthAxios: AxiosInstance = axios.create({
 basicAuthAxios.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('accessToken');
+      const token = Cookies.get('accessToken');
       if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
       }

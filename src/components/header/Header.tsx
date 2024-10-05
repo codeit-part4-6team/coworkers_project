@@ -11,9 +11,11 @@ import Modal from '@/components/common/Modal';
 import useModalStore from '@/store/modalStore';
 import Cancel from '@/assets/x_icon.svg';
 import TeamDropdown from './TeamDropdown';
+import Cookies from 'js-cookie';
+import { clearCookies } from '@/utils/cookieStorageUtils';
 
 const getAuthToken = () => {
-  const token = localStorage.getItem('accessToken');
+  const token = Cookies.get('accessToken');
   if (!token) {
     throw new Error('토큰이 없습니다');
   }
@@ -71,7 +73,7 @@ const Header = () => {
   const isLogin = !!userData || isLoggedIn;
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
+    const token = Cookies.get('accessToken');
     setIsLoggedIn(!!token);
   }, []);
 
@@ -129,7 +131,7 @@ const Header = () => {
             options={userOptions}
             onChange={(option) => {
               if (option.value === 'logout') {
-                localStorage.removeItem('accessToken');
+                clearCookies();
                 setIsLoggedIn(false);
               }
             }}

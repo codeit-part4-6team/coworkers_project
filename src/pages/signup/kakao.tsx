@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { signInProvider } from '@/lib/auth'; // 여기서 signInProvider를 사용
+import { signInProvider } from '@/lib/auth';
+import Cookies from 'js-cookie';
 
 export default function KakaoAuth() {
   const router = useRouter();
@@ -12,9 +13,9 @@ export default function KakaoAuth() {
       // signInProvider로 인증 요청
       const response = await signInProvider('KAKAO', 'test', 'http://localhost:3000/signup/kakao', authToken);
       //로그인 정보 저장
-      localStorage.setItem('accessToken', response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
-      localStorage.setItem('userData', JSON.stringify(response.data.user));
+      Cookies.set('accessToken', response.data.accessToken, {path: '/'});
+      Cookies.set('refreshToken', response.data.refreshToken, {path: '/'});
+      Cookies.set('userData', JSON.stringify(response.data.user), {path: '/'});
       
       //실 이용 페이지로 이동
       router.push('/');

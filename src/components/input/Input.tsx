@@ -56,10 +56,7 @@ export default function Input({
             sizeClassName,
             inValid && isInvalidClassName,
           )}
-          onChange={rest.onChange}
-          onBlur={rest.onBlur}
-          defaultValue={rest.defaultValue}
-          disabled={rest.disabled}
+          {...rest}
         />
         {option === 'password' &&
           (isVisible ? (
