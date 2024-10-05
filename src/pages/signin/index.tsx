@@ -171,6 +171,7 @@ export default function SignIn() {
                 errorText={errors.modalEmail}
                 placeholder="이메일을 입력하세요."
                 onBlur={(e) => handleBlur('modalEmail', e.target.value)}
+                onChange={(e) => setValues({ ...values, modalEmail: e.target.value })}
               />
             </div>
             <div className={`flex w-[280px] gap-2 h-12 mb-8`}>

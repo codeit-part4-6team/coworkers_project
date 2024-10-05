@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 export function middleware(req: NextRequest) {
   const token = req.cookies.get('accessToken');
 
-  const publicPaths = ['/signin', '/signup', '/passwordreset'];
+  const publicPaths = ['/', '/signin', '/signup', '/reset-password'];
   // console.log(req.nextUrl.pathname);
   // console.log(token);
   if (publicPaths.includes(req.nextUrl.pathname)) {
