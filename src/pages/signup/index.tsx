@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import SocialLogin from '@/components/sociallogin';
 import { signUp } from '@/lib/auth';
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 
 const nickNameErrorText = [
   '이름은 필수 입력입니다.',
@@ -69,11 +70,6 @@ export default function SignUp() {
   const handleBlur = (field: string, value: string) => {
     let error = '';
 
-    setValues((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-
     if (field === 'nickName') {
       error = validateNickName(value);
     } else if (field === 'email') {
@@ -92,7 +88,6 @@ export default function SignUp() {
       ...prev,
       [`${field}Error`]: error,
     }));
-    console.log(errors, errors.confirmPasswordError);
   };
 
   const isFormValid = () => {
@@ -108,7 +103,21 @@ export default function SignUp() {
     );
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = async (event: React.FormEvent) => {
+      event.preventDefault(); // 폼 제출 기본 동작 방지
+      // console.log();
+      
+      if(!errors.nickNameError &&
+        !errors.emailError &&
+        !errors.passwordError &&
+        !errors.confirmPasswordError &&
+        values.nickName &&
+        values.email &&
+        values.password &&
+        values.confirmPassword) {
+        return;
+      }
+
       const response = await signUp(
         values.email,
         values.nickName,
@@ -116,22 +125,19 @@ export default function SignUp() {
         values.confirmPassword,
       );
 
-      // console.log(response);
-
       if(response.status >= 200 && response.status < 300) {
-        localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('refreshToken', response.data.refreshToken);
-        localStorage.setItem('userData', JSON.stringify(response.data.user));
+        Cookies.set('accessToken', response.data.accessToken);
+        Cookies.set('refreshToken', response.data.refreshToken);
+        Cookies.set('userData', JSON.stringify(response.data.user));
         router.push('/');
       }
       else {
-        // console.log('회원가입 실패', response.data.message);
         alert(response.data.message);
       }
   };
 
   useEffect(() => {
-    if(localStorage.getItem('accessToken')) {
+    if(Cookies.get('accessToken')) {
       router.push('/');
     }
   }, [router]);
@@ -145,6 +151,7 @@ export default function SignUp() {
       >
         회원가입
       </p>
+      <form onSubmit={handleSignUp}>
       <div className={`flex flex-col gap-6 mb-10`}>
         <Input
           labeltext="이름"
@@ -153,6 +160,7 @@ export default function SignUp() {
           errorText={errors.nickNameError}
           placeholder="이름을 입력해주세요."
           onBlur={(e) => handleBlur('nickName', e.target.value)}
+          onChange={(e) => setValues({ ...values, nickName: e.target.value })}
         />
         <Input
           labeltext="이메일"
@@ -161,6 +169,7 @@ export default function SignUp() {
           errorText={errors.emailError}
           placeholder="이메일을 입력해주세요."
           onBlur={(e) => handleBlur('email', e.target.value)}
+          onChange={(e) => setValues({ ...values, email: e.target.value })}
         />
         <Input
           labeltext="비밀번호"
@@ -169,6 +178,7 @@ export default function SignUp() {
           errorText={errors.passwordError}
           placeholder="비밀번호를 입력해주세요."
           onBlur={(e) => handleBlur('password', e.target.value)}
+          onChange={(e) => setValues({ ...values, password: e.target.value })}
         />
         <Input
           labeltext="비밀번호 확인"
@@ -177,6 +187,7 @@ export default function SignUp() {
           errorText={errors.confirmPasswordError}
           placeholder="비밀번호를 다시 입력해주세요."
           onBlur={(e) => handleBlur('confirmPassword', e.target.value)}
+          onChange={(e) => setValues({ ...values, confirmPassword: e.target.value })}
         />
       </div>
       <div className={`mb-6 md:mb-12`}>
@@ -188,6 +199,7 @@ export default function SignUp() {
           onClick={handleSignUp}
         />
       </div>
+      </form>
       <SocialLogin />
     </div>
   );
