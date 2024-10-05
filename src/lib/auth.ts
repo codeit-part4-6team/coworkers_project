@@ -91,10 +91,10 @@ export async function sendPasswordRestEmail(email: string) {
   return response;
 }
 
-export async function resetPassword(passwordConfirmation: string, passwrod: string, token: string) {
+export async function resetPassword(passwordConfirmation: string, password: string, token: string) {
   const requestbody = {
     passwordConfirmation,
-    passwrod,
+    password,
     token
   }
   const response = await basicAuthAxios.patch(
