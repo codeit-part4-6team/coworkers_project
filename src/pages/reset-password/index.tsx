@@ -84,12 +84,12 @@ export default function PassReset() {
       return;
     }
     try {
-      const response = await resetPassword(
+      await resetPassword(
         values.password,
         values.confirmPassword,
         token
       );
-      return response;
+      return router.push('/');
     } catch (error) {
       return error;
     }
