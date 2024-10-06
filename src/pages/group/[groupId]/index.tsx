@@ -6,7 +6,7 @@ import { getGroup } from '@/lib/groupApi';
 import { TaskList } from '@/types/taskTypes';
 import { getUserMemberships } from '@/lib/userApi';
 import TaskListCard from '@/components/groupPage/TaskListCard/TaskListCard';
-import GroupMemberCard from '@/components/groupPage/GroupMemberCard/MemberCard';
+import GroupMemberCard from '@/components/groupPage/GroupMemberCard';
 
 interface Member {
   userId: number;
