@@ -1,26 +1,30 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get('accessToken');
+  const token = req.cookies.get('accessToken'); // 쿠키에서 accessToken 가져옴
 
+  // 공개적으로 접근 가능한 경로 목록
   const publicPaths = ['/', '/signin', '/signup', '/reset-password'];
-  // console.log(req.nextUrl.pathname);
-  // console.log(token);
-  if (publicPaths.includes(req.nextUrl.pathname)) {
+
+  // 요청 경로 추출
+  const { pathname } = req.nextUrl;
+
+  // 공개 경로일 때 처리
+  if (publicPaths.includes(pathname)) {
     if (token) {
-      console.log('토큰이 있으면안되는 곳', req.nextUrl.pathname);
-      return NextResponse.redirect(new URL('/', req.url));
+      // 이미 로그인 상태인데, 공개 경로에 접근하려는 경우 -> 홈 페이지로 리디렉트
+      return NextResponse.redirect(new URL('/group', req.url));
     }
-    console.log('토큰이 없으니 됨', req.nextUrl.pathname);
+    // 로그인하지 않은 경우 -> 요청 계속 진행
     return NextResponse.next();
   } else {
-    if (token) {
-      console.log('토큰이 있으니 됨', req.nextUrl.pathname);
-      return NextResponse.next();
-    } else {
-      console.log('토큰이 없으면안되는 곳', req.nextUrl.pathname);
-      return NextResponse.redirect(new URL('/', req.url));
+    // 보호된 경로일 때 처리
+    if (!token) {
+      // 로그인하지 않은 상태에서 보호된 경로 접근 -> 로그인 페이지로 리디렉트
+      return NextResponse.redirect(new URL('/signin', req.url));
     }
+    // 로그인한 상태이면 요청 계속 진행
+    return NextResponse.next();
   }
 }
 

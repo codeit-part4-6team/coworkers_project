@@ -39,11 +39,9 @@ const GroupPage = () => {
     const fetchGroupDataAndRole = async () => {
       if (groupId) {
         try {
-          // Fetch group details
           const groupResponse = await getGroup(Number(groupId));
           setGroupData(groupResponse.data);
 
-          // Fetch user memberships
           const membershipsResponse = await getUserMemberships();
           const memberships = membershipsResponse.data;
           const userMembership = memberships.find(
