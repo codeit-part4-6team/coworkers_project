@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { getGroup } from '@/lib/groupApi';
 import { TaskList } from '@/types/taskTypes';
 import { getUserMemberships } from '@/lib/userApi';
-import TaskListCard from '@/components/groupPage/TaskListCard';
+import TaskListCard from '@/components/groupPage/TaskListCard/TaskListCard';
 import GroupMemberCard from '@/components/groupPage/GroupMemberCard/MemberCard';
 
 interface Member {
@@ -68,7 +68,11 @@ const GroupPage = () => {
   return (
     <div className="bg-background-primary text-text-primary min-h-screen p-4">
       <main>
-        <GroupHeader groupName={groupData.name} groupId={Number(groupId)} userRole={userRole} />
+        <GroupHeader
+          groupName={groupData.name}
+          groupId={Number(groupId)}
+          userRole={userRole}
+        />
         <TaskListCard groupId={Number(groupId)} />
         {userRole === 'ADMIN' && <ReportCard taskLists={groupData.taskLists} />}
         <GroupMemberCard
