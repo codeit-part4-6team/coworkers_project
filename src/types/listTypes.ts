@@ -53,6 +53,13 @@ export interface DeleteTaskCommentParams {
   commentId: number;
 }
 
+export interface OrderTaskDetailParams {
+  groupId: number;
+  taskListId: number;
+  taskId: number;
+  displayIndex: number;
+}
+
 // 특정 할 일 리스트 불러오기 타입
 interface User {
   image: string;

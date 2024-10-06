@@ -57,7 +57,6 @@ export default function WorkToDoContainer({ data, setWorkToDoName }: Props) {
             taskId: id,
           },
         }}
-        // as={`/group/${groupId}/task-lists/${taskListId}/task/${id}`}
       >
         <div className="flex flex-col gap-2.5 w-full py-3 px-3.5 rounded-lg bg-background-secondary">
           <div className="flex justify-between items-center">

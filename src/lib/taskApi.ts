@@ -3,6 +3,7 @@ import {
   CreateRecurringTaskParams,
   EditTaskDetailParams,
   DeleteRecurringTaskParams,
+  OrderTaskDetailParams,
 } from '@/types/listTypes';
 import { useQuery, useMutation } from '@tanstack/react-query';
 
@@ -82,28 +83,22 @@ export const useDeleteTaskDetailMutation = (
   });
 };
 
-// 특정 할 일 순서 변경
-const orderTaskDetail = (
-  groupId: number,
-  taskListId: number,
-  taskId: number,
-  displayIndex: number,
-) => {
+// 특정 할 일 순서 변경 (사용중)
+const orderTaskDetail = ({
+  groupId,
+  taskListId,
+  taskId,
+  displayIndex,
+}: OrderTaskDetailParams) => {
   return basicAuthAxios.patch(
     `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}/order`,
-    displayIndex,
+    { displayIndex },
   );
 };
 
-export const useOrderTaskDetailMutation = (
-  groupId: number,
-  taskListId: number,
-  taskId: number,
-  displayIndex: number,
-) => {
+export const useOrderTaskDetailMutation = () => {
   return useMutation({
-    mutationFn: () =>
-      orderTaskDetail(groupId, taskListId, taskId, displayIndex),
+    mutationFn: orderTaskDetail,
   });
 };
 
