@@ -105,26 +105,24 @@ export default function SignUp() {
 
   const handleSignUp = async (event: React.FormEvent) => {
       event.preventDefault(); // 폼 제출 기본 동작 방지
-      // console.log();
-      
-      if(!errors.nickNameError &&
-        !errors.emailError &&
-        !errors.passwordError &&
-        !errors.confirmPasswordError &&
+      console.log("회원가입 시작");
+      if(errors.nickNameError &&
+        errors.emailError &&
+        errors.passwordError &&
+        errors.confirmPasswordError &&
         values.nickName &&
         values.email &&
         values.password &&
         values.confirmPassword) {
         return;
       }
-
       const response = await signUp(
         values.email,
         values.nickName,
         values.password,
         values.confirmPassword,
       );
-
+      console.log(response);
       if(response.status >= 200 && response.status < 300) {
         Cookies.set('accessToken', response.data.accessToken, {path: '/'});
         Cookies.set('refreshToken', response.data.refreshToken, {path: '/'});
