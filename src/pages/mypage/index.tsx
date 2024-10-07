@@ -73,19 +73,38 @@ export default function MyPage() {
     passwordCheckError: '',
   });
 
-
-  const userEditEvent= async () => {
-    if(values.nickName && newImage) {
+  const userEditEvent = async () => {
+    if (values.nickName && newImage && userData) {  // userData가 존재하는지 체크
       console.log(values.nickName, newImage);
       try {
         const response = await userPatch(values.nickName, newImage);
+        
+        // userData가 undefined가 될 수 없다는 확신을 주기 위해 null 체크를 완료했으므로, 타입 단언 사용
+        const updatedUserData: userProps = {
+          id: userData.id,  // id는 필수 값으로 사용
+          nickname: values.nickName,  // 새로운 닉네임
+          image: newImage,            // 새로운 이미지
+          createdAt: userData.createdAt,  // 기존 값 유지
+          updatedAt: userData.updatedAt,          // 수정된 날짜로 업데이트
+          email: userData.email           // 기존 값 유지
+        };
+        
+        // 쿠키에 업데이트된 유저 데이터 저장
+        Cookies.set('userData', JSON.stringify(updatedUserData));
+        
+        // 상태값을 업데이트하여 화면에 반영
+        setUserData(updatedUserData);
         alert('회원정보 수정 완료했습니다.');
-      }
-      catch(error) {
+      } catch (error) {
         console.log(error);
+        alert('회원정보 수정 중 오류가 발생했습니다.');
       }
+    } else {
+      alert("닉네임과 이미지가 필요합니다.");
     }
-  }
+  };
+  
+
 
   const handleBlur = (field: string, value: string) => {
     let error = '';

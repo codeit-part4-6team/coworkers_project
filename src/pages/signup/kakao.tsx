@@ -11,8 +11,10 @@ export default function KakaoAuth() {
   const handleKakaoLogin = async (authToken: string) => {
     try {
       // signInProvider로 인증 요청
+      console.log('카카오프로바이더호출');
       const response = await signInProvider('KAKAO', 'test', 'http://localhost:3000/signup/kakao', authToken);
       //로그인 정보 저장
+      console.log(response);
       Cookies.set('accessToken', response.data.accessToken, {path: '/'});
       Cookies.set('refreshToken', response.data.refreshToken, {path: '/'});
       Cookies.set('userData', JSON.stringify(response.data.user), {path: '/'});
