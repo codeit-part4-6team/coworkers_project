@@ -172,7 +172,7 @@ const Card = ({
                 <img
                   src={imageUrl}
                   alt="게시글 이미지"
-                  className="rounded-[12px] w-[72px] h-[72px] object-fit"
+                  className="rounded-[12px] w-[72px] h-[72px] object-cover"
                 />
               )}
               <div

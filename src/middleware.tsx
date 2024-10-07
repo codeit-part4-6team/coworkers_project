@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 export function middleware(req: NextRequest) {
   const token = req.cookies.get('accessToken');
 
-  const publicPaths = ['/', '/signin', '/signup', '/reset-password'];
+  const publicPaths = ['/signin', '/signup', '/reset-password'];
   // console.log(req.nextUrl.pathname);
   // console.log(token);
   if (publicPaths.includes(req.nextUrl.pathname)) {
@@ -12,6 +12,8 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/', req.url));
     }
     console.log('토큰이 없으니 됨', req.nextUrl.pathname);
+    return NextResponse.next();
+  } else if (req.nextUrl.pathname === '/') {
     return NextResponse.next();
   } else {
     if (token) {
