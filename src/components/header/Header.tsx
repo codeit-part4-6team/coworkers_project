@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Logo from '@/assets/logo.svg';
 import User from '@/assets/user.svg';
 import Menu from '@/assets/menu.svg';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import { Group } from '@/types/usergroup';
@@ -16,48 +15,49 @@ import { useRouter } from 'next/router';
 import { getUser, getUserGroups } from '@/lib/headerApi';
 
 const Header = () => {
-  const queryClient = useQueryClient();
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [selectedTeam, setSelectedTeam] = useState<Group | null>(null);
+  const [userData, setUserData] = useState<any>(null);
+  const [userGroups, setUserGroups] = useState<Group[]>([]);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const { openModal, closeModal } = useModalStore();
 
-  const { data: userData, refetch: refetchUserData } = useQuery({
-    queryKey: ['userData'],
-    queryFn: async () => {
-      const response = await getUser();
-      return response.data;
-    },
-    enabled: isLoggedIn,
-    retry: false,
-  });
+  const fetchUserDataAndGroups = async () => {
+    try {
+      const userResponse = await getUser();
+      setUserData(userResponse.data);
 
-  const { data: userGroups = [], refetch: refetchUserGroups } = useQuery<
-    Group[]
-  >({
-    queryKey: ['userGroups'],
-    queryFn: async () => {
-      const response = await getUserGroups();
-      return response.data;
-    },
-    enabled: isLoggedIn,
-    retry: false,
-  });
-
-  const isLogin = !!userData || isLoggedIn;
+      const groupResponse = await getUserGroups();
+      setUserGroups(groupResponse.data);
+    } catch (error) {
+      console.error('Failed to fetch user data or groups:', error);
+    }
+  };
 
   useEffect(() => {
     const token = Cookies.get('accessToken');
     if (token) {
       setIsLoggedIn(true);
-      refetchUserData();
-      refetchUserGroups();
+      fetchUserDataAndGroups();
     } else {
       setIsLoggedIn(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchUserDataAndGroups();
+    }
+  }, [isLoggedIn]);
+
+  const handleLogout = () => {
+    clearCookies();
+    setIsLoggedIn(false);
+    setUserData(null);
+    setUserGroups([]);
+    router.push('/signin');
+  };
 
   const handleMenuClick = () => {
     openModal('sideMenu');
@@ -67,10 +67,6 @@ const Header = () => {
     setSelectedItem(item);
   };
 
-  const teamOptions = userGroups.map((group: Group) => ({
-    ...group,
-  }));
-
   const userOptions: DropdownOption[] = [
     { label: '마이 히스토리', value: 'myHistory' },
     { label: '계정 설정', value: 'accountSettings' },
@@ -78,14 +74,11 @@ const Header = () => {
     { label: '로그아웃', value: 'logout' },
   ];
 
-  const handleChange = async (selectedOption: DropdownOption) => {
+  const handleChange = (selectedOption: DropdownOption) => {
     if (selectedOption.value === 'myHistory') {
       router.push(`/myhistory`);
     } else if (selectedOption.value === 'logout') {
-      clearCookies();
-      setIsLoggedIn(false);
-      queryClient.invalidateQueries({ queryKey: ['userData'] });
-      queryClient.invalidateQueries({ queryKey: ['userGroups'] });
+      handleLogout();
     } else if (selectedOption.value === 'accountSettings') {
       router.push(`/mypage`);
     } else {
@@ -98,16 +91,16 @@ const Header = () => {
       <div className="flex justify-between items-center h-full 2lg:max-w-[1200px] 2lg:mx-auto">
         <div className="my-[14px] flex items-center gap-10">
           <div className="flex items-center gap-4">
-            {isLogin && (
+            {isLoggedIn && (
               <Menu className="md:hidden" onClick={handleMenuClick} />
             )}
             <Link href="/">
               <Logo className="lg:w-[158px] lg:h-8" />
             </Link>
           </div>
-          {isLogin && (
+          {isLoggedIn && (
             <ul className="flex items-center gap-10">
-              {teamOptions.length > 0 && (
+              {userGroups.length > 0 && (
                 <div className="hidden md:block">
                   <TeamDropdown />
                 </div>
@@ -118,7 +111,7 @@ const Header = () => {
             </ul>
           )}
         </div>
-        {isLogin && (
+        {isLoggedIn && (
           <div className="w-[135px] flex justify-end">
             <Dropdown
               options={userOptions}
