@@ -85,12 +85,10 @@ const orderTaskListDetail = (
 };
 
 export const useOrderTaskListDetailMutation = (
-  groupId: number,
-  taskListId: number,
-  displayIndex: number,
 ) => {
   return useMutation({
-    mutationFn: () => orderTaskListDetail(groupId, taskListId, displayIndex),
+    mutationFn: ({ groupId, taskListId, displayIndex }: { groupId: number, taskListId: number, displayIndex: number }) => 
+      orderTaskListDetail(groupId, taskListId, displayIndex),
   });
 };
 

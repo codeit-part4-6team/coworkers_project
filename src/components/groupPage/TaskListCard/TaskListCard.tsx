@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import Modal from '@/components/common/Modal';
 import TaskItem from '@/components/groupPage/TaskListCard/TaskItem';
@@ -7,14 +7,18 @@ import {
   useTaskListsQuery,
   useCreateTaskListMutation,
   useEditTaskListDetailMutation,
+  useOrderTaskListDetailMutation,
 } from '@/lib/taskListApi';
 import XIcon from '@/assets/x_icon.svg';
 import { TaskList } from '@/types/taskTypes';
+import { DragDropContext, Draggable } from 'react-beautiful-dnd';
+import { StrictModeDroppable as Droppable } from '@/components/taskListsPage/StrictModeDroppable';
 
 const TaskListCard = ({ groupId }: { groupId: number }) => {
   const [newListName, setNewListName] = useState('');
   const [editingListId, setEditingListId] = useState<number | null>(null);
   const [editingListName, setEditingListName] = useState('');
+  const [taskLists, setTaskLists] = useState<TaskList[]>([]);
   const queryClient = useQueryClient();
   const { openModal, closeModal } = useModalStore();
   const {
@@ -30,6 +34,14 @@ const TaskListCard = ({ groupId }: { groupId: number }) => {
     editingListId || 0,
     editingListName,
   );
+
+  const orderTaskListMutation = useOrderTaskListDetailMutation();
+  
+  useEffect(() => {
+    if (groupData?.data?.taskLists) {
+      setTaskLists(groupData.data.taskLists);
+    }
+  }, [groupData]);
 
   const handleOpenModal = (modalId: string) => {
     openModal(modalId);
@@ -81,11 +93,46 @@ const TaskListCard = ({ groupId }: { groupId: number }) => {
     handleOpenModal('editTaskList');
   };
 
+  const onDragEnd = (result: any) => {
+    const { destination, source, draggableId } = result;
+
+    if (!destination) return;
+
+    const sourceIndex = source.index;
+    const destinationIndex = destination.index;
+
+    if (sourceIndex !== destinationIndex) {
+      const taskListId = Number(draggableId);
+      const newTaskLists = Array.from(taskLists);
+      const [reorderedItem] = newTaskLists.splice(sourceIndex, 1);
+      newTaskLists.splice(destinationIndex, 0, reorderedItem);
+
+      setTaskLists(newTaskLists);
+
+      orderTaskListMutation.mutate(
+        {
+          groupId,
+          taskListId,
+          displayIndex: destinationIndex,
+        },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['taskLists', groupId] });
+          },
+          onError: (error) => {
+            console.error('Error updating order:', error);
+            setTaskLists(taskLists);
+          },
+        },
+      );
+    }
+  };
+
+
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading task lists</div>;
 
-  const taskLists = (groupData?.data?.taskLists || []) as TaskList[];
-
+  
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center mb-4">
@@ -102,25 +149,45 @@ const TaskListCard = ({ groupId }: { groupId: number }) => {
           + 새로운 목록 추가하기
         </button>
       </div>
-      {taskLists.length > 0 ? (
-        taskLists.map((taskList, index) => (
-          <TaskItem
-            key={taskList.id}
-            taskList={taskList}
-            index={index}
-            groupId={groupId}
-            taskListId={taskList.id}
-            onDelete={() => refetch()}
-            onEdit={handleEdit}
-          />
-        ))
-      ) : (
-        <div className="flex justify-center items-center py-16">
-          <p className="text-text-default font-medium text-sm py-16">
-            아직 할 일 목록이 없습니다.
-          </p>
-        </div>
-      )}
+
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="taskLists" direction="vertical">
+          {(provided) => (
+            <div
+              className="flex flex-col gap-4"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {taskLists.map((taskList, index) => (
+                <Draggable
+                  key={taskList.id}
+                  draggableId={String(taskList.id)}
+                  index={index}
+                >
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <TaskItem
+                        taskList={taskList}
+                        index={index}
+                        groupId={groupId}
+                        taskListId={taskList.id}
+                        onDelete={() => refetch()}
+                        onEdit={handleEdit}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+
       <Modal
         id="newTaskList"
         className="sm:w-96 w-full p-6 rounded-2xl bg-background-secondary text-text-primary fixed sm:top-1/2 sm:left-1/2 sm:right-1/2 sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2 top-auto bottom-0 left-0 right-0 transform-none rounded-t-xl sm:rounded-b-xl rounded-b-none"
@@ -150,6 +217,7 @@ const TaskListCard = ({ groupId }: { groupId: number }) => {
           </button>
         </div>
       </Modal>
+
       <Modal
         id="editTaskList"
         className="sm:w-96 w-full p-6 rounded-2xl bg-background-secondary text-text-primary fixed sm:top-1/2 sm:left-1/2 sm:right-1/2 sm:transform sm:-translate-x-1/2 sm:-translate-y-1/2 top-auto bottom-0 left-0 right-0 transform-none rounded-t-xl sm:rounded-b-xl rounded-b-none"

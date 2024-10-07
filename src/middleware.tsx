@@ -13,9 +13,16 @@ export function middleware(req: NextRequest) {
     }
     console.log('토큰이 없으니 됨', req.nextUrl.pathname);
     return NextResponse.next();
+<<<<<<< HEAD
   } else if (req.nextUrl.pathname === '/') {
     return NextResponse.next();
   } else {
+=======
+  } else if(req.nextUrl.pathname === '/') {
+    return NextResponse.next();
+  }
+   else {
+>>>>>>> 24a2ef7539714e89aa74bf25a38a02398dc07fc4
     if (token) {
       console.log('토큰이 있으니 됨', req.nextUrl.pathname);
       return NextResponse.next();
