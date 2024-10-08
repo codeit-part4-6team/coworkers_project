@@ -9,16 +9,9 @@ import MemberIcon from '@/assets/member.svg';
 import EditIcon from '@/assets/btn_edit.svg';
 import { imageFile } from '@/lib/articleApi';
 import { useRouter } from 'next/router';
+import useAuthStore from '@/store/authStore';
 import Cookies from 'js-cookie';
-
-interface userProps {
-  id: string;
-  nickname: string;
-  createdAt: Date;
-  updatedAt: Date;
-  image: string;
-  email: string;
-}
+import { User } from '@/types/usergroup';
 
 const nickNameErrorText = [
   '이름은 필수 입력입니다.',
@@ -37,11 +30,12 @@ const passwordCheckErrorText = [
 ];
 
 export default function MyPage() {
-  const [userData, setUserData] = useState<userProps>();
+  // const [userData, setUserData] = useState<userProps>();
   const { openModal, closeModal } = useModalStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter(); // useRouter 선언
   const [newImage, setNewImage] = useState<string | null>(null);
+  const {user} = useAuthStore();
 
   const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -74,26 +68,24 @@ export default function MyPage() {
   });
 
   const userEditEvent = async () => {
-    if (values.nickName && newImage && userData) {  // userData가 존재하는지 체크
+    if (values.nickName && newImage && user) {  // userData가 존재하는지 체크
       console.log(values.nickName, newImage);
       try {
         const response = await userPatch(values.nickName, newImage);
         
-        // userData가 undefined가 될 수 없다는 확신을 주기 위해 null 체크를 완료했으므로, 타입 단언 사용
-        const updatedUserData: userProps = {
-          id: userData.id,  // id는 필수 값으로 사용
-          nickname: values.nickName,  // 새로운 닉네임
-          image: newImage,            // 새로운 이미지
-          createdAt: userData.createdAt,  // 기존 값 유지
-          updatedAt: userData.updatedAt,          // 수정된 날짜로 업데이트
-          email: userData.email           // 기존 값 유지
+        const updatedUserData: User = {
+          id: user.id,
+          nickname: values.nickName,
+          image: newImage,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          email: user.email,
+          memberships: user.memberships,
+          teamId: user.teamId,
         };
         
-        // 쿠키에 업데이트된 유저 데이터 저장
-        Cookies.set('userData', JSON.stringify(updatedUserData));
-        
         // 상태값을 업데이트하여 화면에 반영
-        setUserData(updatedUserData);
+        useAuthStore.getState().setUser(updatedUserData);
         alert('회원정보 수정 완료했습니다.');
       } catch (error) {
         console.log(error);
@@ -158,11 +150,8 @@ export default function MyPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const user = Cookies.get('userData');
       if (user) {
-        const parsedData = JSON.parse(user);
-        setUserData(parsedData);
-        setNewImage(parsedData.image)
+        setNewImage(user.image);
       }
       else {
         router.push('/signin');
@@ -171,15 +160,15 @@ export default function MyPage() {
   }, [router]);
 
   useEffect(() => {
-    if(userData) {
+    if(user) {
       setValues((prevValues) => ({
         ...prevValues,
-        nickName: userData.nickname,
+        nickName: user.nickname,
       }));
     }
   }, [])
 
-  if (!userData) {
+  if (!user) {
     return null;
   }
 
@@ -209,7 +198,7 @@ export default function MyPage() {
           <Input
             labeltext="이름"
             disabled={false}
-            defaultValue={userData.nickname}
+            defaultValue={user.nickname}
             option="text"
             inValid={false}
             placeholder={`닉네임을 입력해 주세요.`}
@@ -220,7 +209,7 @@ export default function MyPage() {
           <Input
             labeltext="이메일"
             disabled={true}
-            defaultValue={userData.email}
+            defaultValue={user.email}
             option="text"
             inValid={false}
             placeholder="무슨값"

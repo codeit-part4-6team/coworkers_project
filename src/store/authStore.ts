@@ -9,10 +9,13 @@ interface AuthState {
   teams: Group[];
   isPending: boolean;
   signIn: (email: string, password: string) => Promise<boolean>;
+  signUp: (email: string, nickname:string, password: string, passwordConfirmation: string) => Promise<boolean>;
+  provider: (platform: string, state: string, url: string, token: string) => Promise<boolean>;
   signOut: () => void;
   checkAuth: () => Promise<void>;
   fetchTeams: () => Promise<void>;
   setTeams: (teams: Group[]) => void;
+  setUser: (user: User) => void;
 }
 
 const useAuthStore = create<AuthState>((set) => ({
@@ -23,6 +26,30 @@ const useAuthStore = create<AuthState>((set) => ({
   signIn: async (email, password) => {
     set({ isPending: true });
     const response = await basicAxios.post('/auth/signIn', { email, password });
+    const { user, accessToken, refreshToken } = response.data;
+    Cookies.set('accessToken', accessToken);
+    Cookies.set('refreshToken', refreshToken);
+    set({ user });
+    set({ isPending: false });
+    return true;
+  },
+  signUp: async (email, nickname, password, passwordConfirmation) => {
+    set({isPending: true});
+    const response = await basicAuthAxios.post(
+      '/auth/signUp', {email, nickname, password, passwordConfirmation}
+    );
+    const { user, accessToken, refreshToken } = response.data;
+    Cookies.set('accessToken', accessToken);
+    Cookies.set('refreshToken', refreshToken);
+    set({ user });
+    set({ isPending: false });
+    return true;
+  },
+  provider: async (platform, state, uri, token) => {
+    set({isPending: true});
+    const response = await basicAuthAxios.post(
+      `/auth/signIn/${platform}`, {state, uri, token}
+    );
     const { user, accessToken, refreshToken } = response.data;
     Cookies.set('accessToken', accessToken);
     Cookies.set('refreshToken', refreshToken);
@@ -55,6 +82,7 @@ const useAuthStore = create<AuthState>((set) => ({
     }
   },
   setTeams: (teams) => set({ teams }),
+  setUser: (user) => set({ user }),
 }));
 
 export default useAuthStore;
