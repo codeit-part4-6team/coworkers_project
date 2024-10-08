@@ -65,7 +65,7 @@ const Dropdown = ({
   const displayText = placeholder || selectedOption?.label || options[0]?.label;
 
   const buttonClasses = clsx(
-    'inline-flex justify-between items-center font-regular focus:outline-none',
+    'inline-flex justify-between items-center font-regular focus:outline-none cursor-pointer hover:cursor-pointer',
     !placeholder &&
       (isOpen ? 'bg-background-tertiary' : 'bg-background-secondary'),
     {
@@ -103,7 +103,7 @@ const Dropdown = ({
   );
 
   return (
-    <div className={clsx('relative inline-block text-left', className)}>
+    <div className={clsx('relative inline-block text-left cursor-pointer hover:cursor-pointer', className)}>
       {customButton ? (
         <div
           onClick={() => {

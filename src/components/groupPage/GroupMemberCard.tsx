@@ -27,7 +27,7 @@ interface MemberItemProps {
   groupId: number;
   userRole: string | null;
   onDelete: (memberId: number) => void;
-  onClick: () => void; // 추가된 부분
+  onClick: () => void;
 }
 
 const MemberItem = ({
@@ -35,7 +35,7 @@ const MemberItem = ({
   groupId,
   userRole,
   onDelete,
-  onClick, // 추가된 부분
+  onClick,
 }: MemberItemProps) => {
   const kebabOptions: DropdownOption[] = [
     { label: '삭제하기', value: 'delete' },
@@ -62,7 +62,7 @@ const MemberItem = ({
   return (
     <div
       className="bg-background-secondary rounded-2xl sm:py-5 sm:px-6 py-3 px-4 flex justify-between items-start"
-      onClick={onClick} // 추가된 부분
+      onClick={onClick}
     >
       <div className="flex items-start w-full">
         <div className="hidden sm:block sm:mr-3">
@@ -108,7 +108,7 @@ const GroupMemberCard = ({
   const [selectedMember, setSelectedMember] = useState<GroupMember | null>(
     null,
   );
-  const [currentMembers, setCurrentMembers] = useState<GroupMember[]>(members); // Local state for members
+  const [currentMembers, setCurrentMembers] = useState<GroupMember[]>(members);
 
   const handleOpenInviteModal = () => {
     console.log('Open modal');
@@ -162,7 +162,7 @@ const GroupMemberCard = ({
         <h2 className="text-lg font-medium">
           멤버
           <span className="text-text-default font-regular ml-2">
-            ({currentMembers.length}명) {/* currentMembers.length로 변경 */}
+            ({currentMembers.length}명)
           </span>
         </h2>
         {userRole === 'ADMIN' && (
@@ -182,12 +182,11 @@ const GroupMemberCard = ({
             groupId={groupId}
             userRole={userRole}
             onDelete={handleDeleteMember}
-            onClick={() => handleOpenMemberModal(member)} // 추가된 부분
+            onClick={() => handleOpenMemberModal(member)}
           />
         ))}
       </div>
 
-      {/* 멤버 초대 모달 */}
       <Modal
         id="inviteMember"
         className="sm:w-96 w-full p-6 rounded-2xl bg-background-secondary text-text-primary
@@ -215,7 +214,6 @@ const GroupMemberCard = ({
         </div>
       </Modal>
 
-      {/* 멤버 상세 정보 모달 */}
       {selectedMember && (
         <Modal
           id="memberDetails"
