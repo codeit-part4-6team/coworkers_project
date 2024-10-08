@@ -15,7 +15,6 @@ export function middleware(req: NextRequest) {
     if (token) {
       return NextResponse.next();
     } else {
-      console.log(req.nextUrl.pathname, '왜 여기인거지?');
       return NextResponse.redirect(new URL('/', req.url));
     }
   }

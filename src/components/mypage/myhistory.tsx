@@ -24,7 +24,6 @@ export default function MyHistory() {
     const fetchData = async () => {
       try {
         const response = await fetchMyHistory();
-        console.log(response.data.tasksDone);
         if (response) {
           setHistoryData(response.data.tasksDone);
         } else {

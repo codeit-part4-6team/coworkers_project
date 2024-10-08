@@ -69,7 +69,6 @@ export default function MyPage() {
   const userEditEvent = async () => {
     if (values.nickName && newImage && user) {
       // userData가 존재하는지 체크
-      console.log(values.nickName, newImage);
       try {
         const response = await userPatch(values.nickName, newImage);
 
@@ -88,7 +87,6 @@ export default function MyPage() {
         useAuthStore.getState().setUser(updatedUserData);
         alert('회원정보 수정 완료했습니다.');
       } catch (error) {
-        console.log(error);
         alert('회원정보 수정 중 오류가 발생했습니다.');
       }
     } else {
