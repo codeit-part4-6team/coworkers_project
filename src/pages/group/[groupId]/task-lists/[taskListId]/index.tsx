@@ -42,10 +42,6 @@ export default function List() {
     const destinationIndex = destination.index;
 
     if (sourceIndex !== destinationIndex) {
-      // const updatedTasks = Array.from(tasksQuery.data?.data);
-      // updatedTasks.splice(sourceIndex, 1);
-      // updatedTasks.splice(destinationIndex, 0, draggableId);
-
       orderTaskDetailMutation.mutate(
         {
           groupId,
