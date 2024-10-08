@@ -10,12 +10,16 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import useAuthStore from '@/store/authStore';
 import TeamDropdown from './TeamDropdown';
-//signin 커밋 빼고 머지!!
+
 const Header = () => {
   const router = useRouter();
   const { openModal, closeModal } = useModalStore();
   const { user, checkAuth, signOut } = useAuthStore();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const handleLogout = () => {
     signOut();
