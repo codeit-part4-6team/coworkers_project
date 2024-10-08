@@ -9,10 +9,9 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/', req.url));
     }
     return NextResponse.next();
-  } else if(req.nextUrl.pathname === '/') {
+  } else if (req.nextUrl.pathname === '/') {
     return NextResponse.next();
-  }
-   else {
+  } else {
     if (token) {
       return NextResponse.next();
     } else {
