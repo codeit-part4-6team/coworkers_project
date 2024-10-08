@@ -7,33 +7,32 @@ import Link from 'next/link';
 import Dropdown, { DropdownOption } from '@/components/common/Dropdown';
 import { useRouter } from 'next/router';
 import { deleteGroup } from '@/lib/groupApi';
-import { getUserGroups } from '@/lib/headerApi';
+import useAuthStore from '@/store/authStore';
 
 const TeamDropdown = () => {
-  const [teams, setTeams] = useState<Group[]>([]);
+  const { teams, fetchTeams, setTeams } = useAuthStore();
   const [selectedTeam, setSelectedTeam] = useState<Group | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const response = await getUserGroups();
-        setTeams(response.data);
-      } catch (error) {
-        console.error('팀을 불러오는 중 오류 발생:', error);
-      } finally {
-        setLoading(false);
+    const savedTeamId = localStorage.getItem('selectedTeam');
+    if (savedTeamId && teams.length > 0) {
+      const savedTeam = teams.find((team) => team.id === parseInt(savedTeamId));
+      if (savedTeam) {
+        setSelectedTeam(savedTeam);
       }
-    };
+    }
+  }, [teams]);
 
-    fetchGroups();
-  }, []);
+  useEffect(() => {
+    fetchTeams();
+  }, [fetchTeams]);
 
   const handleTeamSelect = (team: Group) => {
     setSelectedTeam(team);
     setIsOpen(false);
+    localStorage.setItem('selectedTeam', team.id.toString());
     router.push(`/group/${team.id}`);
   };
 
@@ -46,12 +45,13 @@ const TeamDropdown = () => {
       await deleteGroup(team.id);
       const remainingTeams = teams.filter((t) => t.id !== team.id);
       setTeams(remainingTeams);
-
       if (remainingTeams.length > 0) {
         setSelectedTeam(remainingTeams[0]);
+        localStorage.setItem('selectedTeam', remainingTeams[0].id.toString());
         router.push(`/group/${remainingTeams[0].id}`);
       } else {
         setSelectedTeam(null);
+        localStorage.removeItem('selectedTeam');
       }
     } catch (error) {
       console.error('팀 삭제 중 오류 발생:', error);
@@ -77,8 +77,8 @@ const TeamDropdown = () => {
     </div>
   );
 
-  if (loading) {
-    return <div>로딩 중...</div>;
+  if (!teams.length) {
+    return <div>팀이 없습니다.</div>;
   }
 
   return (
@@ -88,7 +88,7 @@ const TeamDropdown = () => {
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="text-text-primary text-lg font-medium">
-          {selectedTeam ? selectedTeam.name : '팀 없음'}
+          {selectedTeam ? selectedTeam.name : '팀 선택'}
         </div>
         <Check />
       </button>
@@ -104,10 +104,7 @@ const TeamDropdown = () => {
                 onClick={() => handleTeamSelect(team)}
                 className="flex items-center cursor-pointer"
               >
-                <div
-                  className="flex items-center cursor-pointer"
-                  onClick={() => handleTeamSelect(team)}
-                >
+                <div className="flex items-center cursor-pointer">
                   <img
                     src={team.image}
                     alt={team.name}
