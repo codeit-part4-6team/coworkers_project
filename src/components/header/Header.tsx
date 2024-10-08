@@ -7,14 +7,14 @@ import Modal from '@/components/common/Modal';
 import useModalStore from '@/store/modalStore';
 import Cancel from '@/assets/x_icon.svg';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useAuthStore from '@/store/authStore';
 import TeamDropdown from './TeamDropdown';
 //signin 커밋 빼고 머지!!
 const Header = () => {
   const router = useRouter();
   const { openModal, closeModal } = useModalStore();
-  const { user, signOut } = useAuthStore();
+  const { user, checkAuth, signOut } = useAuthStore();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const handleLogout = () => {
@@ -48,6 +48,10 @@ const Header = () => {
       router.push(`/jointeam`);
     }
   };
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth])
 
   return (
     <div className="bg-background-secondary h-[60px] px-6 border-b border-border-primary-10">
