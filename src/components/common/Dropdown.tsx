@@ -103,13 +103,18 @@ const Dropdown = ({
   );
 
   return (
-    <div className={clsx('relative inline-block text-left cursor-pointer hover:cursor-pointer', className)}>
+    <div
+      className={clsx(
+        'relative inline-block text-left cursor-pointer hover:cursor-pointer',
+        className,
+      )}
+    >
       {customButton ? (
         <div
           onClick={() => {
             setIsOpen(!isOpen);
           }}
-          className="text-center"
+          className="text-center cursor-pointer"
         >
           {customButton}
         </div>
