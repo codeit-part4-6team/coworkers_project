@@ -16,11 +16,7 @@ const Header = () => {
   const { openModal, closeModal } = useModalStore();
   const { user, checkAuth, signOut } = useAuthStore();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
-
+  
   const handleLogout = () => {
     signOut();
     router.push('/signin');

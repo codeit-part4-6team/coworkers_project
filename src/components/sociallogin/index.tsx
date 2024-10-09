@@ -33,10 +33,10 @@ export default function SocialLogin() {
         <hr className="flex-grow border-t border-border-primary-10" />
       </div>
       <div
-        className={`text-text-primary text-lg font-medium flex justify-between`}
+        className={`text-text-primary text-lg font-medium flex justify-between items-center`}
       >
         <p>간편 로그인 하기</p>
-        <KakaoIcon onClick={loginEvent} />
+        <button onClick={loginEvent}><KakaoIcon /></button>
         {/* <GoogleIcon onClick={googleLoginEvent} /> */}
       </div>
     </div>
