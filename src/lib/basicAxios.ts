@@ -68,8 +68,6 @@ basicAuthAxios.interceptors.response.use(
         console.error('리프레시 토큰 실패:', refreshError);
         Cookies.remove('accessToken');
         Cookies.remove('refreshToken');
-        // 로그인 페이지로 리디렉션
-        window.location.href = '/signin';
       }
     }
 
