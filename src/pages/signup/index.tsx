@@ -2,9 +2,9 @@ import Input from '@/components/input/Input';
 import Button from '@/components/common/Button';
 import { useEffect, useState } from 'react';
 import SocialLogin from '@/components/sociallogin';
-import { signUp } from '@/lib/auth';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
+import useAuthStore from '@/store/authStore'
 
 const nickNameErrorText = [
   '이름은 필수 입력입니다.',
@@ -26,6 +26,7 @@ const passwordCheckErrorText = [
 
 export default function SignUp() {
   const router = useRouter();
+  const {signUp, isPending} = useAuthStore();
   const [values, setValues] = useState({
     nickName: '',
     email: '',
@@ -105,42 +106,24 @@ export default function SignUp() {
 
   const handleSignUp = async (event: React.FormEvent) => {
       event.preventDefault(); // 폼 제출 기본 동작 방지
-      // console.log();
       
-      if(!errors.nickNameError &&
-        !errors.emailError &&
-        !errors.passwordError &&
-        !errors.confirmPasswordError &&
+      if(errors.nickNameError &&
+        errors.emailError &&
+        errors.passwordError &&
+        errors.confirmPasswordError &&
         values.nickName &&
         values.email &&
         values.password &&
         values.confirmPassword) {
         return;
       }
-
-      const response = await signUp(
-        values.email,
-        values.nickName,
-        values.password,
-        values.confirmPassword,
-      );
-
-      if(response.status >= 200 && response.status < 300) {
-        Cookies.set('accessToken', response.data.accessToken, {path: '/'});
-        Cookies.set('refreshToken', response.data.refreshToken, {path: '/'});
-        Cookies.set('userData', JSON.stringify(response.data.user), {path: '/'});
-        router.push('/');
-      }
-      else {
-        alert(response.data.message);
+      const success = await signUp(values.email, values.nickName, values.password, values.confirmPassword);
+      if (success) {
+        router.push('/'); // 로그인 성공 시 홈으로 리다이렉트
+      } else {
+        alert('회원가입에 실패했습니다. 다시 시도해주세요.');
       }
   };
-
-  useEffect(() => {
-    if(Cookies.get('accessToken')) {
-      router.push('/');
-    }
-  }, [router]);
 
   return (
     <div

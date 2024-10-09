@@ -111,7 +111,6 @@ const GroupMemberCard = ({
   const [currentMembers, setCurrentMembers] = useState<GroupMember[]>(members);
 
   const handleOpenInviteModal = () => {
-    console.log('Open modal');
     getGroupInvitation(groupId)
       .then((response) => {
         const token = response.data;

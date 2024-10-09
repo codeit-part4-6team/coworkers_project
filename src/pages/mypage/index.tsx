@@ -9,16 +9,8 @@ import MemberIcon from '@/assets/member.svg';
 import EditIcon from '@/assets/btn_edit.svg';
 import { imageFile } from '@/lib/articleApi';
 import { useRouter } from 'next/router';
-import Cookies from 'js-cookie';
-
-interface userProps {
-  id: string;
-  nickname: string;
-  createdAt: Date;
-  updatedAt: Date;
-  image: string;
-  email: string;
-}
+import useAuthStore from '@/store/authStore';
+import { User } from '@/types/usergroup';
 
 const nickNameErrorText = [
   '이름은 필수 입력입니다.',
@@ -37,21 +29,22 @@ const passwordCheckErrorText = [
 ];
 
 export default function MyPage() {
-  const [userData, setUserData] = useState<userProps>();
   const { openModal, closeModal } = useModalStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter(); // useRouter 선언
   const [newImage, setNewImage] = useState<string | null>(null);
+  const { user, checkAuth } = useAuthStore();
 
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       // const imageUrl = URL.createObjectURL(file);
       try {
         const imageUrl = await imageFile(file);
         setNewImage(imageUrl.data.url);
-      }
-      catch(error) {
+      } catch (error) {
         alert('이미지 업로드 중 오류 발생하였습니다.');
       }
     }
@@ -73,19 +66,33 @@ export default function MyPage() {
     passwordCheckError: '',
   });
 
-
-  const userEditEvent= async () => {
-    if(values.nickName && newImage) {
-      console.log(values.nickName, newImage);
+  const userEditEvent = async () => {
+    if (values.nickName && newImage && user) {
+      // userData가 존재하는지 체크
       try {
         const response = await userPatch(values.nickName, newImage);
+
+        const updatedUserData: User = {
+          id: user.id,
+          nickname: values.nickName,
+          image: newImage,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          email: user.email,
+          memberships: user.memberships,
+          teamId: user.teamId,
+        };
+
+        // 상태값을 업데이트하여 화면에 반영
+        useAuthStore.getState().setUser(updatedUserData);
         alert('회원정보 수정 완료했습니다.');
+      } catch (error) {
+        alert('회원정보 수정 중 오류가 발생했습니다.');
       }
-      catch(error) {
-        console.log(error);
-      }
+    } else {
+      alert('닉네임과 이미지가 필요합니다.');
     }
-  }
+  };
 
   const handleBlur = (field: string, value: string) => {
     let error = '';
@@ -96,7 +103,7 @@ export default function MyPage() {
     } else if (field === 'confirmPassword') {
       error = validatePasswordCheck(values.password, value);
     }
-  
+
     setValues((prev) => ({
       ...prev,
       [field]: value,
@@ -110,7 +117,6 @@ export default function MyPage() {
       return updatedErrors;
     });
   };
-  
 
   const validateNickName = (value: string) => {
     if (!value) return nickNameErrorText[0];
@@ -133,44 +139,48 @@ export default function MyPage() {
   };
 
   const changePasswordEvent = async () => {
-      const response = await changePassword(values.password, values.confirmPassword);
-      return response;
+    const response = await changePassword(
+      values.password,
+      values.confirmPassword,
+    );
+    return response;
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const user = Cookies.get('userData');
-      if (user) {
-        const parsedData = JSON.parse(user);
-        setUserData(parsedData);
-        setNewImage(parsedData.image)
-      }
-      else {
-        router.push('/signin');
-      }
-    }
-  }, [router]);
+    checkAuth();
+  }, [checkAuth]);
 
   useEffect(() => {
-    if(userData) {
+    if(user) {
+      setNewImage(user.image);
       setValues((prevValues) => ({
         ...prevValues,
-        nickName: userData.nickname,
+        nickName: user.nickname,
       }));
     }
-  }, [])
+  }, [user]);
 
-  if (!userData) {
-    return null;
+  if (!user) {
+    return (
+    <div>
+      <p>로딩중</p>
+      </div>
+      );
   }
 
   return (
     <div className={`mt-6 mx-auto lg:w-[792px] p-4 md:p-7`}>
-      <p className={`text-text-primary text-2lg font-bold mb-7 md:text-xl`}>계정 설정</p>
+      <p className={`text-text-primary text-2lg font-bold mb-7 md:text-xl`}>
+        계정 설정
+      </p>
       <div className={`mb-7 w-fit relative`} onClick={handleIconClick}>
         {/* 새 이미지가 있으면 표시, 없으면 기본 MemberIcon 표시 */}
         {newImage ? (
-          <img src={newImage} alt="User" className={`w-[64px] h-[64px] rounded-full`} />
+          <img
+            src={newImage}
+            alt="User"
+            className={`w-[64px] h-[64px] rounded-full`}
+          />
         ) : (
           <MemberIcon className={`w-[64px] h-[64px]`} />
         )}
@@ -190,7 +200,7 @@ export default function MyPage() {
           <Input
             labeltext="이름"
             disabled={false}
-            defaultValue={userData.nickname}
+            defaultValue={user.nickname}
             option="text"
             inValid={false}
             placeholder={`닉네임을 입력해 주세요.`}
@@ -201,7 +211,7 @@ export default function MyPage() {
           <Input
             labeltext="이메일"
             disabled={true}
-            defaultValue={userData.email}
+            defaultValue={user.email}
             option="text"
             inValid={false}
             placeholder="무슨값"
@@ -265,13 +275,13 @@ export default function MyPage() {
                       closeModal('changePassword');
                       setValues((prevValues) => ({
                         ...prevValues, // 기존의 nickName 값을 유지
-                        password: '',  // password 초기화
-                        confirmPassword: '',  // confirmPassword 초기화
+                        password: '', // password 초기화
+                        confirmPassword: '', // confirmPassword 초기화
                       }));
                       setErrors((prevErrors) => ({
                         ...prevErrors, // 다른 에러 메시지는 유지
-                        passwordError: '',  // password 에러 초기화
-                        passwordCheckError: '',  // confirmPassword 에러 초기화
+                        passwordError: '', // password 에러 초기화
+                        passwordCheckError: '', // confirmPassword 에러 초기화
                       }));
                     }}
                   />
@@ -281,7 +291,11 @@ export default function MyPage() {
                     size="large"
                     onClick={async () => {
                       const response = await changePasswordEvent();
-                      if (response && response.status >= 200 && response.status < 300) {
+                      if (
+                        response &&
+                        response.status >= 200 &&
+                        response.status < 300
+                      ) {
                         // 비밀번호 변경 성공 시 모달 닫기
                         closeModal('changePassword');
                       } else {
@@ -296,8 +310,13 @@ export default function MyPage() {
         </div>
         <div className={`flex items-center justify-between`}>
           <DeleteAccount />
-          <div className='w-[74px]'>
-            <Button option='solid' text='저장' size='large' onClick={userEditEvent}/>
+          <div className="w-[74px]">
+            <Button
+              option="solid"
+              text="저장"
+              size="large"
+              onClick={userEditEvent}
+            />
           </div>
         </div>
       </div>

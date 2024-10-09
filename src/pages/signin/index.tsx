@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import Modal from '@/components/common/Modal';
 import useModalStore from '@/store/modalStore';
 import Cookies from 'js-cookie';
+import useAuthStore from '@/store/authStore'
 
 const emailErrorText = [
   '이메일은 필수 입력입니다.',
@@ -16,6 +17,7 @@ const emailErrorText = [
 const passwordErrorText = ['비밀번호는 필수 입력입니다.'];
 
 export default function SignIn() {
+  const { signIn, isPending } = useAuthStore();
   const router = useRouter();
   const { openModal, closeModal } = useModalStore();
 
@@ -91,15 +93,14 @@ export default function SignIn() {
       return; // 유효하지 않으면 로그인 시도 중단
     }
 
+    
+
     // 로그인 요청
-    const response = await signIn(values.email, values.password);
-    if (response.status >= 200 && response.status < 300) {
-      Cookies.set('accessToken', response.data.accessToken, {path: '/'});
-      Cookies.set('refreshToken', response.data.refreshToken, {path: '/'});
-      Cookies.set('userData', JSON.stringify(response.data.user), {path: '/'});
-      router.push('/');
+    const success = await signIn(values.email, values.password);
+    if (success) {
+      router.push('/'); // 로그인 성공 시 홈으로 리다이렉트
     } else {
-      alert(response.data.message);
+      alert('로그인에 실패했습니다. 다시 시도해주세요.');
     }
   };
 

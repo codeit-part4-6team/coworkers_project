@@ -14,7 +14,7 @@ import TeamDropdown from './TeamDropdown';
 const Header = () => {
   const router = useRouter();
   const { openModal, closeModal } = useModalStore();
-  const { user, signOut, checkAuth } = useAuthStore();
+  const { user, checkAuth, signOut } = useAuthStore();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   useEffect(() => {
@@ -52,6 +52,10 @@ const Header = () => {
       router.push(`/jointeam`);
     }
   };
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth])
 
   return (
     <div className="bg-background-secondary h-[60px] px-6 border-b border-border-primary-10">
