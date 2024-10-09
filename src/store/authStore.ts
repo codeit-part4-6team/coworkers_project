@@ -55,10 +55,10 @@ const useAuthStore = create<AuthState>((set) => ({
       return false;
     }
   },
-  provider: async (platform, state, uri, token) => {
+  provider: async (platform, state, redirectUri, token) => {
     set({isPending: true});
     const response = await basicAuthAxios.post(
-      `/auth/signIn/${platform}`, {state, uri, token}
+      `/auth/signIn/${platform}`, {state, redirectUri, token}
     );
     const { user, accessToken, refreshToken } = response.data;
     Cookies.set('accessToken', accessToken);
