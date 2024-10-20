@@ -3,7 +3,7 @@ import KakaoIcon from '@/assets/kakaotalk.svg';
 import { useEffect } from 'react';
 
 const KAKAO_REST_API_KEY = '62392d117c841d16a81ab6b783a7b35a';
-const KAKAO_REDIRECT_URI = `${window.location.origin}/signup/kakao`;
+const KAKAO_REDIRECT_URI = `https://coworkers-project.vercel.app/signup/kakao`;
 
 const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 const GOOGLE_REDIRECT_URI = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI;
