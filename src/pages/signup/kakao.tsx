@@ -13,7 +13,7 @@ export default function KakaoAuth() {
     const success = await provider(
       'KAKAO',
       'test',
-      'https://coworkers-project.vercel.app/signup/kakao',
+      `${window.location.origin}/signup/kakao`,
       authToken,
     );
     if (success) {
