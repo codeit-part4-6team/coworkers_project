@@ -6,7 +6,7 @@
 
 개발 환경
 
-+ Front: React, Tailwind, Next.js, Axios, TypeScript, React Query, Zustand​
++ Front: React, Tailwind CSS, Next.js, Axios, TypeScript, React Query, Zustand​
 
 + Back: default API​
 
