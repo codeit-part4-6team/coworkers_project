@@ -1,40 +1,26 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Coworkers
 
-## Getting Started
+프로젝트 기간 
 
-First, run the development server:
++ 24.09.03 ~ 24.10.10
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+개발 환경
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
++ Front: React, Tailwind, Next.js, Axios, TypeScript, React Query, Zustand​
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
++ Back: default API​
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
++ 버전 및 이슈 관리: Github​
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
++ 협업 툴: Discord, Notion, Github, Git​
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+팀원 역할
 
-## Learn More
++ 김광호 - 유저 인증 페이지, 계정 설정, 마이 히스토리 / 공용 인풋, 버튼 컴포넌트 제작
++ 김당찬 - 할일 리스트 페이지, 상세 모달​ / 공용 모달 컴포넌트 제작
++ 최예원 - 팀페이지, 팀관련 모달 및 페이지​ / 드랍다운 컴포넌트​ 제작
++ 신지원 - 자유게시판, 자유게시판 관련 페이지​ / 헤더 컴포넌트 제작
 
-To learn more about Next.js, take a look at the following resources:
+배포 사이트
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
++ https://coworkers-project.vercel.app/
